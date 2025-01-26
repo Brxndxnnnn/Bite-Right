@@ -20,7 +20,7 @@ public class GameMaster extends ApplicationAdapter {
         entityManager = new EntityManager();
         movementManager = new MovementManager();
         sceneManager = new SceneManager();
-        inputOutputManager = new InputOutputManager();
+        inputOutputManager = new InputOutputManager(movementManager);
         batch = new SpriteBatch();
     }
 
