@@ -1,5 +1,5 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 
-public class Scene {
+public abstract class Scene {
 
 }
