@@ -12,11 +12,11 @@ public class SceneManager {
 	private Scene currentScene;
 	private Scene previousScene;
 	
-	SceneManager() {
+	public SceneManager() {
 		
 	}
 	
-	SceneManager(EntityManager em) {
+	public SceneManager(EntityManager em) {
 		
 	}
 	

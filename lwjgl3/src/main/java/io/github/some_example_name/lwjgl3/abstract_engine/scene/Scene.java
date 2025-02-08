@@ -10,15 +10,14 @@ public abstract class Scene {
 	private Texture backgroundImg;
 	private Audio backgroundMusic;
 	
-	Scene() {
+	public Scene() {
 		
 	}
 	
-	Scene(String sceneName, Texture backgroundImg, Audio backgroundMusic) {
+	public Scene(String sceneName, Texture backgroundImg, Audio backgroundMusic) {
 		
 	}
 	
-	abstract void render(SpriteBatch sb);
 	
 	public void update() {
 		
@@ -31,4 +30,7 @@ public abstract class Scene {
 	public void dispose() {
 		
 	}
+	
+	public abstract void render(SpriteBatch sb);
+
 }
