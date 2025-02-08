@@ -31,6 +31,6 @@ public abstract class Scene {
 		
 	}
 	
-	public abstract void render(SpriteBatch sb);
+	public abstract void render(SpriteBatch batch);
 
 }
