@@ -5,13 +5,13 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 
-public class NPC extends Entity{
+public class NonPlayableCharacter extends Entity{
 
-    public NPC(){
+    public NonPlayableCharacter(){
         super();
     }
 
-    public NPC(String name, Vector2 position, Texture texture, Boolean collidable){
+    public NonPlayableCharacter(String name, Vector2 position, Texture texture, Boolean collidable){
         super(name, position, texture, collidable);
     }
 

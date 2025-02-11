@@ -7,7 +7,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.application_classes.NPC;
+import io.github.some_example_name.lwjgl3.application_classes.NonPlayableCharacter;
 
 public class EntityManager {
     private List<Entity> entities;
@@ -23,7 +23,7 @@ public class EntityManager {
             float randomX = random.nextFloat();
             float randomY = random.nextFloat();
             Vector2 position = new Vector2(randomX, randomY);
-            Entity entity = new NPC("lol", position, null, false);
+            Entity entity = new NonPlayableCharacter("lol", position, null, false);
             entities.add(entity);
         }
     }
