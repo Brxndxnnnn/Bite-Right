@@ -8,7 +8,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.Keyboard;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 public class GameMaster extends ApplicationAdapter {
 	
-    private SceneManager sceneManager;
     private SpriteBatch batch;
     private Audio audio;
 	private Keyboard keyboard;

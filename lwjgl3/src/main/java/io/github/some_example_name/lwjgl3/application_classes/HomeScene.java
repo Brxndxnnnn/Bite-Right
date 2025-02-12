@@ -37,7 +37,6 @@ public class HomeScene extends Scene{
 		});
 		
 		table.add(startBtn).space(100);
-//		table.debug();
 	}
 	
 	public void render(SpriteBatch batch) {
