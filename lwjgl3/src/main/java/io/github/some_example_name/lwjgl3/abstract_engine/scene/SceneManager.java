@@ -2,7 +2,6 @@ package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
@@ -10,6 +9,7 @@ import io.github.some_example_name.lwjgl3.application_classes.HomeScene;
 import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
 
 public class SceneManager {
+    private static SceneManager instance;
 	private EntityManager em;
 	private Map<String, Scene> scenes;
 	private Scene currentScene;
@@ -19,19 +19,26 @@ public class SceneManager {
     private PlayScene playScene;
    
 	
-	public SceneManager(SpriteBatch batch) {
-		initialiseScenes();
-        changeScene(new HomeScene(this));
+	public SceneManager() {
+//		initialiseScenes();
+//        changeScene(new HomeScene(this));
 	}
 	
 	public SceneManager(EntityManager em) {
 		
 	}
 	
-	public void initialiseScenes() {
-        homeScene = new HomeScene(this);
-        playScene = new PlayScene(this);        
+	public static SceneManager getInstance() {
+		if (instance == null) {
+			instance = new SceneManager();
+		}
+		return instance;
 	}
+	
+//	public void initialiseScenes() {
+//        homeScene = new HomeScene(this);
+//        playScene = new PlayScene(this);        
+//	}
 	
 	public void addScene() {
 		
@@ -43,7 +50,6 @@ public class SceneManager {
 		}
 		
 		currentScene = newScene;
-		
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -55,4 +61,10 @@ public class SceneManager {
     public void dispose() {
     	
     }
+    
+	public void resize(int width, int height) {
+		if (currentScene.getStage() != null) {
+	    	currentScene.getStage().getViewport().update(width, height, true);
+		}
+	}
 }
