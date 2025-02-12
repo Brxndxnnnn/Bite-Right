@@ -2,6 +2,7 @@ package io.github.some_example_name.lwjgl3.abstract_engine.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
@@ -41,7 +42,7 @@ public abstract class Entity implements iMovable, iCollidable{
 
     public void setPosition(Vector2 position){
         this.position = position;
-    }
+    }	
 
     public Texture getTexture(){
         return texture;
@@ -72,4 +73,6 @@ public abstract class Entity implements iMovable, iCollidable{
 
     @Override
     public void moveUserControlled() {}
+
+	public abstract Rectangle getBoundingBox();
 }
