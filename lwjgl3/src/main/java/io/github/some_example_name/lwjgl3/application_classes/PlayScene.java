@@ -16,17 +16,15 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 public class PlayScene extends Scene{
 	private TextButton pauseBtn;
 	private TextButton quitBtn;
-	private EntityManager em;
+	private EntityManager entityManager;
 
 	public PlayScene(SceneManager sceneManager) {
-		super();
+		super(sceneManager);
+		// INITIALIZE ENTITIES
+	    entityManager = new EntityManager();
+	    entityManager.intializeEntities();
 		
-		// louis added
-	    em = new EntityManager();
-	    em.intializeEntities();
-		// end
-		
-		
+		// INITIALIZE BUTTONS
 		pauseBtn = new TextButton("Pause", skin);
 		quitBtn = new TextButton("Quit", skin);
 				
@@ -38,32 +36,36 @@ public class PlayScene extends Scene{
 		table.add(label);
         table.row();
 		
+		// INITIALIZE BUTTON LISTENERS
 		pauseBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				SceneManager.getInstance().changeScene(new PauseScene());
+				sceneManager.changeScene("PAUSE");
 			}
 		});
 		
-		table.add(pauseBtn).spaceTop(50);
+		table.add(pauseBtn).spaceTop(1);
         table.row();
 		
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				SceneManager.getInstance().changeScene(new HomeScene());
+				sceneManager.changeScene("HOME");
 			}
 		});
 		
-		table.add(quitBtn).spaceTop(10);
+		table.add(quitBtn).spaceTop(1);
 	}
+
+	public void create(){}
 	
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
-		// louis added
-		em.drawEntites(batch);
-		em.updateEntities();
+		
+		// Draw Entities on Screen
+		entityManager.drawEntites(batch);
+		entityManager.updateEntities();
 	}
 
 }

@@ -1,62 +1,43 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.application_classes.HomeScene;
+import io.github.some_example_name.lwjgl3.application_classes.PauseScene;
 import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
 
 public class SceneManager {
-    private static SceneManager instance;
-	private EntityManager em;
 	private Map<String, Scene> scenes;
-	private Scene currentScene;
-	private Scene previousScene;
+	private String currentSceneKey;
 	
-    private HomeScene homeScene;
-    private PlayScene playScene;
+    // private HomeScene homeScene;
+    // private PlayScene playScene;
    
-	
 	public SceneManager() {
-//		initialiseScenes();
-//        changeScene(new HomeScene(this));
+		scenes = new HashMap<>();
+		currentSceneKey = "HOME";
+		initialiseScenes();
 	}
 	
-	public SceneManager(EntityManager em) {
-		
+	public void initialiseScenes() {
+	   addScene("HOME", new HomeScene(this));
+	   addScene("PLAY", new PlayScene(this));
+	   addScene("PAUSE", new PauseScene(this));
 	}
 	
-	public static SceneManager getInstance() {
-		if (instance == null) {
-			instance = new SceneManager();
-		}
-		return instance;
+	public void addScene(String key, Scene scene) {
+		scenes.put(key, scene);
 	}
 	
-//	public void initialiseScenes() {
-//        homeScene = new HomeScene(this);
-//        playScene = new PlayScene(this);  
-//        
-//	}
-	
-	public void addScene() {
-		
-	}
-	
-	public void changeScene(Scene newScene) {
-		if (currentScene != null) {
-			currentScene.dispose();
-		}
-		
-		currentScene = newScene;
+	public void changeScene(String sceneName) {
+		currentSceneKey = sceneName;
 	}
 	
 	public void render(SpriteBatch batch) {
-		if (currentScene != null) {
-	        currentScene.render(batch);
-        }
+		scenes.get(currentSceneKey).render(batch);
 	}
 	
     public void dispose() {
@@ -64,8 +45,6 @@ public class SceneManager {
     }
     
 	public void resize(int width, int height) {
-		if (currentScene.getStage() != null) {
-	    	currentScene.getStage().getViewport().update(width, height, true);
-		}
+		scenes.get(currentSceneKey).getStage().getViewport().update(width, height, true);
 	}
 }
