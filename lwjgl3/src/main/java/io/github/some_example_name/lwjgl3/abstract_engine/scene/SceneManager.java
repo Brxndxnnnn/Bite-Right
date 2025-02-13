@@ -13,9 +13,6 @@ public class SceneManager {
 	private Map<String, Scene> scenes;
 	private String currentSceneKey;
 	
-    // private HomeScene homeScene;
-    // private PlayScene playScene;
-   
 	public SceneManager() {
 		scenes = new HashMap<>();
 		currentSceneKey = "HOME";
@@ -41,7 +38,9 @@ public class SceneManager {
 	}
 	
     public void dispose() {
-    	
+    	for (Scene scene : scenes.values()) {
+			scene.dispose();
+		}
     }
     
 	public void resize(int width, int height) {
