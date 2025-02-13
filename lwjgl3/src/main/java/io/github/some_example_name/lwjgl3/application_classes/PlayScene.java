@@ -9,15 +9,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 
 public class PlayScene extends Scene{
 	private TextButton pauseBtn;
 	private TextButton quitBtn;
+	private EntityManager em;
 
-	public PlayScene() {
+	public PlayScene(SceneManager sceneManager) {
 		super();
+		
+		// louis added
+	    em = new EntityManager();
+	    em.intializeEntities();
+		// end
+		
+		
 		pauseBtn = new TextButton("Pause", skin);
 		quitBtn = new TextButton("Quit", skin);
 				
@@ -52,6 +61,9 @@ public class PlayScene extends Scene{
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
+		// louis added
+		em.drawEntites(batch);
+		em.updateEntities();
 	}
 
 }
