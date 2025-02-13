@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 
 public class Audio {
 	private String fileName;
-	private int volume;
+	private float volume;
 	private Music sound;
 	private boolean loop;
 	
@@ -15,13 +15,17 @@ public class Audio {
 		loop = false;
 	}
 	
-	public void playAudio(String fileName) {
-		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-		sound.setVolume(1);
-		sound.play();
+	// no idea if getter and setter is useful or needed
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 	
-	public void playAudio(String fileName, int volume) {
+	public void playAudio(String fileName, float volume) {
+		this.setFileName(fileName);
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		this.volume = volume;
 		sound.setVolume(volume / 100.0f);
@@ -49,11 +53,11 @@ public class Audio {
         }
 	}
 	
-	public int getVolume() {
+	public float getVolume() {
 		return volume;
 	}
 	
-	public void setVolume(int volume) {
+	public void setVolume(float volume) {
         if (volume < 0) {
             volume = 0; 
         } 
@@ -66,7 +70,10 @@ public class Audio {
 
         if (sound != null) {
             sound.setVolume(volume / 100.0f); 
+            
         }
+        
+        System.out.printf("volume %f\n", volume);
 	}
 	
 	public void loopAudio(boolean loop) {
@@ -74,7 +81,21 @@ public class Audio {
 		System.out.printf("loop %s\n", loop);
 	}
 	
+	public void changeAudio(String fileName) {
+		if (sound != null) {
+			sound.stop();
+			sound.dispose();
+			System.out.printf("change to %s\n", fileName);
+
+		}
+		
+		System.out.printf("volume %f\n", getVolume());
+	    playAudio(fileName, getVolume());
+	}
+	
 	public void dispose() {
 		sound.dispose();
 	}
+
+
 }

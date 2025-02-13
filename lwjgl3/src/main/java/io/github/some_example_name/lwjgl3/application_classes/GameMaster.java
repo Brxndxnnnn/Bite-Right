@@ -20,9 +20,7 @@ public class GameMaster extends ApplicationAdapter {
 		audio = new Audio();
 		keyboard = new Keyboard();
 		keyboard.addClassBindings(audio);
-		audio.playAudio("test.mp3", 60);
-		System.out.printf("volume %d\n", audio.getVolume());
-
+		audio.playAudio("audio1.mp3", 60);
     }
 
     @Override
