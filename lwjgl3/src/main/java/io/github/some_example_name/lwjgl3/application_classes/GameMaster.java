@@ -8,7 +8,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.Keyboard;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 public class GameMaster extends ApplicationAdapter {
 	
-    private SceneManager sceneManager;
     private SpriteBatch batch;
     private Audio audio;
 	private Keyboard keyboard;
@@ -16,7 +15,8 @@ public class GameMaster extends ApplicationAdapter {
     @Override
     public void create(){
         batch = new SpriteBatch();
-        sceneManager = new SceneManager(batch);
+        SceneManager.getInstance().changeScene(new HomeScene());
+
 		audio = new Audio();
 		keyboard = new Keyboard();
 		keyboard.addClassBindings(audio);
@@ -28,8 +28,7 @@ public class GameMaster extends ApplicationAdapter {
     @Override
     public void render(){		
 		batch.begin();
-
-        sceneManager.render(batch);
+        SceneManager.getInstance().render(batch);
 		batch.end();
 
         keyboard.handleInput();
@@ -40,5 +39,10 @@ public class GameMaster extends ApplicationAdapter {
         // dispose scenemanager here if needed
     	audio.dispose();
     }
+    
+    @Override
+	public void resize(int width, int height) {
+    	SceneManager.getInstance().resize(width, height);
+	}
 
 }
