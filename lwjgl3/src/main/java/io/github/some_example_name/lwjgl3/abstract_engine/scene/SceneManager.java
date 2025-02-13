@@ -30,7 +30,8 @@ public class SceneManager {
 	
 	public void initialiseScenes() {
         homeScene = new HomeScene(this);
-        playScene = new PlayScene(this);        
+        playScene = new PlayScene(this);  
+        
 	}
 	
 	public void addScene() {
