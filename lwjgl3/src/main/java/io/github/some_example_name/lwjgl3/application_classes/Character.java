@@ -6,11 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
-import io.github.some_example_name.lwjgl3.abstract_engine.movement.iMovable;
 
-public class Character extends Entity implements iMovable, iCollidable{
+public class Character extends Entity{
     private float speed;
 
     public Character(){

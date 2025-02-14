@@ -16,8 +16,8 @@ public class PauseScene extends Scene{
 	private TextButton resumeBtn;
 	private TextButton quitBtn;
 
-	public PauseScene() {
-		super();
+	public PauseScene(SceneManager sceneManager) {
+		super(sceneManager);
 		resumeBtn = new TextButton("Resume", skin);
 		quitBtn = new TextButton("Quit", skin);
 		
@@ -32,7 +32,7 @@ public class PauseScene extends Scene{
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				SceneManager.getInstance().changeScene(new PlayScene());
+				sceneManager.changeScene("PLAY");
 			}
 		});
 		
@@ -42,7 +42,7 @@ public class PauseScene extends Scene{
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				SceneManager.getInstance().changeScene(new HomeScene());
+				sceneManager.changeScene("HOME");
 			}
 		});
 		
