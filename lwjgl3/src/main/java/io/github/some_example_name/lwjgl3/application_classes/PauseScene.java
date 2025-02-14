@@ -18,6 +18,8 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
+		setAudioFilePath("test.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
+
 		resumeBtn = new TextButton("Resume", skin);
 		quitBtn = new TextButton("Quit", skin);
 		

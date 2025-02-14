@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.audio.Audio;
 import io.github.some_example_name.lwjgl3.application_classes.HomeScene;
 import io.github.some_example_name.lwjgl3.application_classes.PauseScene;
 import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
@@ -12,10 +13,13 @@ import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
 public class SceneManager {
 	private Map<String, Scene> scenes;
 	private String currentSceneKey;
+	private Audio audio;
 	
 	public SceneManager() {
 		scenes = new HashMap<>();
+		audio = new Audio();
 		currentSceneKey = "HOME";
+		audio.playAudio(scenes.get(currentSceneKey).getAudioFilePath());
 		initialiseScenes();
 	}
 	
@@ -31,6 +35,7 @@ public class SceneManager {
 	
 	public void changeScene(String sceneName) {
 		currentSceneKey = sceneName;
+		audio.playAudio(scenes.get(currentSceneKey).getAudioFilePath());
 	}
 	
 	public void render(SpriteBatch batch) {

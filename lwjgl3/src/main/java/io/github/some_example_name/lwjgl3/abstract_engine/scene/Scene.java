@@ -15,7 +15,7 @@ public abstract class Scene {
 	private SceneManager sceneManager;
 	private String sceneName;
 	private Texture backgroundImg;
-	private Audio backgroundMusic;
+	private String audioFilePath;
 	protected Stage stage;
 	protected Skin skin;
     private Viewport viewport;
@@ -31,6 +31,14 @@ public abstract class Scene {
 	
 	public Scene(String sceneName, Texture backgroundImg, Audio backgroundMusic) {
 		
+	}
+
+	public String getAudioFilePath() {
+		return audioFilePath;
+	}
+
+	public void setAudioFilePath(String audioFilePath){
+		this.audioFilePath = audioFilePath;
 	}
 	
 	public void update() {

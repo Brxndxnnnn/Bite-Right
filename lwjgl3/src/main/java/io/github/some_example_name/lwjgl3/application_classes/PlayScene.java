@@ -20,6 +20,8 @@ public class PlayScene extends Scene{
 
 	public PlayScene(SceneManager sceneManager) {
 		super(sceneManager);
+		setAudioFilePath("test.mp3");
+
 		// INITIALIZE ENTITIES
 	    entityManager = new EntityManager();
 	    entityManager.intializeEntities();

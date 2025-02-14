@@ -1,7 +1,7 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.audio;
 
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 
 public class Audio {
 	private String fileName;
@@ -18,13 +18,6 @@ public class Audio {
 	public void playAudio(String fileName) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		sound.setVolume(1);
-		sound.play();
-	}
-	
-	public void playAudio(String fileName, int volume) {
-		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-		this.volume = volume;
-		sound.setVolume(volume / 100.0f);
 		sound.play();
 	}
 	
