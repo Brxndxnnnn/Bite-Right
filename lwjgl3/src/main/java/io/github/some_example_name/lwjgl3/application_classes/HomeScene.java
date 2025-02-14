@@ -17,6 +17,8 @@ public class HomeScene extends Scene{
 	
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
+
+		setAudioFilePath("test.mp3");
         startBtn = new TextButton("Start", skin);
 		
 		Table table = new Table();
