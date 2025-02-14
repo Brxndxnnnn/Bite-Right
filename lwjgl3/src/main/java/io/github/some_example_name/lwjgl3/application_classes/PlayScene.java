@@ -40,7 +40,7 @@ public class PlayScene extends Scene{
 		pauseBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene("PAUSE");
+				sceneManager.changeScene(new PauseScene(sceneManager));
 			}
 		});
 		
@@ -50,7 +50,7 @@ public class PlayScene extends Scene{
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene("HOME");
+				sceneManager.changeScene(new HomeScene(sceneManager));
 			}
 		});
 		

@@ -32,7 +32,7 @@ public class PauseScene extends Scene{
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene("PLAY");
+				sceneManager.changeScene(new PlayScene(sceneManager)); // need go back to the old play scene
 			}
 		});
 		
@@ -42,7 +42,7 @@ public class PauseScene extends Scene{
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene("HOME");
+				sceneManager.changeScene(new HomeScene(sceneManager));
 			}
 		});
 		

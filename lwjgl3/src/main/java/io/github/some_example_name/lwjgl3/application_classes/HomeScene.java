@@ -30,7 +30,7 @@ public class HomeScene extends Scene{
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene("PLAY");
+				sceneManager.changeScene(new PlayScene(sceneManager));
 			}
 		});
 		
@@ -41,5 +41,4 @@ public class HomeScene extends Scene{
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 	}
-	
 }
