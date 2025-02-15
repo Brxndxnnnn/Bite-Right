@@ -38,8 +38,4 @@ public class SceneManager {
 	public void render(SpriteBatch batch) {
 		currentScene.render(batch);
 	}
-    
-	public void resize(int width, int height) {
-		currentScene.getStage().getViewport().update(width, height, true);
-	}
 }

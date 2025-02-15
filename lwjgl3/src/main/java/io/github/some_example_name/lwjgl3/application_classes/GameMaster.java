@@ -14,7 +14,7 @@ public class GameMaster extends ApplicationAdapter {
     @Override
     public void create(){
         sceneManager = new SceneManager();
-        // sceneManager.changeScene(new HomeScene(sceneManager));
+
         batch = new SpriteBatch();
 		keyboard = new Keyboard();
 		// keyboard.addClassBindings(audio);
@@ -35,10 +35,5 @@ public class GameMaster extends ApplicationAdapter {
     public void dispose(){
         // dispose scenemanager here if needed
     }
-    
-    @Override
-	public void resize(int width, int height) {
-    	sceneManager.resize(width, height);
-	}
 
 }
