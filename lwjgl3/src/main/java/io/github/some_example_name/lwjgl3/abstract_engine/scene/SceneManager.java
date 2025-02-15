@@ -46,7 +46,6 @@ public class SceneManager {
         AudioChecker();
     }
 
-
     public void AudioChecker() {
         if (audio != null && currentScene != null && currentScene.getAudioFilePath() != null) {
             audio.stopAudio();
