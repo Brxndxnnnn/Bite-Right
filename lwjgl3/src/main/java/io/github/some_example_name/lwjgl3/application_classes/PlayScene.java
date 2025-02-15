@@ -20,11 +20,11 @@ public class PlayScene extends Scene{
 
 	public PlayScene(SceneManager sceneManager) {
 		super(sceneManager);
-		// INITIALIZE ENTITIES
+		// Initialise entities
 	    entityManager = new EntityManager();
 	    entityManager.intializeEntities();
 		
-		// INITIALIZE BUTTONS
+		// Initialise buttons
 		pauseBtn = new TextButton("Pause", skin);
 		quitBtn = new TextButton("Quit", skin);
 				
@@ -36,7 +36,7 @@ public class PlayScene extends Scene{
 		table.add(label);
         table.row();
 		
-		// INITIALIZE BUTTON LISTENERS
+		// Initialise button listeners
 		pauseBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -44,7 +44,7 @@ public class PlayScene extends Scene{
 			}
 		});
 		
-		table.add(pauseBtn).spaceTop(1);
+		table.add(pauseBtn).spaceTop(30);
         table.row();
 		
 		quitBtn.addListener(new ClickListener() {
@@ -54,10 +54,8 @@ public class PlayScene extends Scene{
 			}
 		});
 		
-		table.add(quitBtn).spaceTop(1);
+		table.add(quitBtn).spaceTop(10);
 	}
-
-	public void create(){}
 	
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

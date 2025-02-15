@@ -17,6 +17,7 @@ public class HomeScene extends Scene{
 	
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
+		// Initialise button
         startBtn = new TextButton("Start", skin);
 		
 		Table table = new Table();
@@ -27,6 +28,7 @@ public class HomeScene extends Scene{
 		table.add(label);
         table.row();
         
+		// Initialise button listener
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -34,7 +36,7 @@ public class HomeScene extends Scene{
 			}
 		});
 		
-		table.add(startBtn).space(1);
+		table.add(startBtn).space(30);
 	}
 	
 	public void render(SpriteBatch batch) {

@@ -18,6 +18,7 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
+		// Initialise buttons
 		resumeBtn = new TextButton("Resume", skin);
 		quitBtn = new TextButton("Quit", skin);
 		
@@ -29,6 +30,7 @@ public class PauseScene extends Scene{
 		table.add(label);
         table.row();
 
+		// Initialise button listeners
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -36,7 +38,7 @@ public class PauseScene extends Scene{
 			}
 		});
 		
-		table.add(resumeBtn).spaceTop(50);
+		table.add(resumeBtn).spaceTop(30);
         table.row();
 
 		quitBtn.addListener(new ClickListener() {
@@ -47,7 +49,6 @@ public class PauseScene extends Scene{
 		});
 		
 		table.add(quitBtn).spaceTop(10);
-//		table.debug();
 	}
 	
 	public void render(SpriteBatch batch) {
