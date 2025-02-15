@@ -18,15 +18,15 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
-		setAudioFilePath("test.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
+		setAudioFilePath("music2.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
 
 		resumeBtn = new TextButton("Resume", skin);
 		quitBtn = new TextButton("Quit", skin);
-		
+
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
-		
+
 		Label label = new Label("Pause", skin);
 		table.add(label);
         table.row();
@@ -37,7 +37,7 @@ public class PauseScene extends Scene{
 				sceneManager.changeScene(new PlayScene(sceneManager)); // need go back to the old play scene
 			}
 		});
-		
+
 		table.add(resumeBtn).spaceTop(50);
         table.row();
 
@@ -47,11 +47,11 @@ public class PauseScene extends Scene{
 				sceneManager.changeScene(new HomeScene(sceneManager));
 			}
 		});
-		
+
 		table.add(quitBtn).spaceTop(10);
 //		table.debug();
 	}
-	
+
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();

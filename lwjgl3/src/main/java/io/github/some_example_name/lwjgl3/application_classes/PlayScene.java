@@ -20,24 +20,24 @@ public class PlayScene extends Scene{
 
 	public PlayScene(SceneManager sceneManager) {
 		super(sceneManager);
-		setAudioFilePath("test.mp3");
+		setAudioFilePath("music1.mp3");
 
 		// INITIALIZE ENTITIES
 	    entityManager = new EntityManager();
 	    entityManager.intializeEntities();
-		
+
 		// INITIALIZE BUTTONS
 		pauseBtn = new TextButton("Pause", skin);
 		quitBtn = new TextButton("Quit", skin);
-				
+
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
-		
+
 		Label label = new Label("Play", skin);
 		table.add(label);
         table.row();
-		
+
 		// INITIALIZE BUTTON LISTENERS
 		pauseBtn.addListener(new ClickListener() {
 			@Override
@@ -45,26 +45,26 @@ public class PlayScene extends Scene{
 				sceneManager.changeScene(new PauseScene(sceneManager));
 			}
 		});
-		
+
 		table.add(pauseBtn).spaceTop(1);
         table.row();
-		
+
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				sceneManager.changeScene(new HomeScene(sceneManager));
 			}
 		});
-		
+
 		table.add(quitBtn).spaceTop(1);
 	}
 
 	public void create(){}
-	
+
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
-		
+
 		// Draw Entities on Screen
 		entityManager.drawEntites(batch);
 		entityManager.updateEntities();
