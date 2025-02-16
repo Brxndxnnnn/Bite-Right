@@ -13,13 +13,11 @@ public class GameMaster extends ApplicationAdapter {
 
     @Override
     public void create(){
-        sceneManager = new SceneManager();
-        // sceneManager.changeScene(new HomeScene(sceneManager));
+        sceneManager = new SceneManager(); // Create a new instance of SceneManager
+        sceneManager.changeScene(new HomeScene(sceneManager)); // Render the first scene accordingly
         batch = new SpriteBatch();
 		keyboard = new Keyboard();
 		// keyboard.addClassBindings(audio);
-		// audio.playAudio("test.mp3", 60);
-		// System.out.printf("volume %d\n", audio.getVolume());
     }
 
     @Override

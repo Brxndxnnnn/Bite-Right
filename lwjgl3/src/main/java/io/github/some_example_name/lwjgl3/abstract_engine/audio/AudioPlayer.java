@@ -3,14 +3,13 @@ package io.github.some_example_name.lwjgl3.abstract_engine.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
-public class Audio {
+public class AudioPlayer {
 	private String fileName;
 	private int volume;
 	private Music sound;
 	private boolean loop;
-    private Audio audioChecker;
 
-	public Audio() {
+	public AudioPlayer() {
 		sound = null;
 		volume = 100;
 		loop = false;

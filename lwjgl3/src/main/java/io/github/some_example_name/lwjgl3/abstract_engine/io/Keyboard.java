@@ -62,7 +62,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.IntMap;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.audio.Audio;
+import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 
 public class Keyboard {
     private IntMap<Runnable> keyBindings;
@@ -91,8 +91,8 @@ public class Keyboard {
 
     // General method for adding key bindings dynamically
     public void addClassBindings(Object allclass) {
-        if (allclass instanceof Audio) {
-            Audio audio = (Audio) allclass;
+        if (allclass instanceof AudioPlayer) {
+            AudioPlayer audio = (AudioPlayer) allclass;
             addKeyBinding(Keys.D, () -> {
                 audio.setVolume(audio.getVolume() + 5);
                 System.out.printf("volume %d\n", audio.getVolume());
