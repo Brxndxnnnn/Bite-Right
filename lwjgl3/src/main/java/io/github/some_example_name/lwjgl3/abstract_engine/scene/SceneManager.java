@@ -9,10 +9,10 @@ import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
 public class SceneManager {
 	private Scene currentScene;
 	private PlayScene storedPlayScene; // Store PlayScene when pausing
-	private AudioPlayer audio;
+	private AudioPlayer audioPlayer;
 
 	public SceneManager() {
-		audio = new AudioPlayer();
+		audioPlayer = new AudioPlayer();
 	}
 
 	//! NEED TO CHANGE TO A GENERIC IMPLEMENTATION
@@ -42,10 +42,10 @@ public class SceneManager {
     }
 
     public void audioChecker() {
-		audio.stopAudio();
-		// Checks if Audio is intiatlised, currentScene is not null, and there is a audio file path for the scene
-        if (audio != null && currentScene != null && currentScene.getAudioFilePath() != null) {
-            audio.playAudio(currentScene.getAudioFilePath());
+		audioPlayer.stopAudio(); // Stop and disposes the current audio that is playing
+		// Checks if Audio is initiatlised, currentScene is not null, and there is a audio file path for the scene
+        if (audioPlayer != null && currentScene != null && currentScene.getAudioFilePath() != null) {
+            audioPlayer.playAudio(currentScene.getAudioFilePath(), true);
             System.out.println("Track Playing: " + currentScene.getAudioFilePath());
         } else {
             System.out.println("No audio available in the scene.");

@@ -20,6 +20,11 @@ public abstract class Scene {
     private Viewport viewport;
     private final Vector2 baseResolution = new Vector2(640, 480); // Base resolution for scaling
 
+	public Scene(){
+		this.sceneManager = new SceneManager();
+		this.audioFilePath = null;
+	}
+
 	public Scene(SceneManager sceneManager) {
 		this.sceneManager = sceneManager;
 		audioFilePath = null;
