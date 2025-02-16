@@ -15,7 +15,7 @@ public abstract class Scene {
 	private SceneManager sceneManager;
 	private String sceneName;
 	private Texture backgroundImg;
-	private Audio backgroundMusic;
+	private String audioFilePath;
 	protected Stage stage;
 	protected Skin skin;
     private Viewport viewport;
@@ -28,28 +28,36 @@ public abstract class Scene {
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 	}
-	
+
 	public Scene(String sceneName, Texture backgroundImg, Audio backgroundMusic) {
-		
+
 	}
-	
+
+	public String getAudioFilePath() {
+		return audioFilePath;
+	}
+
+	public void setAudioFilePath(String audioFilePath){
+		this.audioFilePath = audioFilePath;
+	}
+
 	public void update() {
 
 	}
-	
+
 	public void hide() {
-		
+
 	}
-	
+
 	public void dispose() {
 		stage.dispose();
 		skin.dispose();
 	}
-	
+
 	public Stage getStage() {
 		return stage;
 	}
-	
+
 	public abstract void render(SpriteBatch batch);
 
 }
