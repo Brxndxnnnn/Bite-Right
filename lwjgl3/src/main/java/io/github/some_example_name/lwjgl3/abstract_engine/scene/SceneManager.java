@@ -3,31 +3,27 @@ package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
-import io.github.some_example_name.lwjgl3.application_classes.PauseScene;
-import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
 
 public class SceneManager {
 	private Scene currentScene;
-	private PlayScene storedPlayScene; // Store PlayScene when pausing
+	private PrimaryScene storedScene; // Store PlayScene when pausing
 	private AudioPlayer audioPlayer;
 
 	public SceneManager() {
 		audioPlayer = new AudioPlayer();
 	}
 
-	//! NEED TO CHANGE TO A GENERIC IMPLEMENTATION
 	public void changeScene(Scene scene) {
 		// From PlayScene to PauseScene
-        if (scene instanceof PauseScene && currentScene instanceof PlayScene) {
+        if (scene instanceof SecondaryScene && currentScene instanceof PrimaryScene) {
             // Store PlayScene when transitioning to PauseScene
-            storedPlayScene = (PlayScene) currentScene;
+        	storedScene = (PrimaryScene) currentScene;
         }
 		// From PauseScene to PlayScene
-		else if (scene instanceof PlayScene && currentScene instanceof PauseScene) {
+		else if (scene instanceof PrimaryScene && !((PrimaryScene) scene).getIsHome() && currentScene instanceof SecondaryScene) {
             // Restore the stored PlayScene instead of creating a new one
-            scene = storedPlayScene;
-            storedPlayScene = null;// Clear reference after restoring
-
+            scene = storedScene;
+            storedScene = null;// Clear reference after restoring
         }
 
 		// Else just dispose as per normal
@@ -56,7 +52,4 @@ public class SceneManager {
 		currentScene.render(batch);
 	}
 
-	public void resize(int width, int height) {
-		currentScene.getStage().getViewport().update(width, height, true);
-	}
 }

@@ -9,10 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SecondaryScene;
 
-public class PauseScene extends Scene{
+public class PauseScene extends SecondaryScene{
 	private TextButton resumeBtn;
 	private TextButton quitBtn;
 
@@ -34,22 +34,21 @@ public class PauseScene extends Scene{
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager)); // need go back to the old play scene
+				sceneManager.changeScene(new PlayScene(sceneManager, false)); // need go back to the old play scene
 			}
 		});
 
-		table.add(resumeBtn).spaceTop(50);
+		table.add(resumeBtn).spaceTop(30);
         table.row();
 
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager));
+				sceneManager.changeScene(new HomeScene(sceneManager, true));
 			}
 		});
 
 		table.add(quitBtn).spaceTop(10);
-//		table.debug();
 	}
 
 	public void render(SpriteBatch batch) {

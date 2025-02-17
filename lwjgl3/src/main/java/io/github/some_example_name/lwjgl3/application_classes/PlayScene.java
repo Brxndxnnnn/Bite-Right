@@ -10,16 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 
-public class PlayScene extends Scene{
+public class PlayScene extends PrimaryScene{
 	private TextButton pauseBtn;
 	private TextButton quitBtn;
 	private EntityManager entityManager;
 
-	public PlayScene(SceneManager sceneManager) {
-		super(sceneManager);
+	public PlayScene(SceneManager sceneManager, Boolean isHome) {
+		super(sceneManager, isHome);
 		setAudioFilePath("music1.mp3");
 
 		// INITIALIZE ENTITIES
@@ -46,17 +46,17 @@ public class PlayScene extends Scene{
 			}
 		});
 
-		table.add(pauseBtn).spaceTop(1);
+		table.add(pauseBtn).spaceTop(30);
         table.row();
 
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager));
+				sceneManager.changeScene(new HomeScene(sceneManager, true));
 			}
 		});
 
-		table.add(quitBtn).spaceTop(1);
+		table.add(quitBtn).spaceTop(10);
 	}
 
 	public void create(){}

@@ -14,7 +14,7 @@ public class GameMaster extends ApplicationAdapter {
     @Override
     public void create(){
         sceneManager = new SceneManager(); // Create a new instance of SceneManager
-        sceneManager.changeScene(new HomeScene(sceneManager)); // Render the first scene accordingly
+        sceneManager.changeScene(new HomeScene(sceneManager, true)); // Render the first scene accordingly
         batch = new SpriteBatch();
 		iomanager = new IOManager();
 		
@@ -43,10 +43,5 @@ public class GameMaster extends ApplicationAdapter {
     public void dispose(){
         // dispose scenemanager here if needed
     }
-    
-    @Override
-	public void resize(int width, int height) {
-    	sceneManager.resize(width, height);
-	}
 
 }
