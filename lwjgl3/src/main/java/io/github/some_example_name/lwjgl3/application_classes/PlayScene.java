@@ -35,7 +35,7 @@ public class PlayScene extends PrimaryScene{
 	    entityManager = new EntityManager();
 	    
 	    // INITIALIZE ENTITIES FOR THE GAME
-        Entity player = new Character("Player", new Vector2(100, 100), new Texture("player.png"), true, 2f);
+        Entity player = new Character("Player", new Vector2(100, 100), new Texture("player.png"), 2f);
         entityManager.addEntities(player);
         
         // ROUGH DRAFT, NEED CHANGE LATER ON - BRANDON //
@@ -44,7 +44,7 @@ public class PlayScene extends PrimaryScene{
             float randomX = random.nextFloat();
             float randomY = random.nextFloat();
             Vector2 position = new Vector2(randomX, randomY);
-            Entity enemy = new NonPlayableCharacter("Enemy", position, new Texture("demon.png"), false);
+            Entity enemy = new NonPlayableCharacter("Enemy", position, new Texture("demon.png"));
             entityManager.addEntities(enemy);
         }
 

@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 
-public class NonPlayableCharacter extends Entity implements iCollidable{
+public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     private static final float SPEED = 150f;
     private Vector2 velocity;
     private float directionChangeTimer = 0;
@@ -19,7 +19,7 @@ public class NonPlayableCharacter extends Entity implements iCollidable{
         this.velocity = getRandomVelocity();
     }
 
-    public NonPlayableCharacter(String name, Vector2 position, Texture texture, Boolean collidable) {
+    public NonPlayableCharacter(String name, Vector2 position, Texture texture) {
         super(name, position, texture);
         this.velocity = getRandomVelocity();
     }
