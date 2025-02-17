@@ -6,7 +6,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 
 public class SceneManager {
 	private Scene currentScene;
-	private PrimaryScene storedScene; // Store PlayScene when pausing
+	private Scene storedScene; // Store PlayScene when pausing
 	private AudioPlayer audioPlayer;
 
 	public SceneManager() {
@@ -14,13 +14,13 @@ public class SceneManager {
 	}
 
 	public void changeScene(Scene scene) {
-		// From PlayScene to PauseScene
+		// From any PrimaryScene to any SecondaryScene
         if (scene instanceof SecondaryScene && currentScene instanceof PrimaryScene) {
             // Store PlayScene when transitioning to PauseScene
         	storedScene = (PrimaryScene) currentScene;
         }
-		// From PauseScene to PlayScene
-		else if (scene instanceof PrimaryScene && !((PrimaryScene) scene).getIsHome() && currentScene instanceof SecondaryScene) {
+		// From any SecondaryScene to any PrimaryScene that is not HOME
+		else if (scene instanceof PrimaryScene && currentScene instanceof SecondaryScene && !((PrimaryScene) scene).getIsHome()) {
             // Restore the stored PlayScene instead of creating a new one
             scene = storedScene;
             storedScene = null;// Clear reference after restoring
