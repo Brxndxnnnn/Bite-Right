@@ -9,14 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 
-public class HomeScene extends Scene{
+public class HomeScene extends PrimaryScene{
 	private TextButton startBtn;
 
-	public HomeScene(SceneManager sceneManager) {
-		super(sceneManager);
+	public HomeScene(SceneManager sceneManager, Boolean isHome) {
+		super(sceneManager, isHome);
 
 		setAudioFilePath("music3.mp3");
         startBtn = new TextButton("Start", skin);
@@ -32,11 +32,11 @@ public class HomeScene extends Scene{
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager));
+				sceneManager.changeScene(new PlayScene(sceneManager, false));
 			}
 		});
 
-		table.add(startBtn).space(1);
+		table.add(startBtn).space(30);
 	}
 
 	@Override
