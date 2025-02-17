@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 
-public class Character extends Entity{
+public class Character extends Entity implements iCollidable{
     private float speed;
 
     public Character(){
@@ -17,7 +18,7 @@ public class Character extends Entity{
     }
 
     public Character(String name, Vector2 position, Texture texture, Boolean collidable, float speed){
-        super(name, position, texture, collidable);
+        super(name, position, texture);
         this.speed = speed;
     }
 
@@ -67,18 +68,6 @@ public class Character extends Entity{
         setPosition(position);
     }
 
-    @Override
-    public boolean collisionDetection(Entity Entity1) {
-        return getBoundingBox().overlaps(Entity1.getBoundingBox());  
-    }
-	
-
-	@Override
-    public void collisionResolution(Entity entity1) {
-    	System.out.println("Player character collision resolution");	
-    }
-
-	@Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }
