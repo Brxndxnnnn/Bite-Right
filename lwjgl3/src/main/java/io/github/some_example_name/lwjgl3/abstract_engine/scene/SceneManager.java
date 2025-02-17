@@ -2,25 +2,20 @@ package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.audio.Audio;
-import io.github.some_example_name.lwjgl3.application_classes.HomeScene;
+import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.application_classes.PauseScene;
 import io.github.some_example_name.lwjgl3.application_classes.PlayScene;
 
 public class SceneManager {
 	private Scene currentScene;
 	private PlayScene storedPlayScene; // Store PlayScene when pausing
-	private Audio audio;
-
-    private String currentTrack = "No Audio Playing";
+	private AudioPlayer audioPlayer;
 
 	public SceneManager() {
-		changeScene(new HomeScene(this));
-		audio = new Audio();
-		audio.playAudio(currentScene.getAudioFilePath());
-        System.out.printf(currentTrack = "Track Playing: " + currentScene.getAudioFilePath());
+		audioPlayer = new AudioPlayer();
 	}
 
+	//! NEED TO CHANGE TO A GENERIC IMPLEMENTATION
 	public void changeScene(Scene scene) {
 		// From PlayScene to PauseScene
         if (scene instanceof PauseScene && currentScene instanceof PlayScene) {
@@ -43,15 +38,16 @@ public class SceneManager {
 
         currentScene = scene;
 
-        AudioChecker();
+        audioChecker();
     }
 
-    public void AudioChecker() {
-        if (audio != null && currentScene != null && currentScene.getAudioFilePath() != null) {
-            audio.stopAudio();
-            audio.playAudio(currentScene.getAudioFilePath());
+    public void audioChecker() {
+		audioPlayer.stopAudio(); // Stop and disposes the current audio that is playing
+		// Checks if Audio is initiatlised, currentScene is not null, and there is a audio file path for the scene
+        if (audioPlayer != null && currentScene != null && currentScene.getAudioFilePath() != null) {
+            audioPlayer.playAudio(currentScene.getAudioFilePath(), true);
             System.out.println("Track Playing: " + currentScene.getAudioFilePath());
-        }  else {
+        } else {
             System.out.println("No audio available in the scene.");
         }
     }
