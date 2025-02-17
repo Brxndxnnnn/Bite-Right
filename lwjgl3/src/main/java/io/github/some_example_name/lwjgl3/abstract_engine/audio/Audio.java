@@ -23,7 +23,7 @@ public class Audio {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
 	public void playAudio(String fileName, float volume) {
 		this.setFileName(fileName);
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
@@ -77,10 +77,14 @@ public class Audio {
 	}
 	
 	public void loopAudio(boolean loop) {
+		this.loop = loop;
 		sound.setLooping(loop);
-		System.out.printf("loop %s\n", loop);
+		System.out.printf("loop %s\n", this.loop);
 	}
 	
+	// currently, by changing audio, the loop variable is not stored since
+	// it is disposed. therefore by default it will not loop
+	// modification is needed to store the loop variable
 	public void changeAudio(String fileName) {
 		if (sound != null) {
 			sound.stop();

@@ -4,34 +4,31 @@ public class IOManager {
     private Keyboard keyboard;
     private Mouse mouse;
 
-    public IOManager(Keyboard keyboard, Mouse mouse) {
-        this.keyboard = keyboard;
-        this.mouse = mouse;
+    public IOManager() {
+        this.keyboard = new Keyboard();
+        this.mouse = new Mouse();
+    }
+    
+    public Keyboard getKeyboard() {
+    	return keyboard;
+    }
+    
+    public Mouse getMouse() {
+    	return mouse;
     }
 
-    public void updateInput() {
-        // Handle input for keyboard
-        keyboard.handleInput();
-
-        // remove comment once mouse has functionality
-        //mouse.handleInput();
+    // listens for input for devices
+    public void handleInput() {
+        keyboard.handleInput();  
+        mouse.handleInput(); 
     }
 
-    // Add observers for keyboard
-    public void addKeyboardObserver(InputObserver observer) {
-        keyboard.addObserver(observer);
+    // usage addIOBind(kb, key, function, true(press once)/false(hold) (default is false))
+    public void addIOBind(InputDevice device, int keyOrButton, Runnable action, boolean isJustPressed) {
+        device.addIOBind(keyOrButton, action, isJustPressed);
     }
 
-    public void removeKeyboardObserver(InputObserver observer) {
-        keyboard.removeObserver(observer);
-    }
-
-    // Add observers for mouse
-    public void addMouseObserver(InputObserver observer) {
-        mouse.addObserver(observer);
-    }
-
-    public void removeMouseObserver(InputObserver observer) {
-        mouse.removeObserver(observer);
+    public void removeIOBind(InputDevice device, int keyOrButton) {
+        device.removeIOBind(keyOrButton);
     }
 }
