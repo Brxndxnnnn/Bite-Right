@@ -21,8 +21,9 @@ public class GameMaster extends ApplicationAdapter {
         sceneManager = new SceneManager(batch);
 		audio = new Audio();
 		iomanager = new IOManager();
-		//keyboard.addBindings(Key);
 		audio.playAudio("audio1.mp3", 60);
+		
+		// to use bindings, example as such
 		iomanager.addIOBind(iomanager.getKeyboard(), Keys.NUM_1, () -> audio.loopAudio(true), true);
 		iomanager.addIOBind(iomanager.getKeyboard(), Keys.NUM_3, () -> audio.changeAudio("audio2.mp3"), true);
 		iomanager.addIOBind(iomanager.getKeyboard(), Keys.S, () -> audio.changeAudio("audio1.mp3"), true);
