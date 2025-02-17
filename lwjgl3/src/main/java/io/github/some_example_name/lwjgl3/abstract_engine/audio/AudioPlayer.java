@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 public class AudioPlayer {
-	private int volume;
+	private float volume;
 	private Music sound;
 
 	public AudioPlayer() {
@@ -49,12 +49,12 @@ public class AudioPlayer {
             System.out.println("Stop and Dispose Audio");
         }
 	}
-
-	public int getVolume() {
+	
+	public float getVolume() {
 		return volume;
 	}
-
-	public void setVolume(int volume) {
+	
+	public void setVolume(float volume) {
         if (volume < 0) {
             volume = 0;
         }
@@ -66,14 +66,32 @@ public class AudioPlayer {
         this.volume = volume;
 
         if (sound != null) {
-            sound.setVolume(volume / 100.0f);
+            sound.setVolume(volume / 100.0f); 
+            
         }
+        
+        System.out.printf("volume %f\n", volume);
 	}
 
 	public void loopAudio(boolean loop) {
 		sound.setLooping(loop);
-		System.out.printf("Loop Audio %s\n", loop);
+		System.out.printf("loop %s\n", loop);
 	}
+	
+	// currently, by changing audio, the loop variable is not stored since
+	// it is disposed. therefore by default it will not loop
+	// modification is needed to store the loop variable
+	// public void changeAudio(String fileName) {
+	// 	if (sound != null) {
+	// 		sound.stop();
+	// 		sound.dispose();
+	// 		System.out.printf("change to %s\n", fileName);
+
+	// 	}
+		
+	// 	System.out.printf("volume %f\n", getVolume());
+	//     playAudio(fileName, getVolume());
+	// }
 
 	public void disposeAudio() {
 		sound.dispose();

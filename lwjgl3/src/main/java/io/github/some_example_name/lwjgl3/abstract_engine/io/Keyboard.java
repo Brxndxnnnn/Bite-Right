@@ -1,118 +1,44 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.io;
-//
-//import com.badlogic.gdx.Gdx;
-//import com.badlogic.gdx.Input.Keys;
-//import io.github.some_example_name.lwjgl3.abstract_engine.audio.Audio;
-//import com.badlogic.gdx.utils.IntMap;
-//
-//public class Keyboard {
-//    private Audio audio;
-//    private IntMap<Runnable> keyBindings;
-//
-//    // Constructor
-//    public Keyboard(Audio audio) {
-//        this.audio = audio;
-//        keyBindings = new IntMap<>();
-//        initializeBindings();
-//    }
-//
-//    // Initialize key bindings using a Map of Keys to Runnable actions
-//    private void initializeBindings() {
-//        keyBindings.put(Keys.D, () -> {
-//            audio.setVolume(audio.getVolume() + 5);
-//            System.out.printf("volume %d\n", audio.getVolume());
-//        });
-//
-//        keyBindings.put(Keys.A, () -> {
-//            audio.setVolume(audio.getVolume() - 5);
-//            System.out.printf("volume %d\n", audio.getVolume());
-//        });
-//
-//        keyBindings.put(Keys.S, () -> audio.stopAudio());
-//        
-//        keyBindings.put(Keys.W, () -> audio.pauseAudio());
-//
-//        keyBindings.put(Keys.Q, () -> audio.resumeAudio());
-//
-//        keyBindings.put(Keys.NUM_1, () -> audio.loopAudio(true));
-//
-//        keyBindings.put(Keys.NUM_2, () -> audio.loopAudio(false));
-//    }
-//
-//    // Handle input by checking for key presses and running the associated action
-//    public void handleInput() {
-//        // Iterate through all key bindings and run corresponding action if key is pressed
-//    	 for (IntMap.Entry<Runnable> entry : keyBindings.entries()) {
-//             if (Gdx.input.isKeyPressed(entry.key)) {
-//                 entry.value.run();  // Execute the corresponding action
-//             }
-//         }
-//    }
-//    
-//    public void addKeyBinding(int key, Runnable action) {
-//        keyBindings.put(key, action);
-//    }
-//
-//    public void removeKeyBinding(int key) {
-//        keyBindings.remove(key);
-//    }
-//}
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.IntMap;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
+public class Keyboard implements InputDevice {
+    private IntMap<Object[]> keyBindings;
 
-public class Keyboard {
-    private IntMap<Runnable> keyBindings;
-
-    // Constructor
     public Keyboard() {
         keyBindings = new IntMap<>();
     }
 
-    // Handle input by checking for key presses and running the associated action
+    @Override
     public void handleInput() {
-        for (IntMap.Entry<Runnable> entry : keyBindings.entries()) {
-            if (Gdx.input.isKeyPressed(entry.key)) {
-                entry.value.run();  // Execute the corresponding action
+        for (IntMap.Entry<Object[]> entry : keyBindings.entries()) {
+            Object[] binding = entry.value;
+            Runnable action = (Runnable) binding[0];
+            boolean isJustPressed = (boolean) binding[1];
+            boolean isKeyPressed;
+            if (isJustPressed) {
+                isKeyPressed = Gdx.input.isKeyJustPressed(entry.key);
+            } 
+            else {
+                isKeyPressed = Gdx.input.isKeyPressed(entry.key);
+            }
+
+            if (isKeyPressed) {
+                action.run();  
             }
         }
     }
 
-    public void addKeyBinding(int key, Runnable action) {
-        keyBindings.put(key, action);
+    @Override
+    public void addIOBind(int key, Runnable action, boolean isJustPressed) {
+        keyBindings.put(key, new Object[]{action, isJustPressed});
     }
 
-    public void removeKeyBinding(int key) {
+    @Override
+    public void removeIOBind(int key) {
         keyBindings.remove(key);
-    }
-
-    // General method for adding key bindings dynamically
-    public void addClassBindings(Object allclass) {
-        if (allclass instanceof AudioPlayer) {
-            AudioPlayer audio = (AudioPlayer) allclass;
-            addKeyBinding(Keys.D, () -> {
-                audio.setVolume(audio.getVolume() + 5);
-                System.out.printf("volume %d\n", audio.getVolume());
-            }); 
-            addKeyBinding(Keys.A, () -> {
-                audio.setVolume(audio.getVolume() - 5);
-                System.out.printf("volume %d\n", audio.getVolume());
-            }); 
-            addKeyBinding(Keys.S, () -> audio.stopAudio());  
-            addKeyBinding(Keys.W, () -> audio.pauseAudio()); 
-            addKeyBinding(Keys.Q, () -> audio.resumeAudio()); 
-            addKeyBinding(Keys.NUM_1, () -> audio.loopAudio(true)); 
-            addKeyBinding(Keys.NUM_2, () -> audio.loopAudio(false));
-        } 
-//        else if (system instanceof otherclass) {
-
-//        }
-
+        System.out.printf("removed key %s\n", key);
     }
 }
-
-
 
