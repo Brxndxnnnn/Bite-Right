@@ -18,7 +18,7 @@ public class HomeScene extends Scene{
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
 
-		setAudioFilePath("test.mp3");
+		setAudioFilePath("music3.mp3");
         startBtn = new TextButton("Start", skin);
 
 		Table table = new Table();
@@ -39,6 +39,7 @@ public class HomeScene extends Scene{
 		table.add(startBtn).space(1);
 	}
 
+	@Override
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
