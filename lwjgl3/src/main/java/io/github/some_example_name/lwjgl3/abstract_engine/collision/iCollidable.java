@@ -1,8 +1,6 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.collision;
-
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
+import com.badlogic.gdx.math.Rectangle;
 
 public interface iCollidable {
-	boolean collisionDetection(Entity Entity1);
-	void collisionResolution(Entity Entity1);
-}
+	public Rectangle getBoundingBox();
+} // can use general class to accept other types like Circle/Triangle etc. if needed later on

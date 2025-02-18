@@ -6,19 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 
-public class Character extends Entity{
-    private float speed;
+public class Character extends MovableEntity implements iCollidable{
 
-    public Character(){
-        super();
-        this.speed = 0;
-    }
-
-    public Character(String name, Vector2 position, Texture texture, Boolean collidable, float speed){
-        super(name, position, texture, collidable);
-        this.speed = speed;
+    public Character(String name, Vector2 position, Texture texture, float speed){
+        super(name, position, texture, speed);
     }
 
     @Override
@@ -32,17 +26,17 @@ public class Character extends Entity{
 
         if (Gdx.input.isKeyPressed(Keys.LEFT))
         {
-            position.x -= (speed * 50) * Gdx.graphics.getDeltaTime();
+            position.x -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
         }
         if (Gdx.input.isKeyPressed(Keys.RIGHT)){
-            position.x += (speed * 50) * Gdx.graphics.getDeltaTime();
+            position.x += (super.speed * 50) * Gdx.graphics.getDeltaTime();
         } 
         if (Gdx.input.isKeyPressed(Keys.UP))
         {
-            position.y += (speed * 50) * Gdx.graphics.getDeltaTime();
+            position.y += (super.speed * 50) * Gdx.graphics.getDeltaTime();
         }
         if (Gdx.input.isKeyPressed(Keys.DOWN)){
-            position.y -= (speed * 50) * Gdx.graphics.getDeltaTime();
+            position.y -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
         }
         
         // player character stay within the screen boundary
@@ -67,18 +61,6 @@ public class Character extends Entity{
         setPosition(position);
     }
 
-    @Override
-    public boolean collisionDetection(Entity Entity1) {
-        return getBoundingBox().overlaps(Entity1.getBoundingBox());  
-    }
-	
-
-	@Override
-    public void collisionResolution(Entity entity1) {
-    	System.out.println("Player character collision resolution");	
-    }
-
-	@Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }

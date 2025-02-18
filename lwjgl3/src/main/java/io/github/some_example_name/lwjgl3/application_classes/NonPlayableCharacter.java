@@ -5,9 +5,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 
-public class NonPlayableCharacter extends Entity{
+public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     private static final float SPEED = 150f;
     private Vector2 velocity;
     private float directionChangeTimer = 0;
@@ -18,8 +19,8 @@ public class NonPlayableCharacter extends Entity{
         this.velocity = getRandomVelocity();
     }
 
-    public NonPlayableCharacter(String name, Vector2 position, Texture texture, Boolean collidable) {
-        super(name, position, texture, collidable);
+    public NonPlayableCharacter(String name, Vector2 position, Texture texture) {
+        super(name, position, texture);
         this.velocity = getRandomVelocity();
     }
 
@@ -62,16 +63,6 @@ public class NonPlayableCharacter extends Entity{
     public void moveUserControlled() {
         throw new UnsupportedOperationException("Not supported yet.");
     } 	
-
-    @Override
-    public boolean collisionDetection(Entity Entity1) {
-        return getBoundingBox().overlaps(Entity1.getBoundingBox());  
-    }
-
-    @Override
-    public void collisionResolution(Entity entity1) {
-    	System.out.println("NPC collision resolution");	
-    }
     
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());

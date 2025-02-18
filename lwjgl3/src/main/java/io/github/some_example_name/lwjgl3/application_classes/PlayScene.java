@@ -2,13 +2,20 @@ package io.github.some_example_name.lwjgl3.application_classes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.Random;
+
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDetector;
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
@@ -17,15 +24,39 @@ public class PlayScene extends PrimaryScene{
 	private TextButton pauseBtn;
 	private TextButton quitBtn;
 	private EntityManager entityManager;
+	private CollisionManager collisionManager;
+	private final int NUM_ENEMIES = 10;
 
 	public PlayScene(SceneManager sceneManager, Boolean isHome) {
 		super(sceneManager, isHome);
 		setAudioFilePath("music1.mp3");
 
-		// INITIALIZE ENTITIES
+		// INITIALIZE ENTITY MANAGER
 	    entityManager = new EntityManager();
-	    entityManager.intializeEntities();
+	    
+	    // INITIALIZE ENTITIES FOR THE GAME
+        Entity player = new Character("Player", new Vector2(100, 100), new Texture("player.png"), 2f);
+        entityManager.addEntities(player);
+        
+        // ROUGH DRAFT, NEED CHANGE LATER ON - BRANDON //
+        Random random = new Random();
+        for (int i = 0; i < NUM_ENEMIES; i++){
+            float randomX = random.nextFloat();
+            float randomY = random.nextFloat();
+            Vector2 position = new Vector2(randomX, randomY);
+            Entity enemy = new NonPlayableCharacter("Enemy", position, new Texture("demon.png"));
+            entityManager.addEntities(enemy);
+        }
 
+        // INITIALIZE COLLISION MANAGER 
+	    collisionManager = new CollisionManager();
+	    
+	    // INITIALIZE COLLISION DETECTORS
+	    for (int i = 1; i <= NUM_ENEMIES; i++) {
+        	CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Character) player, (NonPlayableCharacter) entityManager.getEntity(i));
+        	collisionManager.addDetectors(playerCollideEnemyDetector);
+        }
+	    
 		// INITIALIZE BUTTONS
 		pauseBtn = new TextButton("Pause", skin);
 		quitBtn = new TextButton("Quit", skin);
@@ -67,7 +98,10 @@ public class PlayScene extends PrimaryScene{
 
 		// Draw Entities on Screen
 		entityManager.drawEntites(batch);
-		entityManager.updateEntities();
+		entityManager.moveEntities();
+		entityManager.checkForEntitiesToBeRemoved();
+		collisionManager.checkAllCollisions();
+		collisionManager.checkForDetectorsToBeRemoved();
 	}
 
 }
