@@ -3,6 +3,7 @@ package io.github.some_example_name.lwjgl3.application_classes;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,6 +18,8 @@ import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDet
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
+import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 
@@ -25,6 +28,7 @@ public class PlayScene extends PrimaryScene{
 	private TextButton quitBtn;
 	private EntityManager entityManager;
 	private CollisionManager collisionManager;
+	private IOManager ioManager;
 	private final int NUM_ENEMIES = 10;
 
 	public PlayScene(SceneManager sceneManager, Boolean isHome) {
@@ -35,7 +39,7 @@ public class PlayScene extends PrimaryScene{
 	    entityManager = new EntityManager();
 	    
 	    // INITIALIZE ENTITIES FOR THE GAME
-        Entity player = new Character("Player", new Vector2(100, 100), new Texture("player.png"), 2f);
+        MovableEntity player = new Character("Player", new Vector2(100, 100), new Texture("player.png"), 2f);
         entityManager.addEntities(player);
         
         // ROUGH DRAFT, NEED CHANGE LATER ON - BRANDON //
@@ -95,10 +99,20 @@ public class PlayScene extends PrimaryScene{
 				sceneManager.changeScene(new HomeScene(sceneManager, true));
 			}
 		});
+
+		// Set the keybinds required for this PlayScene
+		ioManager = new IOManager();
+
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.moveUp(), false);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveLeft(), false);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveDown(), false);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveRight(), false);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PauseScene(sceneManager)), true);
 	}
 
 	public void create(){}
 
+	@Override
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
@@ -109,6 +123,8 @@ public class PlayScene extends PrimaryScene{
 		entityManager.checkForEntitiesToBeRemoved();
 		collisionManager.checkAllCollisions();
 		collisionManager.checkForDetectorsToBeRemoved();
+
+		ioManager.handleInput();
 	}
 
 }

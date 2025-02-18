@@ -65,4 +65,28 @@ public class Character extends MovableEntity implements iCollidable{
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }
 
+    @Override
+    public void moveUp() {
+        Vector2 position = getPosition();
+        position.y += (super.speed * 50) * Gdx.graphics.getDeltaTime();
+    }
+
+    @Override
+    public void moveDown() {
+        Vector2 position = getPosition();
+        position.y -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
+    }
+
+    @Override
+    public void moveLeft() {
+        Vector2 position = getPosition();
+        position.x -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
+    }
+
+    @Override
+    public void moveRight() {
+        Vector2 position = getPosition();
+        position.x += (super.speed * 50) * Gdx.graphics.getDeltaTime();
+    }
+
 }

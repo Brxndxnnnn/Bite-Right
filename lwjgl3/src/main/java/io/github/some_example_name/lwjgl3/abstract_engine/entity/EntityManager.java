@@ -3,14 +3,11 @@ package io.github.some_example_name.lwjgl3.abstract_engine.entity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.application_classes.NonPlayableCharacter;
 import io.github.some_example_name.lwjgl3.application_classes.Character;
+import io.github.some_example_name.lwjgl3.application_classes.NonPlayableCharacter;
 
 public class EntityManager {
     private List<Entity> entities;
@@ -70,7 +67,7 @@ public class EntityManager {
     	for (Entity entity : entities) {
     	    // determine entity type and call the appropriate movement method
     	    if (entity instanceof Character) {
-    	        ((Character) entity).moveUserControlled();
+    	        // ((Character) entity).moveUserControlled();
     	    } else if (entity instanceof NonPlayableCharacter) {
     	        ((NonPlayableCharacter) entity).moveAIControlled();
     	    }

@@ -67,4 +67,28 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }
+
+    @Override
+    public void moveUp() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveUp'");
+    }
+
+    @Override
+    public void moveDown() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveDown'");
+    }
+
+    @Override
+    public void moveLeft() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
+    }
+
+    @Override
+    public void moveRight() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
+    }
 }
