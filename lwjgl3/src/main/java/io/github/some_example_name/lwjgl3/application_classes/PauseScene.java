@@ -23,14 +23,23 @@ public class PauseScene extends SecondaryScene{
 		resumeBtn = new TextButton("Resume", skin);
 		quitBtn = new TextButton("Quit", skin);
 
-		Table table = new Table();
-		table.setFillParent(true);
-		stage.addActor(table);
+		// INITIALIZE MAIN TABLE FOR THE TITLE
+		Table titleTable = new Table();
+		titleTable.setFillParent(true);
+		titleTable.top(); // Align content to the top
+		stage.addActor(titleTable);
 
-		Label label = new Label("Pause", skin);
-		table.add(label);
-        table.row();
+		Label label = new Label("Pause Scene", skin);
+		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
 
+		Table buttonTable = new Table();
+		buttonTable.setFillParent(true);
+		stage.addActor(buttonTable);
+
+		buttonTable.add(resumeBtn).spaceTop(30);
+		buttonTable.row();
+		buttonTable.add(quitBtn).spaceTop(10);
+		
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -38,17 +47,12 @@ public class PauseScene extends SecondaryScene{
 			}
 		});
 
-		table.add(resumeBtn).spaceTop(30);
-        table.row();
-
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				sceneManager.changeScene(new HomeScene(sceneManager, true));
 			}
 		});
-
-		table.add(quitBtn).spaceTop(10);
 	}
 
 	public void render(SpriteBatch batch) {

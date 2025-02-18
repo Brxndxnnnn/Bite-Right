@@ -21,13 +21,20 @@ public class HomeScene extends PrimaryScene{
 		setAudioFilePath("music3.mp3");
         startBtn = new TextButton("Start", skin);
 
-		Table table = new Table();
-		table.setFillParent(true);
-		stage.addActor(table);
+		// INITIALIZE MAIN TABLE FOR THE TITLE
+		Table titleTable = new Table();
+		titleTable.setFillParent(true);
+		titleTable.top(); // Align content to the top
+		stage.addActor(titleTable);
 
-		Label label = new Label("Home", skin);
-		table.add(label);
-        table.row();
+		Label label = new Label("Home Scene", skin);
+		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
+
+		Table buttonTable = new Table();
+		buttonTable.setFillParent(true);
+		stage.addActor(buttonTable);
+
+		buttonTable.add(startBtn).space(30);
 
 		startBtn.addListener(new ClickListener() {
 			@Override
@@ -35,8 +42,6 @@ public class HomeScene extends PrimaryScene{
 				sceneManager.changeScene(new PlayScene(sceneManager, false));
 			}
 		});
-
-		table.add(startBtn).space(30);
 	}
 
 	@Override
