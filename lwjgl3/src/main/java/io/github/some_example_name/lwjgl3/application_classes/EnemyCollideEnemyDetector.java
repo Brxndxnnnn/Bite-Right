@@ -16,5 +16,6 @@ public class EnemyCollideEnemyDetector extends EntityCollisionDetector<NonPlayab
 		// set Enemy (Non-playable character) to be removed
 		((Entity) super.getEntityA()).setToBeRemoved();
 		((Entity) super.getEntityB()).setToBeRemoved();
+		System.out.println("Enemy collided with Enemy");
 	}
 }

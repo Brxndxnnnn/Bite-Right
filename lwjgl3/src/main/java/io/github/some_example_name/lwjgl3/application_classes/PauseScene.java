@@ -75,6 +75,7 @@ public class PauseScene extends SecondaryScene{
 		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESUME), true);
 	}
 
+    @Override
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();

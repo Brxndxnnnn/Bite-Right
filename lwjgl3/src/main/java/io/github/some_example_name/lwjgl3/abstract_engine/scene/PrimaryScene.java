@@ -15,6 +15,7 @@ public abstract class PrimaryScene extends Scene {
 		return isHome;
 	}
 
+    @Override
 	public abstract void render(SpriteBatch batch);
 
 }

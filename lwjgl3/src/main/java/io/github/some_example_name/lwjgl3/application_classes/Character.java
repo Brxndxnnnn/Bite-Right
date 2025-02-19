@@ -61,6 +61,7 @@ public class Character extends MovableEntity implements iCollidable{
         setPosition(position);
     }
 
+    @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }
