@@ -34,7 +34,11 @@ public class EntityManager {
 	}
     
     public Entity getEntity(int i) {
-		return this.entities.get(i);
+		return entities.get(i);
+	}
+
+	public List<Entity> getEntities(){
+		return entities;
 	}
 
     public void drawEntites(SpriteBatch batch){

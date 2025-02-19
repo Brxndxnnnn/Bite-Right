@@ -1,5 +1,6 @@
 package io.github.some_example_name.lwjgl3.application_classes;
 
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -19,6 +20,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionMan
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
+import io.github.some_example_name.lwjgl3.abstract_engine.entity.NonMovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
@@ -47,6 +49,11 @@ public class PlayScene extends PrimaryScene {
         MovableEntity player = new Character("Player", playerPosition, new Texture("player.png"), 2f);
         entityManager.addEntities(player);
 
+		// Spawn the walls
+        Vector2 wallPosition = new Vector2(screenWidth / 4f, screenHeight / 4f);
+        NonMovableEntity wall = new Wall("Wall", wallPosition, new Texture("player.png"));
+        entityManager.addEntities(wall);
+
         // Spawn enemies at the borders
         for (int i = 0; i < NUM_ENEMIES; i++) {
             Vector2 position = getRandomBorderPosition(screenWidth, screenHeight, playerPosition, 50);
@@ -54,18 +61,49 @@ public class PlayScene extends PrimaryScene {
             entityManager.addEntities(enemy);
         }
 
-        // INITIALIZE COLLISION MANAGER 
-        collisionManager = new CollisionManager();
-        
-        // INITIALIZE COLLISION DETECTORS
-        for (int i = 1; i <= NUM_ENEMIES; i++) {
-            CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Character) player, (NonPlayableCharacter) entityManager.getEntity(i));
-            collisionManager.addDetectors(playerCollideEnemyDetector);
-			for (int j = i + 1; j <= NUM_ENEMIES; j++){
-				CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((NonPlayableCharacter) entityManager.getEntity(i), (NonPlayableCharacter) entityManager.getEntity(j));
-				collisionManager.addDetectors(enemyCollideEnemyDetector);
+		collisionManager = new CollisionManager();
+
+        // Get entity list from EntityManager
+		List<Entity> entities = entityManager.getEntities(); // Assuming there's a getter for entityList
+
+		// Iterate through entity list to set up collision detectors
+		for (int i = 0; i < entities.size(); i++) {
+			Entity entityA = entities.get(i);
+
+			// Handles collision between Character -> (NPC & Wall)
+			if (entityA instanceof Character) {
+				for (Entity entityB : entities) {
+					if (entityB instanceof NonPlayableCharacter) {
+						// Add player-enemy collision detector
+						CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Character) entityA, (NonPlayableCharacter) entityB);
+						collisionManager.addDetectors(playerCollideEnemyDetector);
+					}
+
+					if (entityB instanceof Wall){
+						CollisionDetector playerCollideWallDetector = new PlayerCollideWallDetector((Character) entityA, (Wall) entityB);
+						collisionManager.addDetectors(playerCollideWallDetector);
+					}
+				}
 			}
-        }
+
+			// Handles collision between NPC -> (NPC & Wall)
+			if (entityA instanceof NonPlayableCharacter) {
+				for (Entity entityB : entities) {
+					if (entityB instanceof NonPlayableCharacter && entityA != entityB) {
+						// Add enemy-enemy collision detector
+						CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((NonPlayableCharacter) entityA, (NonPlayableCharacter) entityB);
+						collisionManager.addDetectors(enemyCollideEnemyDetector);
+					}
+
+					if (entityB instanceof Wall){
+						CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((NonPlayableCharacter) entityA, (Wall) entityB);
+						collisionManager.addDetectors(enemyCollideWallDetector);
+					}
+				}
+			}
+		}
+
+		
 
         // INITIALIZE BUTTONS
         pauseBtn = new TextButton("Pause", skin);

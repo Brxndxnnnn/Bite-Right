@@ -18,7 +18,6 @@ public abstract class MovableEntity extends Entity implements iMovable {
         this.speed = speed;
     }
     
-    // speed is default
     public MovableEntity(String name, Vector2 position, Texture texture){
         super(name, position, texture);
     }

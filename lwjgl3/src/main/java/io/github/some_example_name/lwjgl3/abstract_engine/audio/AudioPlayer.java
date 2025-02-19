@@ -15,7 +15,7 @@ public class AudioPlayer {
 	// Method Overloading
 	public void playAudio(String fileName) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-		sound.setVolume(1);
+		sound.setVolume(volume);
 		sound.play();
 	}
 
@@ -23,7 +23,7 @@ public class AudioPlayer {
 	public void playAudio(String fileName, Boolean loopAudio) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		loopAudio(loopAudio);
-		sound.setVolume(1);
+		sound.setVolume(volume);
 		sound.play();
 		System.out.println("Play Audio");
 	}
@@ -77,21 +77,6 @@ public class AudioPlayer {
 		sound.setLooping(loop);
 		System.out.printf("loop %s\n", loop);
 	}
-	
-	// currently, by changing audio, the loop variable is not stored since
-	// it is disposed. therefore by default it will not loop
-	// modification is needed to store the loop variable
-	// public void changeAudio(String fileName) {
-	// 	if (sound != null) {
-	// 		sound.stop();
-	// 		sound.dispose();
-	// 		System.out.printf("change to %s\n", fileName);
-
-	// 	}
-		
-	// 	System.out.printf("volume %f\n", getVolume());
-	//     playAudio(fileName, getVolume());
-	// }
 
 	public void disposeAudio() {
 		sound.dispose();
