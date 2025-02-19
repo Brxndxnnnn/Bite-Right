@@ -31,12 +31,12 @@ public class Keyboard implements InputDevice {
     }
 
     @Override
-    public void addIOBind(int key, Runnable action, boolean isJustPressed) {
+    public void addBind(int key, Runnable action, boolean isJustPressed) {
         keyBindings.put(key, new Object[]{action, isJustPressed});
     }
 
     @Override
-    public void removeIOBind(int key) {
+    public void removeBind(int key) {
         keyBindings.remove(key);
         System.out.printf("removed key %s\n", key);
     }

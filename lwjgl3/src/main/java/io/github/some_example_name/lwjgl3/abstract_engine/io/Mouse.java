@@ -43,12 +43,12 @@ public class Mouse implements InputDevice {
     }
 
     @Override
-    public void addIOBind(int button, Runnable action, boolean isJustPressed) {
+    public void addBind(int button, Runnable action, boolean isJustPressed) {
         mouseBindings.put(button, new Object[]{action, isJustPressed});
     }
 
     @Override
-    public void removeIOBind(int button) {
+    public void removeBind(int button) {
         mouseBindings.remove(button);
         System.out.printf("removed key %s\n", button);
     }

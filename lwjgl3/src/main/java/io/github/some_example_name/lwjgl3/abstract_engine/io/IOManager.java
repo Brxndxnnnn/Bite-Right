@@ -25,10 +25,10 @@ public class IOManager {
 
     // usage addIOBind(kb, key, function, true(press once)/false(hold) (default is false))
     public void addIOBind(InputDevice device, int keyOrButton, Runnable action, boolean isJustPressed) {
-        device.addIOBind(keyOrButton, action, isJustPressed);
+        device.addBind(keyOrButton, action, isJustPressed);
     }
 
     public void removeIOBind(InputDevice device, int keyOrButton) {
-        device.removeIOBind(keyOrButton);
+        device.removeBind(keyOrButton);
     }
 }
