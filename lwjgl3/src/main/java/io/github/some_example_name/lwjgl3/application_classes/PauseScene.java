@@ -12,10 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SecondaryScene;
 
 public class PauseScene extends SecondaryScene{
 	private TextButton resumeBtn;
+	private TextButton restartBtn;
 	private TextButton quitBtn;
 	private IOManager ioManager;
 
@@ -24,6 +26,7 @@ public class PauseScene extends SecondaryScene{
 		setAudioFilePath("music2.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
 
 		resumeBtn = new TextButton("Resume", skin);
+		restartBtn = new TextButton("Restart", skin);
 		quitBtn = new TextButton("Quit", skin);
 
 		// INITIALIZE MAIN TABLE FOR THE TITLE
@@ -41,26 +44,35 @@ public class PauseScene extends SecondaryScene{
 
 		buttonTable.add(resumeBtn).spaceTop(30);
 		buttonTable.row();
+		buttonTable.add(restartBtn).spaceTop(10);
+		buttonTable.row();
 		buttonTable.add(quitBtn).spaceTop(10);
 		
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager, false)); // need go back to the old play scene
+				sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESUME); // need go back to the old play scene
+			}
+		});
+
+		restartBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESTART); // need go back to the old play scene
 			}
 		});
 
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager, true));
+				sceneManager.changeScene(new HomeScene(sceneManager, true), SceneTransitionType.NORMAL);
 			}
 		});
 
 		// Set the keybinds required for this PlayScene
 		ioManager = new IOManager();
 
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager, false)), true);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESUME), true);
 	}
 
 	public void render(SpriteBatch batch) {

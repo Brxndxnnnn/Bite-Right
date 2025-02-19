@@ -1,6 +1,7 @@
 package io.github.some_example_name.lwjgl3.application_classes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -9,11 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 
 public class HomeScene extends PrimaryScene{
 	private TextButton startBtn;
+	private IOManager ioManager;
 
 	public HomeScene(SceneManager sceneManager, Boolean isHome) {
 		super(sceneManager, isHome);
@@ -39,14 +43,22 @@ public class HomeScene extends PrimaryScene{
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager, false));
+				sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.NORMAL);
 			}
 		});
+
+		// Set the keybinds required for this HomeScene
+		ioManager = new IOManager();
+
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.DOWN, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() - 5), true);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.UP, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() + 5), true);
 	}
 
 	@Override
 	public void render(SpriteBatch batch) {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
+
+		ioManager.handleInput();
 	}
 }

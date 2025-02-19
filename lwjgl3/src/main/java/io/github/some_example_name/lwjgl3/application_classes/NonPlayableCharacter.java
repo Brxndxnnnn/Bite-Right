@@ -24,6 +24,10 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
         this.velocity = getRandomVelocity();
     }
 
+    public void setVelocity(Vector2 velocity){
+        this.velocity = velocity;
+    }
+
     private Vector2 getRandomVelocity() {
         float angle = MathUtils.random(360f); // randomize angle
         return new Vector2(MathUtils.cosDeg(angle), MathUtils.sinDeg(angle)).nor().scl(SPEED);

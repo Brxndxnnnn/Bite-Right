@@ -16,26 +16,6 @@ public class EntityManager {
         this.entities = new ArrayList<>();
     }
 
-//    public void intializeEntities(){
-//        Random random = new Random();
-//        
-//        // louis added
-//        Vector2 playerPosition = new Vector2(100, 100); // initial position for the player
-//        Character player = new Character("Player", playerPosition, new Texture("player.png"), true, 2f);
-//        entities.add(player);
-//        
-//        
-//        
-//        // ROUGH DRAFT, NEED CHANGE LATER ON - BRANDON //
-//        for (int i = 0; i < 10; i++){
-//            float randomX = random.nextFloat();
-//            float randomY = random.nextFloat();
-//            Vector2 position = new Vector2(randomX, randomY);
-//            Entity entity = new NonPlayableCharacter("lol", position, new Texture("demon.png"), false);
-//            entities.add(entity);
-//        }
-//    }
-
     public void addEntities(Entity entity){
         entities.add(entity);
     }
