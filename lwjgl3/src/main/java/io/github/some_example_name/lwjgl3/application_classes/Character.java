@@ -40,25 +40,25 @@ public class Character extends MovableEntity implements iCollidable{
         }
         
         // player character stay within the screen boundary
-        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
-        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
-        float textureWidth = getTexture().getWidth();
-        float textureHeight = getTexture().getHeight();
-        
-        if (position.x < 0) {
-            position.x = 0;
-        }
-        if (position.x > screenWidth - textureWidth) {
-            position.x = screenWidth - textureWidth;
-        }
-        if (position.y < 0) {
-            position.y = 0;
-        }
-        if (position.y > screenHeight - textureHeight) {
-            position.y = screenHeight - textureHeight;
-        }
-
-        setPosition(position);
+//        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
+//        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
+//        float textureWidth = getTexture().getWidth();
+//        float textureHeight = getTexture().getHeight();
+//        
+//        if (position.x < 0) {
+//            position.x = 0;
+//        }
+//        if (position.x > screenWidth - textureWidth) {
+//            position.x = screenWidth - textureWidth;
+//        }
+//        if (position.y < 0) {
+//            position.y = 0;
+//        }
+//        if (position.y > screenHeight - textureHeight) {
+//            position.y = screenHeight - textureHeight;
+//        }
+//
+//        setPosition(position);
     }
 
     public Rectangle getBoundingBox() {

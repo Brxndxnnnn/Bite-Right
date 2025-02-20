@@ -40,6 +40,14 @@ public abstract class Entity implements iMovable{
     public void setPosition(Vector2 position){
         this.position = position;
     }	
+    
+    public void setPositionX(float x){
+        this.position.x = x;
+    }
+    
+    public void setPositionY(float y){
+        this.position.y = y;
+    }
 
     public Texture getTexture(){
         return texture;

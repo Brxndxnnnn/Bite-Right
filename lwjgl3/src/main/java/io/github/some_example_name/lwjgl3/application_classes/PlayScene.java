@@ -55,7 +55,13 @@ public class PlayScene extends PrimaryScene{
 	    for (int i = 1; i <= NUM_ENEMIES; i++) {
         	CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Character) player, (NonPlayableCharacter) entityManager.getEntity(i));
         	collisionManager.addDetectors(playerCollideEnemyDetector);
+        	
+        	CollisionDetector enemyCollideBoundaryDetector = new EnemyCollideBoundaryDetector((NonPlayableCharacter) entityManager.getEntity(i));
+    	    collisionManager.addDetectors(enemyCollideBoundaryDetector);
         }
+	    
+	    CollisionDetector playerCollideBoundary = new PlayerCollideBoundaryDetector((Character) player);
+	    collisionManager.addDetectors(playerCollideBoundary);
 	    
 		// INITIALIZE BUTTONS
 		pauseBtn = new TextButton("Pause", skin);
