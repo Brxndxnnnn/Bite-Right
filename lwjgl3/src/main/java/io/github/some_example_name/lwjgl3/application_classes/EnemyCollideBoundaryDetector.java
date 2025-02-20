@@ -1,7 +1,5 @@
 package io.github.some_example_name.lwjgl3.application_classes;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.BoundaryCollisionDetector;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 

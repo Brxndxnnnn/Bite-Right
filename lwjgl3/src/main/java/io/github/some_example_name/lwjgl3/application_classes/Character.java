@@ -21,6 +21,7 @@ public class Character extends MovableEntity implements iCollidable {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }
