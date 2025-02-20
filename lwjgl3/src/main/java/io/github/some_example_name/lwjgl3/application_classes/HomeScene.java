@@ -20,7 +20,7 @@ public class HomeScene extends Scene{
 	private TextButton quitBtn;
 	private IOManager ioManager;
 
-	public HomeScene(SceneManager sceneManager, Boolean isHome) {
+	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
 
 		setAudioFilePath("music3.mp3");
@@ -47,7 +47,7 @@ public class HomeScene extends Scene{
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.NORMAL);
 			}
 		});
 

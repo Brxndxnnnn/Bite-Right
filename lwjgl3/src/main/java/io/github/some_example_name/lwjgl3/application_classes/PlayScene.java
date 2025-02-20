@@ -33,7 +33,7 @@ public class PlayScene extends Scene {
     private IOManager ioManager;
     private final int NUM_ENEMIES = 10;
 
-    public PlayScene(SceneManager sceneManager, Boolean isHome) {
+    public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
         setAudioFilePath("music1.mp3");
 

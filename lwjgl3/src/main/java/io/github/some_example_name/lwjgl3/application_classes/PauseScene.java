@@ -51,28 +51,28 @@ public class PauseScene extends Scene{
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESUME); // need go back to the old play scene
+				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESUME); // need go back to the old play scene
 			}
 		});
 
 		restartBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESTART); // need go back to the old play scene
+				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESTART); // need go back to the old play scene
 			}
 		});
 
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager, true), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
 			}
 		});
 
 		// Set the keybinds required for this PlayScene
 		ioManager = new IOManager();
 
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager, false), SceneTransitionType.RESUME), true);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESUME), true);
 	}
 
     @Override

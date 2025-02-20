@@ -15,7 +15,7 @@ public class GameMaster extends ApplicationAdapter {
     @Override
     public void create(){
         sceneManager = new SceneManager(); // Create a new instance of SceneManager
-        sceneManager.changeScene(new HomeScene(sceneManager, true), SceneTransitionType.NORMAL); // Render the first scene accordingly
+        sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL); // Render the first scene accordingly
         batch = new SpriteBatch();
 		iomanager = new IOManager();
 		
