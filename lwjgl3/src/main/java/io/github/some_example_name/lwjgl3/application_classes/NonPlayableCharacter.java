@@ -50,20 +50,20 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 
-        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
-        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
-
-        // reverse direction if collide with screen boundary
-        if (position.x < 0 || position.x > screenWidth - getTexture().getWidth()) {
-            velocity.x *= -1;
-            position.x = MathUtils.clamp(position.x, 0, screenWidth - getTexture().getWidth());
-        }
-        if (position.y < 0 || position.y > screenHeight - getTexture().getHeight()) {
-            velocity.y *= -1;
-            position.y = MathUtils.clamp(position.y, 0, screenHeight - getTexture().getHeight());
-        }
-
-        setPosition(position);
+//        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
+//        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
+//
+//        // reverse direction if collide with screen boundary
+//        if (position.x < 0 || position.x > screenWidth - getTexture().getWidth()) {
+//            velocity.x *= -1;
+//            position.x = MathUtils.clamp(position.x, 0, screenWidth - getTexture().getWidth());
+//        }
+//        if (position.y < 0 || position.y > screenHeight - getTexture().getHeight()) {
+//            velocity.y *= -1;
+//            position.y = MathUtils.clamp(position.y, 0, screenHeight - getTexture().getHeight());
+//        }
+//
+//        setPosition(position);
     }
     
     @Override

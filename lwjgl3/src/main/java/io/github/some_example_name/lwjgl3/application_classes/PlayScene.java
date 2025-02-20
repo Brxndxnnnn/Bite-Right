@@ -81,6 +81,8 @@ public class PlayScene extends PrimaryScene {
 
 			// Handles collision between Character -> (NPC & Wall)
 			if (entityA instanceof Character) {
+                CollisionDetector playerCollideBoundaryDetector = new PlayerCollideBoundaryDetector((Character) entityA);
+    	        collisionManager.addDetectors(playerCollideBoundaryDetector);
 				for (Entity entityB : entities) {
 					if (entityB instanceof NonPlayableCharacter) {
 						// Add player-enemy collision detector
@@ -97,6 +99,8 @@ public class PlayScene extends PrimaryScene {
 
 			// Handles collision between NPC -> (NPC & Wall)
 			if (entityA instanceof NonPlayableCharacter) {
+                CollisionDetector enemyCollideBoundaryDetector = new EnemyCollideBoundaryDetector((NonPlayableCharacter) entityA);
+    	        collisionManager.addDetectors(enemyCollideBoundaryDetector);
 				for (Entity entityB : entities) {
 					if (entityB instanceof NonPlayableCharacter && entityA != entityB) {
 						// Add enemy-enemy collision detector
