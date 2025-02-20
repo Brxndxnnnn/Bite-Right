@@ -9,10 +9,13 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 
-public class Character extends MovableEntity implements iCollidable{
+public class Character extends MovableEntity implements iCollidable {
+    private Vector2 velocity;
+    private static final float FRICTION = 0.85f; // Adjust friction for smooth deceleration
 
-    public Character(String name, Vector2 position, Texture texture, float speed){
+    public Character(String name, Vector2 position, Texture texture, float speed) {
         super(name, position, texture, speed);
+        this.velocity = new Vector2(0, 0);
     }
 
     @Override
@@ -22,40 +25,51 @@ public class Character extends MovableEntity implements iCollidable{
 
     @Override
     public void moveUserControlled() {
-        Vector2 position = getPosition();
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        float acceleration = speed * 50; // Determines movement speed
 
-        if (Gdx.input.isKeyPressed(Keys.LEFT))
-        {
-            position.x -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        // Apply acceleration based on key input
+        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+            velocity.x = -acceleration;
         }
-        if (Gdx.input.isKeyPressed(Keys.RIGHT)){
-            position.x += (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+            velocity.x = acceleration;
         } 
-        if (Gdx.input.isKeyPressed(Keys.UP))
-        {
-            position.y += (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Keys.UP)) {
+            velocity.y = acceleration;
         }
-        if (Gdx.input.isKeyPressed(Keys.DOWN)){
-            position.y -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+            velocity.y = -acceleration;
         }
-        
-        // player character stay within the screen boundary
-        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
-        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
+
+        // Update position using velocity
+        Vector2 position = getPosition();
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+
+        // Apply friction to slow down movement gradually
+        velocity.scl(FRICTION);
+
+        // Keep player within screen boundaries
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
         float textureWidth = getTexture().getWidth();
         float textureHeight = getTexture().getHeight();
-        
+
         if (position.x < 0) {
             position.x = 0;
+            velocity.x = 0; // Stop movement at boundary
         }
         if (position.x > screenWidth - textureWidth) {
             position.x = screenWidth - textureWidth;
+            velocity.x = 0;
         }
         if (position.y < 0) {
             position.y = 0;
+            velocity.y = 0;
         }
         if (position.y > screenHeight - textureHeight) {
             position.y = screenHeight - textureHeight;
+            velocity.y = 0;
         }
 
         setPosition(position);
@@ -68,26 +82,45 @@ public class Character extends MovableEntity implements iCollidable{
 
     @Override
     public void moveUp() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        velocity.y = speed * 50;
         Vector2 position = getPosition();
-        position.y += (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+        velocity.scl(FRICTION);
     }
 
     @Override
     public void moveDown() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        velocity.y = -speed * 50;
         Vector2 position = getPosition();
-        position.y -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+        velocity.scl(FRICTION);
     }
 
     @Override
     public void moveLeft() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        velocity.x = -speed * 50;
         Vector2 position = getPosition();
-        position.x -= (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+        velocity.scl(FRICTION);
     }
 
     @Override
     public void moveRight() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        velocity.x = speed * 50;
         Vector2 position = getPosition();
-        position.x += (super.speed * 50) * Gdx.graphics.getDeltaTime();
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+        velocity.scl(FRICTION);
     }
 
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Vector2 newVelocity) {
+        this.velocity.set(newVelocity);
+    }
 }

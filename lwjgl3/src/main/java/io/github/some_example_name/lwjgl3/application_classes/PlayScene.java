@@ -49,10 +49,19 @@ public class PlayScene extends PrimaryScene {
         MovableEntity player = new Character("Player", playerPosition, new Texture("player.png"), 2f);
         entityManager.addEntities(player);
 
-		// Spawn the walls
-        Vector2 wallPosition = new Vector2(screenWidth / 4f, screenHeight / 4f);
-        NonMovableEntity wall = new Wall("Wall", wallPosition, new Texture("player.png"));
-        entityManager.addEntities(wall);
+        int numWalls = 6;
+        float radius = screenWidth / 4f; // Distance from center
+        Vector2 center = new Vector2(screenWidth / 2f, screenHeight / 2f);
+
+        for (int i = 0; i < numWalls; i++) {
+            float angle = (float) (i * (2 * Math.PI / numWalls)); // Evenly spaced angles
+            float x = center.x + (float) Math.cos(angle) * radius;
+            float y = center.y + (float) Math.sin(angle) * radius;
+
+            NonMovableEntity wall = new Wall("Wall", new Vector2(x, y), new Texture("wall.png"));
+            entityManager.addEntities(wall);
+        }
+
 
         // Spawn enemies at the borders
         for (int i = 0; i < NUM_ENEMIES; i++) {

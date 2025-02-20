@@ -17,6 +17,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionT
 
 public class HomeScene extends PrimaryScene{
 	private TextButton startBtn;
+	private TextButton quitBtn;
 	private IOManager ioManager;
 
 	public HomeScene(SceneManager sceneManager, Boolean isHome) {
@@ -24,6 +25,7 @@ public class HomeScene extends PrimaryScene{
 
 		setAudioFilePath("music3.mp3");
         startBtn = new TextButton("Start", skin);
+		quitBtn = new TextButton("Quit", skin);
 
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
@@ -39,6 +41,8 @@ public class HomeScene extends PrimaryScene{
 		stage.addActor(buttonTable);
 
 		buttonTable.add(startBtn).space(30);
+		buttonTable.row();
+		buttonTable.add(quitBtn).space(5);
 
 		startBtn.addListener(new ClickListener() {
 			@Override
@@ -47,6 +51,13 @@ public class HomeScene extends PrimaryScene{
 			}
 		});
 
+		quitBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.exit();
+			}
+		});
+		
 		// Set the keybinds required for this HomeScene
 		ioManager = new IOManager();
 

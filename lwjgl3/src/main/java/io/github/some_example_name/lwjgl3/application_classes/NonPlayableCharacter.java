@@ -24,6 +24,10 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
         this.velocity = getRandomVelocity();
     }
 
+    public Vector2 getVelocity(){
+        return velocity;
+    }
+
     public void setVelocity(Vector2 velocity){
         this.velocity = velocity;
     }
