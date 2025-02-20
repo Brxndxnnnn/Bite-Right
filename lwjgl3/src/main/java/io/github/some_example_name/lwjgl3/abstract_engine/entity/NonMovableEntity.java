@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public class NonMovableEntity extends Entity {
+    public NonMovableEntity(){
+        super("No name", new Vector2(0, 0), null);
+    }
 	
 	public NonMovableEntity(String name, Vector2 position, Texture texture){
         super(name, position, texture);

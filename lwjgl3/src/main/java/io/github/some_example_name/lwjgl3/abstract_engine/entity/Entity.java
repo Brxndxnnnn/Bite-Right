@@ -58,7 +58,6 @@ public abstract class Entity{
         batch.draw(texture, position.x, position.y);
     }
 
-    public void update(){}
 
     // For Collision Handling	
 	public void setToBeRemoved() {

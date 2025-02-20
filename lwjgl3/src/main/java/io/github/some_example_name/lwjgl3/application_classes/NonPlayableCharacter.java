@@ -23,14 +23,6 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
         this.velocity = getRandomVelocity();
     }
 
-    public Vector2 getVelocity(){
-        return velocity;
-    }
-
-    public void setVelocity(Vector2 velocity){
-        this.velocity = velocity;
-    }
-
     private Vector2 getRandomVelocity() {
         float angle = MathUtils.random(360f); // randomize angle
         return new Vector2(MathUtils.cosDeg(angle), MathUtils.sinDeg(angle)).nor().scl(SPEED);
@@ -49,21 +41,6 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
 
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-
-//        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
-//        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
-//
-//        // reverse direction if collide with screen boundary
-//        if (position.x < 0 || position.x > screenWidth - getTexture().getWidth()) {
-//            velocity.x *= -1;
-//            position.x = MathUtils.clamp(position.x, 0, screenWidth - getTexture().getWidth());
-//        }
-//        if (position.y < 0 || position.y > screenHeight - getTexture().getHeight()) {
-//            velocity.y *= -1;
-//            position.y = MathUtils.clamp(position.y, 0, screenHeight - getTexture().getHeight());
-//        }
-//
-//        setPosition(position);
     }
     
     @Override

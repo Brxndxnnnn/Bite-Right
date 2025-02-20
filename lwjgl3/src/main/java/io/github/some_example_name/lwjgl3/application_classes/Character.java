@@ -61,12 +61,4 @@ public class Character extends MovableEntity implements iCollidable {
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         velocity.scl(FRICTION);
     }
-
-    public Vector2 getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Vector2 newVelocity) {
-        this.velocity.set(newVelocity);
-    }
 }
