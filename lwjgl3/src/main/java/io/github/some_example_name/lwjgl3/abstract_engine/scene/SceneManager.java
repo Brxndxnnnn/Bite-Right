@@ -16,9 +16,7 @@ public class SceneManager {
     public void changeScene(Scene newScene, SceneTransitionType transitionType) {
         switch (transitionType) {
             case PAUSE:
-                if (currentScene instanceof PrimaryScene) {
-                    storedScene = currentScene; // Store PlayScene
-                }
+                storedScene = currentScene;
                 break;
 
             case RESUME:

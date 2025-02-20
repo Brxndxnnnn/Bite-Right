@@ -22,11 +22,11 @@ import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.NonMovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 
-public class PlayScene extends PrimaryScene {
+public class PlayScene extends Scene {
     private TextButton pauseBtn;
     private EntityManager entityManager;
     private CollisionManager collisionManager;
@@ -34,7 +34,7 @@ public class PlayScene extends PrimaryScene {
     private final int NUM_ENEMIES = 10;
 
     public PlayScene(SceneManager sceneManager, Boolean isHome) {
-        super(sceneManager, isHome);
+        super(sceneManager);
         setAudioFilePath("music1.mp3");
 
         // Get screen width and height

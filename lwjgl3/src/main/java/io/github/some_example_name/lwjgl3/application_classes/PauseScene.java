@@ -11,13 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.SecondaryScene;
 
-public class PauseScene extends SecondaryScene{
+public class PauseScene extends Scene{
 	private TextButton resumeBtn;
-	private TextButton restartBtn;
+	private final TextButton restartBtn;
 	private TextButton quitBtn;
 	private IOManager ioManager;
 

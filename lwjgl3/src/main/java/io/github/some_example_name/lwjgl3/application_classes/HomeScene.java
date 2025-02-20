@@ -11,17 +11,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.PrimaryScene;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 
-public class HomeScene extends PrimaryScene{
+public class HomeScene extends Scene{
 	private TextButton startBtn;
 	private TextButton quitBtn;
 	private IOManager ioManager;
 
 	public HomeScene(SceneManager sceneManager, Boolean isHome) {
-		super(sceneManager, isHome);
+		super(sceneManager);
 
 		setAudioFilePath("music3.mp3");
         startBtn = new TextButton("Start", skin);
