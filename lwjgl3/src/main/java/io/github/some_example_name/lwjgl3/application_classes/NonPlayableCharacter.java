@@ -10,7 +10,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 
 public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     private static final float SPEED = 150f;
-    private Vector2 velocity;
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 0.5f; // changes direction every 0.5 sec
 
@@ -66,11 +65,6 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
 
         setPosition(position);
     }
-
-    @Override
-    public void moveUserControlled() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    } 	
     
     @Override
     public Rectangle getBoundingBox() {
@@ -78,25 +72,25 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     }
 
     @Override
-    public void moveUp() {
+    public void moveUserUp() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'moveUp'");
     }
 
     @Override
-    public void moveDown() {
+    public void moveUserDown() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'moveDown'");
     }
 
     @Override
-    public void moveLeft() {
+    public void moveUserLeft() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
     }
 
     @Override
-    public void moveRight() {
+    public void moveUserRight() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
     }

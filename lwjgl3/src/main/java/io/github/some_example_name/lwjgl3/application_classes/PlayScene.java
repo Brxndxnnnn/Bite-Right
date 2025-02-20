@@ -146,10 +146,10 @@ public class PlayScene extends PrimaryScene {
         // Set the keybinds required for this PlayScene
         ioManager = new IOManager();
 
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.moveUp(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveLeft(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveDown(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveRight(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.moveUserUp(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveUserLeft(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE), true);
     }
 

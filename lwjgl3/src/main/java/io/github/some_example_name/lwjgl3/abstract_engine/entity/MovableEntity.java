@@ -7,10 +7,12 @@ import io.github.some_example_name.lwjgl3.abstract_engine.movement.iMovable;
 
 public abstract class MovableEntity extends Entity implements iMovable {
 	protected float speed;
+    protected Vector2 velocity;
 
     public MovableEntity(){
         super();
         this.speed = 0;
+        this.velocity = new Vector2(0,0);
     }
     
     public MovableEntity(String name, Vector2 position, Texture texture, float speed){
