@@ -2,12 +2,9 @@ package io.github.some_example_name.lwjgl3.abstract_engine.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.movement.iMovable;
-
-public abstract class Entity implements iMovable{
+public abstract class Entity{
     private String name;
     private Vector2 position;
     private Texture texture;
@@ -40,6 +37,14 @@ public abstract class Entity implements iMovable{
     public void setPosition(Vector2 position){
         this.position = position;
     }	
+    
+    public void setPositionX(float x){
+        this.position.x = x;
+    }
+    
+    public void setPositionY(float y){
+        this.position.y = y;
+    }
 
     public Texture getTexture(){
         return texture;
@@ -54,14 +59,6 @@ public abstract class Entity implements iMovable{
     }
 
     public void update(){}
-
-    @Override
-    public void moveAIControlled() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void moveUserControlled() {}
 
     // For Collision Handling	
 	public void setToBeRemoved() {

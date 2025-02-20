@@ -5,41 +5,52 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 
 public class SceneManager {
-	private Scene currentScene;
-	private Scene storedScene; // Store PlayScene when pausing
-	private AudioPlayer audioPlayer;
+    private Scene currentScene;
+    private Scene storedScene; // Store PlayScene when pausing
+    private AudioPlayer audioPlayer;
 
-	public SceneManager() {
-		audioPlayer = new AudioPlayer();
-	}
+    public SceneManager() {
+        audioPlayer = new AudioPlayer();
+    }
 
-	public void changeScene(Scene scene) {
-		// From any PrimaryScene to any SecondaryScene
-        if (scene instanceof SecondaryScene && currentScene instanceof PrimaryScene) {
-            // Store PlayScene when transitioning to PauseScene
-        	storedScene = (PrimaryScene) currentScene;
+    public void changeScene(Scene newScene, SceneTransitionType transitionType) {
+        switch (transitionType) {
+            case PAUSE:
+                if (currentScene instanceof PrimaryScene) {
+                    storedScene = currentScene; // Store PlayScene
+                }
+                break;
+
+            case RESUME:
+                if (storedScene != null) {
+                    newScene = storedScene; // Restore PlayScene
+                    storedScene = null; // Clear reference
+                }
+                break;
+
+            case RESTART:
+                if (storedScene != null) {
+                    storedScene.dispose(); // Dispose stored PlayScene
+                    storedScene = null;
+                }
+                if (currentScene != null) {
+                    currentScene.dispose(); // Dispose PauseScene
+                }
+                break;
+
+            case NORMAL:
+                if (currentScene != null) {
+                    currentScene.dispose(); // Dispose as usual
+                }
+                break;
         }
-		// From any SecondaryScene to any PrimaryScene that is not HOME
-		else if (scene instanceof PrimaryScene && currentScene instanceof SecondaryScene && !((PrimaryScene) scene).getIsHome()) {
-            // Restore the stored PlayScene instead of creating a new one
-            scene = storedScene;
-            storedScene = null;// Clear reference after restoring
-        }
 
-		// Else just dispose as per normal
-		else if (currentScene != null) {
-            // Dispose only if not transitioning between Play and Pause
-            currentScene.dispose();
-        }
-
-        currentScene = scene;
-
+        currentScene = newScene;
         audioChecker();
     }
 
     public void audioChecker() {
-		audioPlayer.stopAudio(); // Stop and disposes the current audio that is playing
-		// Checks if Audio is initiatlised, currentScene is not null, and there is a audio file path for the scene
+        audioPlayer.stopAudio(); // Stop and dispose current audio
         if (audioPlayer != null && currentScene != null && currentScene.getAudioFilePath() != null) {
             audioPlayer.playAudio(currentScene.getAudioFilePath(), true);
             System.out.println("Track Playing: " + currentScene.getAudioFilePath());
@@ -48,8 +59,16 @@ public class SceneManager {
         }
     }
 
-	public void render(SpriteBatch batch) {
-		currentScene.render(batch);
-	}
+    public AudioPlayer getAudioPlayer() {
+        if (audioPlayer == null) {
+            audioPlayer = new AudioPlayer();
+        }
+        return audioPlayer;
+    }
 
+    public void render(SpriteBatch batch) {
+        if (currentScene != null) {
+            currentScene.render(batch);
+        }
+    }
 }

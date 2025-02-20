@@ -3,14 +3,10 @@ package io.github.some_example_name.lwjgl3.abstract_engine.entity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.application_classes.NonPlayableCharacter;
-import io.github.some_example_name.lwjgl3.application_classes.Character;
 
 public class EntityManager {
     private List<Entity> entities;
@@ -18,26 +14,6 @@ public class EntityManager {
     public EntityManager(){
         this.entities = new ArrayList<>();
     }
-
-//    public void intializeEntities(){
-//        Random random = new Random();
-//        
-//        // louis added
-//        Vector2 playerPosition = new Vector2(100, 100); // initial position for the player
-//        Character player = new Character("Player", playerPosition, new Texture("player.png"), true, 2f);
-//        entities.add(player);
-//        
-//        
-//        
-//        // ROUGH DRAFT, NEED CHANGE LATER ON - BRANDON //
-//        for (int i = 0; i < 10; i++){
-//            float randomX = random.nextFloat();
-//            float randomY = random.nextFloat();
-//            Vector2 position = new Vector2(randomX, randomY);
-//            Entity entity = new NonPlayableCharacter("lol", position, new Texture("demon.png"), false);
-//            entities.add(entity);
-//        }
-//    }
 
     public void addEntities(Entity entity){
         entities.add(entity);
@@ -57,7 +33,11 @@ public class EntityManager {
 	}
     
     public Entity getEntity(int i) {
-		return this.entities.get(i);
+		return entities.get(i);
+	}
+
+	public List<Entity> getEntities(){
+		return entities;
 	}
 
     public void drawEntites(SpriteBatch batch){
@@ -68,10 +48,8 @@ public class EntityManager {
 
     public void moveEntities(){
     	for (Entity entity : entities) {
-    	    // determine entity type and call the appropriate movement method
-    	    if (entity instanceof Character) {
-    	        ((Character) entity).moveUserControlled();
-    	    } else if (entity instanceof NonPlayableCharacter) {
+			// Move NPC's in Entity List as Player movement is handled by IO Keybinds instead
+    	    if (entity instanceof NonPlayableCharacter) {
     	        ((NonPlayableCharacter) entity).moveAIControlled();
     	    }
     	}

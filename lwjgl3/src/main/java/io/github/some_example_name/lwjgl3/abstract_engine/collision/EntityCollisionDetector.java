@@ -9,10 +9,12 @@ public abstract class EntityCollisionDetector <T extends iCollidable, U extends 
 		this.entityB = b;
 	}
 	
+	@Override
 	public boolean checkCollision() {
 		return this.entityA.getBoundingBox().overlaps(this.entityB.getBoundingBox());
 	}
 	
+	@Override
 	public abstract void resolveCollision();
 	
 	public iCollidable getEntityA() {

@@ -10,7 +10,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 
 public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     private static final float SPEED = 150f;
-    private Vector2 velocity;
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 0.5f; // changes direction every 0.5 sec
 
@@ -22,6 +21,14 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     public NonPlayableCharacter(String name, Vector2 position, Texture texture) {
         super(name, position, texture);
         this.velocity = getRandomVelocity();
+    }
+
+    public Vector2 getVelocity(){
+        return velocity;
+    }
+
+    public void setVelocity(Vector2 velocity){
+        this.velocity = velocity;
     }
 
     private Vector2 getRandomVelocity() {
@@ -43,28 +50,48 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 
-        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
-        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
-
-        // reverse direction if collide with screen boundary
-        if (position.x < 0 || position.x > screenWidth - getTexture().getWidth()) {
-            velocity.x *= -1;
-            position.x = MathUtils.clamp(position.x, 0, screenWidth - getTexture().getWidth());
-        }
-        if (position.y < 0 || position.y > screenHeight - getTexture().getHeight()) {
-            velocity.y *= -1;
-            position.y = MathUtils.clamp(position.y, 0, screenHeight - getTexture().getHeight());
-        }
-
-        setPosition(position);
+//        float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
+//        float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
+//
+//        // reverse direction if collide with screen boundary
+//        if (position.x < 0 || position.x > screenWidth - getTexture().getWidth()) {
+//            velocity.x *= -1;
+//            position.x = MathUtils.clamp(position.x, 0, screenWidth - getTexture().getWidth());
+//        }
+//        if (position.y < 0 || position.y > screenHeight - getTexture().getHeight()) {
+//            velocity.y *= -1;
+//            position.y = MathUtils.clamp(position.y, 0, screenHeight - getTexture().getHeight());
+//        }
+//
+//        setPosition(position);
+    }
+    
+    @Override
+    public Rectangle getBoundingBox() {
+        return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
     }
 
     @Override
-    public void moveUserControlled() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    } 	
-    
-    public Rectangle getBoundingBox() {
-        return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
+    public void moveUserUp() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveUp'");
+    }
+
+    @Override
+    public void moveUserDown() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveDown'");
+    }
+
+    @Override
+    public void moveUserLeft() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
+    }
+
+    @Override
+    public void moveUserRight() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
     }
 }

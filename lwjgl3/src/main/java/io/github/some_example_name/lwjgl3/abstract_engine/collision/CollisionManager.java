@@ -7,7 +7,7 @@ public class CollisionManager {
 	private ArrayList<CollisionDetector> detectors;
 	
 	public CollisionManager(){
-		detectors = new ArrayList<CollisionDetector>();
+		detectors = new ArrayList<>();
 	}
 	
 	public void addDetectors(CollisionDetector detector){
@@ -16,16 +16,10 @@ public class CollisionManager {
 	
 	public void checkAllCollisions(){
 		// for each detector in the detector list
-		int i = 1;
 		for(CollisionDetector detector:this.detectors) {
-			System.out.printf("detector %d:", i);
 			if(detector.checkCollision() == true) {
 				detector.resolveCollision();
-				System.out.println("yes");
-			} else {
-				System.out.println("no");
 			}
-			i += 1;
 		}
 	}
 	
