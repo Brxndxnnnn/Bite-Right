@@ -21,6 +21,7 @@ public class SceneManager {
 
             case RESUME:
                 if (storedScene != null) {
+                    currentScene.dispose();
                     newScene = storedScene; // Restore PlayScene
                     storedScene = null; // Clear reference
                 }
