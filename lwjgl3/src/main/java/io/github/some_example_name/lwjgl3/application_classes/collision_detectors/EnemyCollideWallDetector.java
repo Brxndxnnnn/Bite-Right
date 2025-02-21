@@ -4,12 +4,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
-import io.github.some_example_name.lwjgl3.application_classes.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
 public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayableCharacter, Wall> {
-	private NonPlayableCharacter npc;
-	private Wall wall;
+	private final NonPlayableCharacter npc;
+	private final Wall wall;
 
     public EnemyCollideWallDetector(NonPlayableCharacter npc, Wall wall) {
         super(npc, wall);
@@ -17,6 +17,7 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayabl
 		this.wall = wall;
     }
 
+    // This collision event is resolved by ensuring Enemy cant pass through walls
     @Override
     public void resolveCollision() {
 

@@ -5,12 +5,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.Collidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 
-public class NonPlayableCharacter extends MovableEntity implements iCollidable, AIMovable{
-    private static final float SPEED = 150f;
+public class NonPlayableCharacter extends MovableEntity implements Collidable, AIMovable{
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 0.5f; // changes direction every 0.5 sec
 
@@ -26,7 +25,7 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable, 
 
     private Vector2 getRandomVelocity() {
         float angle = MathUtils.random(360f); // randomize angle
-        return new Vector2(MathUtils.cosDeg(angle), MathUtils.sinDeg(angle)).nor().scl(SPEED);
+        return new Vector2(MathUtils.cosDeg(angle), MathUtils.sinDeg(angle)).nor().scl(150f);
     }
     
     @Override

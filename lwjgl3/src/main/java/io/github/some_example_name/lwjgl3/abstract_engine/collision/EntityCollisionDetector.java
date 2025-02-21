@@ -1,28 +1,31 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.collision;
 
-public abstract class EntityCollisionDetector <T extends iCollidable, U extends iCollidable> extends CollisionDetector{
-	private T entityA;
-	private U entityB;
+public abstract class EntityCollisionDetector <T extends Collidable, U extends Collidable> extends CollisionDetector{
+	private final T entityA;
+	private final U entityB;
 	
+	// Constructor
 	protected EntityCollisionDetector(T a, U b){
 		this.entityA = a;
 		this.entityB = b;
 	}
 	
+	// This function checks for collision
 	@Override
 	public boolean checkCollision() {
-		return this.entityA.getBoundingBox().overlaps(this.entityB.getBoundingBox());
+		return entityA.getBoundingBox().overlaps(entityB.getBoundingBox());
 	}
 	
 	@Override
 	public abstract void resolveCollision();
 	
-	public iCollidable getEntityA() {
-		return this.entityA;
+	// Getter for EntityA
+	public Collidable getEntityA() {
+		return entityA;
 	}
 	
-	public iCollidable getEntityB() {
-		return this.entityB;
+	//Getter for EntityB
+	public Collidable getEntityB() {
+		return entityB;
 	}
 }
-

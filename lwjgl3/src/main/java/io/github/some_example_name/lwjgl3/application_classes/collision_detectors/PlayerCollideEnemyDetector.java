@@ -10,7 +10,7 @@ public class PlayerCollideEnemyDetector extends EntityCollisionDetector<Characte
 		super(a, b);
 	}
 
-// remove Enemy from list
+	// This collision event is resolved by remove Enemy that Player collide with
 	@Override
 	public void resolveCollision() {
 		// set Collision Detector to be removed

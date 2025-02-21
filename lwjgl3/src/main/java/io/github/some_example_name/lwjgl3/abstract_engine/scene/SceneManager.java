@@ -9,10 +9,14 @@ public class SceneManager {
     private Scene storedScene; // Store PlayScene when pausing
     private AudioPlayer audioPlayer;
 
+    // Constructor
     public SceneManager() {
         audioPlayer = new AudioPlayer();
     }
 
+    // This function changes the scene
+    // Usage: changeScene(new PauseScene(), SceneTransitionType.PAUSE);
+    //        changeScene(new PlayScene(), SceneTransitionType.NORMAL);
     public void changeScene(Scene newScene, SceneTransitionType transitionType) {
         switch (transitionType) {
             case PAUSE:
@@ -48,6 +52,7 @@ public class SceneManager {
         audioChecker();
     }
 
+    // This function checks for the audio to be played
     public void audioChecker() {
         audioPlayer.stopAudio(); // Stop and dispose current audio
         if (audioPlayer != null && currentScene != null && currentScene.getAudioFilePath() != null) {
@@ -58,6 +63,7 @@ public class SceneManager {
         }
     }
 
+    // Getter for AudioPlayer
     public AudioPlayer getAudioPlayer() {
         if (audioPlayer == null) {
             audioPlayer = new AudioPlayer();
@@ -65,6 +71,7 @@ public class SceneManager {
         return audioPlayer;
     }
 
+    // This function render the current scene
     public void render(SpriteBatch batch) {
         if (currentScene != null) {
             currentScene.render(batch);

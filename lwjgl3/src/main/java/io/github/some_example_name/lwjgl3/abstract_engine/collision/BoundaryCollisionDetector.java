@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.MathUtils;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 
-public abstract class BoundaryCollisionDetector <T extends iCollidable> extends CollisionDetector{
-	private T entity;
-	private float screenWidth, screenHeight, textureWidth, textureHeight;
+public abstract class BoundaryCollisionDetector <T extends Collidable> extends CollisionDetector{
+	private final T entity;
+    private final float screenWidth, screenHeight, textureWidth, textureHeight;
 	
 	protected BoundaryCollisionDetector(T entity){
 		this.entity = entity;
@@ -16,45 +16,52 @@ public abstract class BoundaryCollisionDetector <T extends iCollidable> extends 
         this.textureHeight = ((Entity) entity).getTexture().getHeight();
 	}
 	
+	@Override
 	public boolean checkCollision() {
-		return ((Entity) entity).getPosition().x < 0 || ((Entity) entity).getPosition().x > screenWidth - this.textureWidth
-			|| ((Entity) entity).getPosition().y < 0 || ((Entity) entity).getPosition().y > screenHeight - this.textureHeight;      
+		return ((Entity) entity).getPosition().x < 0 || ((Entity) entity).getPosition().x > screenWidth - textureWidth
+			|| ((Entity) entity).getPosition().y < 0 || ((Entity) entity).getPosition().y > screenHeight - textureHeight;      
 	}
 	
+	@Override
 	public void resolveCollision() {
 		if(((Entity) entity).getPosition().x < 0 || 
-		   ((Entity) entity).getPosition().x > this.getScreenWidth() - this.getTextureWidth()) {
+		   ((Entity) entity).getPosition().x > getScreenWidth() - getTextureWidth()) {
 			
-			((Entity) entity).setPositionX(MathUtils.clamp(((Entity) entity).getPosition().x, 0, this.getScreenWidth() - this.getTextureWidth()));
+			((Entity) entity).setPositionX(MathUtils.clamp(((Entity) entity).getPosition().x, 0, getScreenWidth() - getTextureWidth()));
 			
 		}
 		
 		if(((Entity) entity).getPosition().y < 0 || 
-		   ((Entity) entity).getPosition().y > this.getScreenHeight() - this.getTextureHeight()) {
+		   ((Entity) entity).getPosition().y > getScreenHeight() - getTextureHeight()) {
 					
-			((Entity) entity).setPositionY(MathUtils.clamp(((Entity) entity).getPosition().y, 0, this.getScreenHeight() - this.getTextureHeight()));
+			((Entity) entity).setPositionY(MathUtils.clamp(((Entity) entity).getPosition().y, 0, getScreenHeight() - getTextureHeight()));
 			
 		}
 				
 	}
 	
-	public iCollidable getEntity() {
-		return this.entity;
+	// Getter for Entity
+	public Collidable getEntity() {
+		return entity;
 	}
 	
+	// Getter for ScreenWidth
 	public float getScreenWidth() {
-		return this.screenWidth;
+		return screenWidth;
 	}
 	
+	// Getter for ScreenHeight
 	public float getScreenHeight() {
-		return this.screenHeight;
+		return screenHeight;
 	}
 	
+	// Getter for TextureWidth
 	public float getTextureWidth() {
-		return this.textureWidth;
+		return textureWidth;
 	}
 	
+	// Getter for TextureHeight
 	public float getTextureHeight() {
-		return this.textureHeight;
+		return textureHeight;
 	}
 }

@@ -16,10 +16,10 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 
 public class PauseScene extends Scene{
-	private TextButton resumeBtn;
+	private final TextButton resumeBtn;
 	private final TextButton restartBtn;
-	private TextButton quitBtn;
-	private IOManager ioManager;
+	private final TextButton quitBtn;
+	private final IOManager ioManager;
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);

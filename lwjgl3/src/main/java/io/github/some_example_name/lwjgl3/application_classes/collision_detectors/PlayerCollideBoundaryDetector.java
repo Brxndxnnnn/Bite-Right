@@ -9,6 +9,7 @@ public class PlayerCollideBoundaryDetector extends BoundaryCollisionDetector<Cha
 		super(player);
 	}
 	
+	// This collision event is resolved by ensuring Player cant go past screen boundary
 	@Override
 	public void resolveCollision() {
 		super.resolveCollision();

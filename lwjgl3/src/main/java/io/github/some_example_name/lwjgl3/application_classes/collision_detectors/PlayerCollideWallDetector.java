@@ -4,12 +4,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
-import io.github.some_example_name.lwjgl3.application_classes.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
 public class PlayerCollideWallDetector extends EntityCollisionDetector<Character, Wall>{
-	private Character character;
-	private Wall wall;
+	private final Character character;
+	private final Wall wall;
 
     public PlayerCollideWallDetector(Character character, Wall wall) {
         super(character, wall);
@@ -17,16 +17,16 @@ public class PlayerCollideWallDetector extends EntityCollisionDetector<Character
 		this.wall = wall;
     }
 
+    // This collision event is resolved by ensuring Player cant pass through walls
     @Override
     public void resolveCollision() {
-
         // Get bounding boxes
         Rectangle npcBounds = character.getBoundingBox();
         Rectangle wallBounds = wall.getBoundingBox();
 
         // Check collision
         if (npcBounds.overlaps(wallBounds)) {
-            System.out.println("Enemy collided with Wall");
+            System.out.println("Player collided with Wall");
 
             // Determine which side the collision happened on
             Vector2 npcVelocity = character.getVelocity();

@@ -24,7 +24,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
-import io.github.some_example_name.lwjgl3.application_classes.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideBoundaryDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
@@ -33,12 +32,13 @@ import io.github.some_example_name.lwjgl3.application_classes.collision_detector
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
 import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
 public class PlayScene extends Scene {
-    private TextButton pauseBtn;
-    private EntityManager entityManager;
-    private CollisionManager collisionManager;
-    private IOManager ioManager;
+    private final TextButton pauseBtn;
+    private final EntityManager entityManager;
+    private final CollisionManager collisionManager;
+    private final IOManager ioManager;
     private final int NUM_ENEMIES = 10;
 
     public PlayScene(SceneManager sceneManager) {

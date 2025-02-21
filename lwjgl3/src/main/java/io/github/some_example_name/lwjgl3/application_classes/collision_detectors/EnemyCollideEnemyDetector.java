@@ -7,8 +7,8 @@ import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollis
 import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
 
 public class EnemyCollideEnemyDetector extends EntityCollisionDetector<NonPlayableCharacter, NonPlayableCharacter> {
-    private NonPlayableCharacter npc1;
-    private NonPlayableCharacter npc2;
+    private final NonPlayableCharacter npc1;
+    private final NonPlayableCharacter npc2;
 
     public EnemyCollideEnemyDetector(NonPlayableCharacter npc1, NonPlayableCharacter npc2) {
         super(npc1, npc2);
@@ -16,6 +16,7 @@ public class EnemyCollideEnemyDetector extends EntityCollisionDetector<NonPlayab
         this.npc2 = npc2;
     }
 
+    // This collision event is resolved by ensuring Enemy cant pass through other Enemy
     @Override
     public void resolveCollision() {
         // Get bounding boxes

@@ -10,10 +10,7 @@ public abstract class Scene {
 	protected Stage stage;
 	protected Skin skin;
 
-	public Scene(){
-		this.audioFilePath = null;
-	}
-
+	// Constructor
 	public Scene(SceneManager sceneManager) {
 		audioFilePath = null;
 		stage = new Stage();
@@ -21,19 +18,21 @@ public abstract class Scene {
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 	}
 	
+	// Getter for AudioFilePath
 	public String getAudioFilePath() {
 		return audioFilePath;
 	}
 
+	// Setter for AudioFilePath
 	public void setAudioFilePath(String audioFilePath){
 		this.audioFilePath = audioFilePath;
 	}
 
+	// This function disposes the Scene
 	public void dispose() {
 		stage.dispose();
 		skin.dispose();
 	}
 
 	public abstract void render(SpriteBatch batch);
-
 }

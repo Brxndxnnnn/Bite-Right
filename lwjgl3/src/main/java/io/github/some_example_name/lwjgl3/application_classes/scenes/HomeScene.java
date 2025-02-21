@@ -16,9 +16,9 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 
 public class HomeScene extends Scene{
-	private TextButton startBtn;
-	private TextButton quitBtn;
-	private IOManager ioManager;
+	private final TextButton startBtn;
+	private final TextButton quitBtn;
+	private final IOManager ioManager;
 
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);

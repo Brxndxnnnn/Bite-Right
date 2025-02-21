@@ -5,11 +5,13 @@ public abstract class CollisionDetector {
 	public abstract boolean checkCollision();
 	public abstract void resolveCollision();
 	
+	// Setter for toBeRemoved
 	public void setToBeRemoved() {
-		this.toBeRemoved = true;
+		toBeRemoved = true;
 	}
 	
+	// Getter for toBeRemoved
 	public boolean shouldBeRemoved() {
-		return this.toBeRemoved;
+		return toBeRemoved;
 	}
 }

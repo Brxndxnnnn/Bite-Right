@@ -3,31 +3,37 @@ package io.github.some_example_name.lwjgl3.abstract_engine.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
+// Audioplayer manages basic audio features such as Playing Audio, Pausing, Setting volume, etc
+
 public class AudioPlayer {
 	private float volume;
 	private Music sound;
 
+	// Default Constructor
 	public AudioPlayer() {
 		sound = null;
 		volume = 100;
 	}
 
-	// Method Overloading
+	// Constructor 1 (Overloading)
 	public void playAudio(String fileName) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-		sound.setVolume(volume);
+		volume = 100;
+		sound.setVolume(volume / 100.0f); 
 		sound.play();
 	}
 
-	// Method Overloading
+	// Constructor 2 (Overloading)
 	public void playAudio(String fileName, Boolean loopAudio) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+		volume = 100;
 		loopAudio(loopAudio);
-		sound.setVolume(volume);
+		sound.setVolume(volume / 100.0f); 
 		sound.play();
 		System.out.println("Play Audio");
 	}
 
+	// This function pauses the Audio
 	public void pauseAudio() {
         if (sound != null && sound.isPlaying()) {
             sound.pause();
@@ -35,6 +41,7 @@ public class AudioPlayer {
         }
 	}
 
+	// This function resumes the Audio
 	public void resumeAudio() {
         if (sound != null && !sound.isPlaying()) {
             sound.play();
@@ -42,6 +49,7 @@ public class AudioPlayer {
         }
 	}
 
+	// This function stops and dispose the Audio
 	public void stopAudio() {
         if (sound != null) {
             sound.stop();
@@ -50,10 +58,12 @@ public class AudioPlayer {
         }
 	}
 	
+	// Getter for Volume
 	public float getVolume() {
 		return volume;
 	}
 	
+	// Setter for Volume
 	public void setVolume(float volume) {
         if (volume < 0) {
             volume = 0;
@@ -73,11 +83,13 @@ public class AudioPlayer {
         System.out.printf("volume %f\n", volume);
 	}
 
+	// This function loops the current Audio
 	public void loopAudio(boolean loop) {
 		sound.setLooping(loop);
 		System.out.printf("loop %s\n", loop);
 	}
 
+	// This function disposes the current audio;
 	public void disposeAudio() {
 		sound.dispose();
 	}

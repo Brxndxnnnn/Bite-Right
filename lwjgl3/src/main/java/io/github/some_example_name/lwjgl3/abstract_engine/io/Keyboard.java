@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.IntMap;
 public class Keyboard implements InputDevice {
     private IntMap<Object[]> keyBindings;
 
+    // Constructor
     public Keyboard() {
         keyBindings = new IntMap<>();
     }

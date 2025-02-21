@@ -7,28 +7,33 @@ public abstract class MovableEntity extends Entity {
 	protected float speed;
     protected Vector2 velocity;
 
+    // Default Constructor
     public MovableEntity(){
         super();
         this.speed = 0;
         this.velocity = new Vector2(0,0);
     }
     
+    // Constructor 1 (Overloading)
     public MovableEntity(String name, Vector2 position, Texture texture, float speed){
         super(name, position, texture);
         this.speed = speed;
         this.velocity = new Vector2(0,0);
     }
-    
+
+    // Constructor 2 (Overloading)
     public MovableEntity(String name, Vector2 position, Texture texture){
         super(name, position, texture);
         this.speed = 0;
         this.velocity = new Vector2(0,0);
     }
 
+    // Getter for Velocity
     public Vector2 getVelocity(){
         return velocity;
     }
 
+    // Setter for Velocity
     public void setVelocity(Vector2 velocity){
         this.velocity = velocity;
     }
