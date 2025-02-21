@@ -1,4 +1,4 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
@@ -7,8 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
+import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 
-public class NonPlayableCharacter extends MovableEntity implements iCollidable{
+public class NonPlayableCharacter extends MovableEntity implements iCollidable, AIMovable{
     private static final float SPEED = 150f;
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 0.5f; // changes direction every 0.5 sec
@@ -46,29 +47,5 @@ public class NonPlayableCharacter extends MovableEntity implements iCollidable{
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, getTexture().getWidth(), getTexture().getHeight());
-    }
-
-    @Override
-    public void moveUserUp() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveUp'");
-    }
-
-    @Override
-    public void moveUserDown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveDown'");
-    }
-
-    @Override
-    public void moveUserLeft() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
-    }
-
-    @Override
-    public void moveUserRight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
     }
 }

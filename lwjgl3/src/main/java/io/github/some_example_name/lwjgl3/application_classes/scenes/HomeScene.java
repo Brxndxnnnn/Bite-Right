@@ -1,4 +1,4 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

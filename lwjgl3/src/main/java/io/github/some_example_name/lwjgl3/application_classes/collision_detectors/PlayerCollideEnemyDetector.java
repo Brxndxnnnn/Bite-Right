@@ -1,10 +1,12 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.collision_detectors;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
+import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
 
 public class PlayerCollideEnemyDetector extends EntityCollisionDetector<Character, NonPlayableCharacter>{
-	PlayerCollideEnemyDetector(Character a, NonPlayableCharacter b){
+	public PlayerCollideEnemyDetector(Character a, NonPlayableCharacter b){
 		super(a, b);
 	}
 

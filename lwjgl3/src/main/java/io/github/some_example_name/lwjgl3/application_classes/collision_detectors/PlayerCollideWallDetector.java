@@ -1,15 +1,17 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.collision_detectors;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
+import io.github.some_example_name.lwjgl3.application_classes.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
 
 public class PlayerCollideWallDetector extends EntityCollisionDetector<Character, Wall>{
 	private Character character;
 	private Wall wall;
 
-    PlayerCollideWallDetector(Character character, Wall wall) {
+    public PlayerCollideWallDetector(Character character, Wall wall) {
         super(character, wall);
 		this.character = character;
 		this.wall = wall;

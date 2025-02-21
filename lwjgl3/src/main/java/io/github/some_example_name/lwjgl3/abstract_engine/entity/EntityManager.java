@@ -6,7 +6,8 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.some_example_name.lwjgl3.application_classes.NonPlayableCharacter;
+import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
+import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
 
 public class EntityManager {
     private List<Entity> entities;
@@ -49,7 +50,7 @@ public class EntityManager {
     public void moveEntities(){
     	for (Entity entity : entities) {
 			// Move NPC's in Entity List as Player movement is handled by IO Keybinds instead
-    	    if (entity instanceof NonPlayableCharacter) {
+    	    if (entity instanceof AIMovable) {
     	        ((NonPlayableCharacter) entity).moveAIControlled();
     	    }
     	}

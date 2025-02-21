@@ -1,4 +1,4 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,18 +7,14 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.iCollidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
+import io.github.some_example_name.lwjgl3.abstract_engine.movement.UserMovable;
 
-public class Character extends MovableEntity implements iCollidable {
+public class Character extends MovableEntity implements iCollidable, UserMovable {
     private static final float FRICTION = 0.85f; // Adjust friction for smooth deceleration
 
     public Character(String name, Vector2 position, Texture texture, float speed) {
         super(name, position, texture, speed);
         this.velocity = new Vector2(0, 0);
-    }
-
-    @Override
-    public void moveAIControlled() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

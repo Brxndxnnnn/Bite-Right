@@ -1,10 +1,11 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.collision_detectors;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.BoundaryCollisionDetector;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
 
 public class PlayerCollideBoundaryDetector extends BoundaryCollisionDetector<Character>{
 	
-	PlayerCollideBoundaryDetector(Character player){
+	public PlayerCollideBoundaryDetector(Character player){
 		super(player);
 	}
 	

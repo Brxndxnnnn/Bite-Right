@@ -1,4 +1,4 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import java.util.List;
 import java.util.Random;
@@ -19,12 +19,20 @@ import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDet
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.NonMovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.application_classes.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideBoundaryDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideBoundaryDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideEnemyDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideWallDetector;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
+import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
 
 public class PlayScene extends Scene {
     private TextButton pauseBtn;
@@ -46,7 +54,7 @@ public class PlayScene extends Scene {
 
         // Spawn the player in the center of the screen
         Vector2 playerPosition = new Vector2(screenWidth / 2f, screenHeight / 2f);
-        MovableEntity player = new Character("Player", playerPosition, new Texture("player.png"), 2f);
+        Character player = new Character("Player", playerPosition, new Texture("player.png"), 2f);
         entityManager.addEntities(player);
 
         int numWalls = 6;

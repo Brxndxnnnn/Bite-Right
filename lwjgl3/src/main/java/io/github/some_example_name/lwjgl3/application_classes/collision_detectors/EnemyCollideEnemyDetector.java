@@ -1,15 +1,16 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.collision_detectors;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
+import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
 
 public class EnemyCollideEnemyDetector extends EntityCollisionDetector<NonPlayableCharacter, NonPlayableCharacter> {
     private NonPlayableCharacter npc1;
     private NonPlayableCharacter npc2;
 
-    EnemyCollideEnemyDetector(NonPlayableCharacter npc1, NonPlayableCharacter npc2) {
+    public EnemyCollideEnemyDetector(NonPlayableCharacter npc1, NonPlayableCharacter npc2) {
         super(npc1, npc2);
         this.npc1 = npc1;
         this.npc2 = npc2;
