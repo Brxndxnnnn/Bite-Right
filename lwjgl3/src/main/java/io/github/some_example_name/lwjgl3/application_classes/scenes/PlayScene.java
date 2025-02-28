@@ -1,6 +1,5 @@
 package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
-import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -80,18 +79,16 @@ public class PlayScene extends Scene {
 
 		collisionManager = new CollisionManager();
 
-        // Get entity list from EntityManager
-		List<Entity> entities = entityManager.getEntities(); // Assuming there's a getter for entityList
-
 		// Iterate through entity list to set up collision detectors
-		for (int i = 0; i < entities.size(); i++) {
-			Entity entityA = entities.get(i);
+		for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
+			Entity entityA = entityManager.getEntity(i);
 
 			// Handles collision between Character -> (NPC & Wall)
 			if (entityA instanceof Character) {
                 CollisionDetector playerCollideBoundaryDetector = new PlayerCollideBoundaryDetector((Character) entityA);
     	        collisionManager.addDetectors(playerCollideBoundaryDetector);
-				for (Entity entityB : entities) {
+				for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
+                    Entity entityB = entityManager.getEntity(x);
 					if (entityB instanceof NonPlayableCharacter) {
 						// Add player-enemy collision detector
 						CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Character) entityA, (NonPlayableCharacter) entityB);
@@ -109,7 +106,8 @@ public class PlayScene extends Scene {
 			if (entityA instanceof NonPlayableCharacter) {
                 CollisionDetector enemyCollideBoundaryDetector = new EnemyCollideBoundaryDetector((NonPlayableCharacter) entityA);
     	        collisionManager.addDetectors(enemyCollideBoundaryDetector);
-				for (Entity entityB : entities) {
+				for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
+                    Entity entityB = entityManager.getEntity(y);
 					if (entityB instanceof NonPlayableCharacter && entityA != entityB) {
 						// Add enemy-enemy collision detector
 						CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((NonPlayableCharacter) entityA, (NonPlayableCharacter) entityB);

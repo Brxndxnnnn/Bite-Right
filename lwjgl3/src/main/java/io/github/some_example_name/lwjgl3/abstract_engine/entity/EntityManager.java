@@ -42,8 +42,8 @@ public class EntityManager {
 	}
 
 	// Getter for EntityList
-	public List<Entity> getEntities(){
-		return entities;
+	public int getEntitiesSize(){
+		return entities.size();
 	}
 
 	// This function draw all Entity in list
