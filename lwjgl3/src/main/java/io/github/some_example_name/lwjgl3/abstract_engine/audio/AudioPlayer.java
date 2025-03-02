@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Music;
 
 // Audioplayer manages basic audio features such as Playing Audio, Pausing, Setting volume, etc
 
-public class AudioPlayer {
+public class AudioPlayer implements iAudio {
 	private float volume;
 	private Music sound;
 
@@ -16,6 +16,7 @@ public class AudioPlayer {
 	}
 
 	// Constructor 1 (Overloading)
+	@Override
 	public void playAudio(String fileName) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		volume = 100;
@@ -24,6 +25,7 @@ public class AudioPlayer {
 	}
 
 	// Constructor 2 (Overloading)
+	@Override
 	public void playAudio(String fileName, Boolean loopAudio) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		volume = 100;
@@ -34,6 +36,7 @@ public class AudioPlayer {
 	}
 
 	// This function pauses the Audio
+	@Override
 	public void pauseAudio() {
         if (sound != null && sound.isPlaying()) {
             sound.pause();
@@ -42,6 +45,7 @@ public class AudioPlayer {
 	}
 
 	// This function resumes the Audio
+	@Override
 	public void resumeAudio() {
         if (sound != null && !sound.isPlaying()) {
             sound.play();
@@ -50,6 +54,7 @@ public class AudioPlayer {
 	}
 
 	// This function stops and dispose the Audio
+	@Override
 	public void stopAudio() {
         if (sound != null) {
             sound.stop();
@@ -59,11 +64,13 @@ public class AudioPlayer {
 	}
 	
 	// Getter for Volume
+	@Override
 	public float getVolume() {
 		return volume;
 	}
 	
 	// Setter for Volume
+	@Override
 	public void setVolume(float volume) {
         if (volume < 0) {
             volume = 0;
@@ -84,12 +91,15 @@ public class AudioPlayer {
 	}
 
 	// This function loops the current Audio
+
+	@Override
 	public void loopAudio(boolean loop) {
 		sound.setLooping(loop);
 		System.out.printf("loop %s\n", loop);
 	}
 
 	// This function disposes the current audio;
+	@Override
 	public void disposeAudio() {
 		sound.dispose();
 	}
