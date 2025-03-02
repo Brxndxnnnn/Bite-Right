@@ -10,8 +10,8 @@ public class SceneManager {
     private AudioPlayer audioPlayer;
 
     // Constructor
-    public SceneManager() {
-        audioPlayer = new AudioPlayer();
+    public SceneManager(AudioPlayer audioPlayer) {
+        this.audioPlayer = audioPlayer;
     }
 
     // This function changes the scene
