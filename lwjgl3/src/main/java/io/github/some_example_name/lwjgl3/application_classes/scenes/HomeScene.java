@@ -2,6 +2,7 @@ package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -23,9 +24,12 @@ public class HomeScene extends Scene{
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
 
-		setAudioFilePath("music3.mp3");
+		setAudioFilePath("home.mp3");
         startBtn = new TextButton("Start", skin);
 		quitBtn = new TextButton("Quit", skin);
+		
+		startBtn.getLabel().setFontScale(0.6f);
+		quitBtn.getLabel().setFontScale(0.6f);
 
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
@@ -33,17 +37,25 @@ public class HomeScene extends Scene{
 		titleTable.top(); // Align content to the top
 		stage.addActor(titleTable);
 
-		Label label = new Label("Home Scene", skin);
+		Label label = new Label("Pac-Man", skin, "title");
+		label.setColor(Color.YELLOW);
 		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
 
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
-
-		buttonTable.add(startBtn).space(30);
+		
+		startBtn.getLabel().setColor(Color.SKY);
+		startBtn.setColor(Color.ROYAL);
+		quitBtn.getLabel().setColor(Color.SKY);
+		quitBtn.setColor(Color.ROYAL);
+		
+		buttonTable.center();
+		buttonTable.padTop(170);
+		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.75f, startBtn.getHeight() * 0.75f);
 		buttonTable.row();
-		buttonTable.add(quitBtn).space(5);
-
+		buttonTable.add(quitBtn).padTop(20).size(quitBtn.getWidth() * 0.75f, quitBtn.getHeight() * 0.75f);
+//		buttonTable.debug();
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

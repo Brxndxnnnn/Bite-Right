@@ -2,6 +2,7 @@ package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -23,11 +24,15 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
-		setAudioFilePath("music2.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
+		setAudioFilePath("pause.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
 
 		resumeBtn = new TextButton("Resume", skin);
 		restartBtn = new TextButton("Restart", skin);
 		quitBtn = new TextButton("Quit", skin);
+		
+		resumeBtn.getLabel().setFontScale(0.6f);
+		restartBtn.getLabel().setFontScale(0.6f);
+		quitBtn.getLabel().setFontScale(0.6f);
 
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
@@ -35,18 +40,25 @@ public class PauseScene extends Scene{
 		titleTable.top(); // Align content to the top
 		stage.addActor(titleTable);
 
-		Label label = new Label("Pause Scene", skin);
+		Label label = new Label("Pause", skin, "subtitle");
 		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
 
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
 
-		buttonTable.add(resumeBtn).spaceTop(30);
+		resumeBtn.getLabel().setColor(Color.SKY);
+		resumeBtn.setColor(Color.ROYAL);
+		restartBtn.getLabel().setColor(Color.SKY);
+		restartBtn.setColor(Color.ROYAL);
+		quitBtn.getLabel().setColor(Color.SKY);
+		quitBtn.setColor(Color.ROYAL);
+		
+		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.75f, resumeBtn.getHeight() * 0.75f);
 		buttonTable.row();
-		buttonTable.add(restartBtn).spaceTop(10);
+		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.75f, restartBtn.getHeight() * 0.75f);
 		buttonTable.row();
-		buttonTable.add(quitBtn).spaceTop(10);
+		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.75f, quitBtn.getHeight() * 0.75f);
 		
 		resumeBtn.addListener(new ClickListener() {
 			@Override
