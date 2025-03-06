@@ -15,7 +15,7 @@ public abstract class Scene {
 		audioFilePath = null;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 	}
 	
 	// Getter for AudioFilePath

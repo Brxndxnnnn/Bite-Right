@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -42,7 +43,7 @@ public class PlayScene extends Scene {
 
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
-        setAudioFilePath("music1.mp3");
+        setAudioFilePath("play.mp3");
 
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
@@ -126,7 +127,10 @@ public class PlayScene extends Scene {
 
         // INITIALIZE BUTTONS
         pauseBtn = new TextButton("Pause", skin);
-
+        pauseBtn.getLabel().setFontScale(0.6f);
+        pauseBtn.getLabel().setColor(Color.SKY);
+        pauseBtn.setColor(Color.ROYAL);
+		
         // INITIALIZE MAIN TABLE FOR THE TITLE
         Table titleTable = new Table();
         titleTable.setFillParent(true);
@@ -143,7 +147,7 @@ public class PlayScene extends Scene {
         stage.addActor(buttonTable);
 
         // ADD BUTTONS TO THE BUTTON TABLE
-        buttonTable.add(pauseBtn).pad(10);
+        buttonTable.add(pauseBtn).pad(10).size(pauseBtn.getWidth() * 0.75f, pauseBtn.getHeight() * 0.75f);
 
         // INITIALIZE BUTTON LISTENERS
         pauseBtn.addListener(new ClickListener() {
