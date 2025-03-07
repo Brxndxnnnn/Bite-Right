@@ -3,7 +3,6 @@ package io.github.some_example_name.lwjgl3.application_classes;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.application_classes.scenes.HomeScene;
@@ -14,7 +13,7 @@ public class GameMaster extends ApplicationAdapter {
 
     @Override
     public void create(){
-        sceneManager = new SceneManager(new AudioPlayer()); // Create a new instance of SceneManager
+        sceneManager = new SceneManager(); // Create a new instance of SceneManager
         sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL); // Render the first scene accordingly
         batch = new SpriteBatch();
     }

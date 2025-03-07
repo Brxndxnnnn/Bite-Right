@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
@@ -24,7 +25,9 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
+
 		setAudioFilePath("pause.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
+		AudioPlayer.getInstance().playAudio(getAudioFilePath());
 
 		resumeBtn = new TextButton("Resume", skin);
 		restartBtn = new TextButton("Restart", skin);

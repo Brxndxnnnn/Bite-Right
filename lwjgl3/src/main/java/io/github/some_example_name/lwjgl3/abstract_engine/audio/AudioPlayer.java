@@ -5,18 +5,25 @@ import com.badlogic.gdx.audio.Music;
 
 // Audioplayer manages basic audio features such as Playing Audio, Pausing, Setting volume, etc
 
-public class AudioPlayer implements iAudio {
+public class AudioPlayer {
+	private static AudioPlayer instance = null;
 	private float volume;
 	private Music sound;
 
 	// Default Constructor
-	public AudioPlayer() {
+	private AudioPlayer() {
 		sound = null;
 		volume = 100;
 	}
 
+	public static synchronized AudioPlayer getInstance(){
+		if (instance == null){
+			instance = new AudioPlayer();
+		}
+		return instance;
+	}
+
 	// Constructor 1 (Overloading)
-	@Override
 	public void playAudio(String fileName) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		volume = 100;
@@ -25,7 +32,6 @@ public class AudioPlayer implements iAudio {
 	}
 
 	// Constructor 2 (Overloading)
-	@Override
 	public void playAudio(String fileName, Boolean loopAudio) {
 		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
 		volume = 100;
@@ -36,7 +42,6 @@ public class AudioPlayer implements iAudio {
 	}
 
 	// This function pauses the Audio
-	@Override
 	public void pauseAudio() {
         if (sound != null && sound.isPlaying()) {
             sound.pause();
@@ -45,7 +50,6 @@ public class AudioPlayer implements iAudio {
 	}
 
 	// This function resumes the Audio
-	@Override
 	public void resumeAudio() {
         if (sound != null && !sound.isPlaying()) {
             sound.play();
@@ -54,7 +58,6 @@ public class AudioPlayer implements iAudio {
 	}
 
 	// This function stops and dispose the Audio
-	@Override
 	public void stopAudio() {
         if (sound != null) {
             sound.stop();
@@ -64,13 +67,11 @@ public class AudioPlayer implements iAudio {
 	}
 	
 	// Getter for Volume
-	@Override
 	public float getVolume() {
 		return volume;
 	}
 	
 	// Setter for Volume
-	@Override
 	public void setVolume(float volume) {
         if (volume < 0) {
             volume = 0;
@@ -91,15 +92,12 @@ public class AudioPlayer implements iAudio {
 	}
 
 	// This function loops the current Audio
-
-	@Override
 	public void loopAudio(boolean loop) {
 		sound.setLooping(loop);
 		System.out.printf("loop %s\n", loop);
 	}
 
 	// This function disposes the current audio;
-	@Override
 	public void disposeAudio() {
 		sound.dispose();
 	}

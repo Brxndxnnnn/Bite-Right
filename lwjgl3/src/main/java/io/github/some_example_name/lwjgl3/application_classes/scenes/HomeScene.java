@@ -1,7 +1,6 @@
 package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
@@ -25,6 +25,8 @@ public class HomeScene extends Scene{
 		super(sceneManager);
 
 		setAudioFilePath("home.mp3");
+		AudioPlayer.getInstance().playAudio(getAudioFilePath());
+		
         startBtn = new TextButton("Start", skin);
 		quitBtn = new TextButton("Quit", skin);
 		
@@ -73,8 +75,8 @@ public class HomeScene extends Scene{
 		// Set the keybinds required for this HomeScene
 		ioManager = new IOManager();
 
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.DOWN, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() - 5), true);
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.UP, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() + 5), true);
+		// ioManager.addIOBind(ioManager.getKeyboard(), Keys.DOWN, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() - 5), true);
+		// ioManager.addIOBind(ioManager.getKeyboard(), Keys.UP, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() + 5), true);
 	}
 
 	@Override
