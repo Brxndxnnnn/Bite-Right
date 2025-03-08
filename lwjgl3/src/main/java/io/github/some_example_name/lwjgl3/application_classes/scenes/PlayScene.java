@@ -15,10 +15,8 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
-import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideBoundaryDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
-import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideBoundaryDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
@@ -155,8 +153,6 @@ public class PlayScene extends Scene {
 
             // Handles collision between Character -> (NPC & Wall)
             if (entityA instanceof Character) {
-                CollisionDetector playerCollideBoundaryDetector = new PlayerCollideBoundaryDetector((Character) entityA);
-                collisionManager.addDetectors(playerCollideBoundaryDetector);
                 for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
                     Entity entityB = entityManager.getEntity(x);
                     if (entityB instanceof NonPlayableCharacter) {
@@ -174,8 +170,6 @@ public class PlayScene extends Scene {
 
             // Handles collision between NPC -> (NPC & Wall)
             if (entityA instanceof NonPlayableCharacter) {
-                CollisionDetector enemyCollideBoundaryDetector = new EnemyCollideBoundaryDetector((NonPlayableCharacter) entityA);
-                collisionManager.addDetectors(enemyCollideBoundaryDetector);
                 for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
                     Entity entityB = entityManager.getEntity(y);
                     if (entityB instanceof NonPlayableCharacter && entityA != entityB) {

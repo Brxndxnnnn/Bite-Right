@@ -16,13 +16,25 @@ public class NonPlayableCharacter extends MovableEntity implements Collidable, A
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 1.0f; // seconds between random direction changes
     private static final float GHOST_SPEED = 150f; // Speed for ghost movement
+    
+    /**
+     * Returns the base speed used for ghost movement
+     * @return The base ghost speed
+     */
+    public static float getBaseSpeed() {
+        return GHOST_SPEED;
+    }
     private Vector2 previousDirection; // Track previous direction to avoid 180-degree turns
     private long lastCollisionTime = 0; // To prevent rapid direction changes
     private static final long COLLISION_COOLDOWN = 500; // milliseconds
+    private boolean inCollisionState = false; // Flag to indicate if ghost is responding to a collision
+    private float collisionStateDuration = 0; // Time spent in collision state
+    private static final float COLLISION_STATE_MAX_DURATION = 0.5f; // Max time to stay in collision state (seconds)
+    
     
     // Ghost behavior state
     private Entity targetEntity; // The entity this ghost will chase
-    private float chaseChance = 0.9f; // 70% chance to chase when making decisions
+    private float chaseChance = 0.7f; // 70% chance to chase when making decisions
     private GhostBehavior currentBehavior = GhostBehavior.RANDOM; // Default behavior
     private float behaviorTimer = 0;
     private static final float BEHAVIOR_CHANGE_INTERVAL = 5.0f; // seconds before considering behavior change
@@ -73,9 +85,27 @@ public class NonPlayableCharacter extends MovableEntity implements Collidable, A
     public void moveAIControlled() {
         float deltaTime = com.badlogic.gdx.Gdx.graphics.getDeltaTime(); 
         
-        // Update behavior timer
+        // Update timers
         behaviorTimer += deltaTime;
         directionChangeTimer += deltaTime;
+        
+        // If in collision state, update collision state timer
+        if (inCollisionState) {
+            collisionStateDuration += deltaTime;
+            if (collisionStateDuration >= COLLISION_STATE_MAX_DURATION) {
+                // Exit collision state after max duration
+                inCollisionState = false;
+                collisionStateDuration = 0;
+                
+                // Return to normal behavior
+                decideBehavior();
+            } else {
+                // Continue with current velocity while in collision state
+                Vector2 position = getPosition();
+                position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+                return; // Skip normal movement logic while in collision state
+            }
+        }
         
         // Consider changing behavior
         if (behaviorTimer >= BEHAVIOR_CHANGE_INTERVAL) {
@@ -278,5 +308,22 @@ public class NonPlayableCharacter extends MovableEntity implements Collidable, A
         float boxWidth = getWidth() > 0 ? getWidth() : getTexture().getWidth();
         float boxHeight = getHeight() > 0 ? getHeight() : getTexture().getHeight();
         return new Rectangle(getPosition().x, getPosition().y, boxWidth, boxHeight);
+    }
+
+    /**
+     * Sets the collision state of the ghost
+     * @param inCollision Whether the ghost is in a collision state
+     */
+    public void setCollisionState(boolean inCollision) {
+        this.inCollisionState = inCollision;
+        this.collisionStateDuration = 0;
+    }
+    
+    /**
+     * Checks whether the ghost is currently responding to a collision
+     * @return True if ghost is in collision state
+     */
+    public boolean isInCollisionState() {
+        return inCollisionState;
     }
 }
