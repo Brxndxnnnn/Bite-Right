@@ -13,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 public class ResultsScene extends Scene {
 	private final TextButton quitBtn;
 
 	public ResultsScene(SceneManager sceneManager) {
 		super(sceneManager);
+		
         quitBtn = new TextButton("Quit", skin);
         quitBtn.getLabel().setFontScale(0.5f);
         quitBtn.getLabel().setColor(Color.SKY);
@@ -40,7 +42,7 @@ public class ResultsScene extends Scene {
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
 			}
 		});
 	}

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 public class SettingsScene extends Scene{
 	private final TextButton saveBtn;
@@ -51,15 +52,14 @@ public class SettingsScene extends Scene{
 		saveBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
 			}
 		});
 		
 		cancelBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				System.out.println("Going to settings");
-				sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
 			}
 		});
 	}

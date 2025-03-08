@@ -15,6 +15,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 public class HomeScene extends Scene{
 	private final TextButton startBtn;
@@ -24,7 +25,7 @@ public class HomeScene extends Scene{
 
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
-
+		
 		setAudioFilePath("home.mp3");
 		AudioPlayer.getInstance().playAudio(getAudioFilePath());
 		
@@ -71,14 +72,14 @@ public class HomeScene extends Scene{
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
 			}
 		});
 		
 		settingsBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new SettingsScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.SETTINGS, SceneTransitionType.NORMAL);
 			}
 		});
 

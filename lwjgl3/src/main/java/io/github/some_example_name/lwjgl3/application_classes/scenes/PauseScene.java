@@ -16,6 +16,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 public class PauseScene extends Scene{
 	private final TextButton resumeBtn;
@@ -68,28 +69,28 @@ public class PauseScene extends Scene{
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESUME); // need go back to the old play scene
+				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME); // need go back to the old play scene
 			}
 		});
 
 		restartBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESTART); // need go back to the old play scene
+				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESTART); // need go back to the old play scene
 			}
 		});
 
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
 			}
 		});
 
 		// Set the keybinds required for this PlayScene
 		ioManager = new IOManager();
 
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESUME), true);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME), true);
 	}
 
     @Override

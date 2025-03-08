@@ -25,6 +25,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideBoundaryDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
@@ -164,14 +165,14 @@ public class PlayScene extends Scene {
         pauseBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE);
+                sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE);
             }
         });
         
         resultsBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.changeScene(new ResultsScene(sceneManager), SceneTransitionType.NORMAL);
+                sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
             }
         });
 
@@ -182,7 +183,7 @@ public class PlayScene extends Scene {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveUserLeft(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE), true);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
     }
 
     @Override
