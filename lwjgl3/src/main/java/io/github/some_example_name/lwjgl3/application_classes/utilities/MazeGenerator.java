@@ -1,4 +1,4 @@
-package io.github.some_example_name.lwjgl3.application_classes;
+package io.github.some_example_name.lwjgl3.application_classes.utilities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
