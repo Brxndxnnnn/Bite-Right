@@ -33,10 +33,17 @@ public class PauseScene extends Scene{
 		restartBtn = new TextButton("Restart", skin);
 		quitBtn = new TextButton("Quit", skin);
 		
-		resumeBtn.getLabel().setFontScale(0.6f);
-		restartBtn.getLabel().setFontScale(0.6f);
-		quitBtn.getLabel().setFontScale(0.6f);
+		resumeBtn.getLabel().setFontScale(0.5f);
+		restartBtn.getLabel().setFontScale(0.5f);
+		quitBtn.getLabel().setFontScale(0.5f);
 
+		resumeBtn.getLabel().setColor(Color.SKY);
+		resumeBtn.setColor(Color.ROYAL);
+		restartBtn.getLabel().setColor(Color.SKY);
+		restartBtn.setColor(Color.ROYAL);
+		quitBtn.getLabel().setColor(Color.SKY);
+		quitBtn.setColor(Color.ROYAL);
+		
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
 		titleTable.setFillParent(true);
@@ -50,18 +57,13 @@ public class PauseScene extends Scene{
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
 
-		resumeBtn.getLabel().setColor(Color.SKY);
-		resumeBtn.setColor(Color.ROYAL);
-		restartBtn.getLabel().setColor(Color.SKY);
-		restartBtn.setColor(Color.ROYAL);
-		quitBtn.getLabel().setColor(Color.SKY);
-		quitBtn.setColor(Color.ROYAL);
+
 		
-		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.75f, resumeBtn.getHeight() * 0.75f);
+		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.6f, resumeBtn.getHeight() * 0.6f);
 		buttonTable.row();
-		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.75f, restartBtn.getHeight() * 0.75f);
+		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.6f, restartBtn.getHeight() * 0.6f);
 		buttonTable.row();
-		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.75f, quitBtn.getHeight() * 0.75f);
+		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f);
 		
 		resumeBtn.addListener(new ClickListener() {
 			@Override
