@@ -2,10 +2,16 @@ package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDetector;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionManager;
@@ -18,17 +24,24 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionT
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideEnemyDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideFoodDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideWallDetector;
-import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
-import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 
 public class PlayScene extends Scene {
+    private final TextButton pauseBtn;
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
     private final MazeGenerator mazeGenerator;
+    private final int NUM_ENEMIES = 3; // Reduced for Pacman-style gameplay
+    private Player player;
+    private Label healthLabel;
 
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
@@ -38,34 +51,16 @@ public class PlayScene extends Scene {
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
 
-        // INITIALIZE ALL REQUIRED MANAGERS
+        // INITIALIZE ENTITY MANAGER
         entityManager = new EntityManager();
-        collisionManager = new CollisionManager();
-        ioManager = new IOManager();
+        
+        // Load wall texture
+        Texture wallTexture = new Texture("wall.png");
         
         // Create and generate maze
-        Texture wallTexture = new Texture("wall.png");
         mazeGenerator = new MazeGenerator(entityManager, screenWidth, screenHeight, wallTexture);
         mazeGenerator.generateMaze();
 
-        // Add player
-        Character player = addPlayer();
-
-        // Add enemies at specific maze positions
-        addEnemies();
-
-        // Set up all the collision detectors
-        setupCollisionDetectors();
-
-        // Set the keybinds required for this PlayScene
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.moveUserUp(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveUserLeft(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE), true);
-    }
-
-    private Character addPlayer() {
         // Get the cell size
         float cellSize = mazeGenerator.getCellSize();
         
@@ -74,7 +69,7 @@ public class PlayScene extends Scene {
         
         // Create player with appropriate size for the maze
         Texture playerTexture = new Texture("player.png");
-        Character player = new Character("Player", playerStartPos, playerTexture, 2f);
+        player = new Player("Player", playerStartPos, playerTexture, 2f);
         
         // Set player size to fit within a cell (slightly smaller for movement clearance)
         player.setSize(cellSize * 0.9f, cellSize * 0.9f);
@@ -87,19 +82,82 @@ public class PlayScene extends Scene {
         ));
         
         entityManager.addEntities(player);
-        return player;
+
+        // Add enemies at specific maze positions
+        addEnemies();
+
+        // Generate food in the maze
+        Texture healthyFoodTexture = new Texture("wall.png");  // Replace with your actual healthy food texture
+        Texture unhealthyFoodTexture = new Texture("wall.png"); // Replace with your actual unhealthy food texture
+        
+        FoodGenerator foodGenerator = new FoodGenerator(
+            entityManager, mazeGenerator, healthyFoodTexture, unhealthyFoodTexture);
+        
+        // Generate 20 food items
+        foodGenerator.generateFood(5);
+        
+        // Update collision detectors to include food
+        collisionManager = new CollisionManager();
+        setupCollisionDetectors();
+
+        // INITIALIZE BUTTONS
+        pauseBtn = new TextButton("Pause", skin);
+        pauseBtn.getLabel().setFontScale(0.6f);
+        pauseBtn.getLabel().setColor(Color.SKY);
+        pauseBtn.setColor(Color.ROYAL);
+        
+        // INITIALIZE MAIN TABLE FOR THE TITLE
+        Table titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.top(); // Align content to the top
+        stage.addActor(titleTable);
+
+        Label label = new Label("Pacman Game", skin);
+        titleTable.add(label).center().padTop(20); // Center the title at the top with padding
+        
+        // Add health label
+        healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
+        healthLabel.setColor(Color.WHITE);
+        titleTable.row();
+        titleTable.add(healthLabel).center().padTop(5);
+
+        // INITIALIZE BUTTON TABLE
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+        buttonTable.top().left(); // Align to top-left
+        stage.addActor(buttonTable);
+
+        // ADD BUTTONS TO THE BUTTON TABLE
+        buttonTable.add(pauseBtn).pad(10).size(pauseBtn.getWidth() * 0.75f, pauseBtn.getHeight() * 0.75f);
+
+        // INITIALIZE BUTTON LISTENERS
+        pauseBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE);
+            }
+        });
+
+        // Set the keybinds required for this PlayScene
+        ioManager = new IOManager();
+
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.moveUserUp(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveUserLeft(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE), true);
     }
 
     private void addEnemies() {
         float cellSize = mazeGenerator.getCellSize();
         Texture ghostTexture = new Texture("demon.png");
         
-        // Retrieve player entity from Entity List in EntityManager
-        Character playerEntity = null;
+        // Find player entity for the ghosts to target
+        Player playerEntity = null;
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
             Entity entity = entityManager.getEntity(i);
-            if (entity instanceof Character) {
-                playerEntity = (Character) entity;
+            if (entity instanceof Player) {
+                playerEntity = (Player) entity;
                 break;
             }
         }
@@ -107,13 +165,13 @@ public class PlayScene extends Scene {
         // Add ghosts at specific positions in the maze
         // Ghost 1 - top right corner (red ghost)
         Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
-        NonPlayableCharacter ghost1 = new NonPlayableCharacter("Ghost1", ghost1Pos, ghostTexture);
+        Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, ghostTexture);
         // Set ghost size to fit within a cell (slightly smaller for movement clearance)
         ghost1.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
         ghost1.setPosition(new Vector2(ghost1Pos.x + offset, ghost1Pos.y + offset));
-        // Set player as target (basically making the ghost chasing the player)
+        // Set player as target
         if (playerEntity != null) {
             ghost1.setTargetEntity(playerEntity);
         }
@@ -121,7 +179,7 @@ public class PlayScene extends Scene {
 
         // Ghost 2 - top left corner (pink ghost)
         Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
-        NonPlayableCharacter ghost2 = new NonPlayableCharacter("Ghost2", ghost2Pos, ghostTexture);
+        Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, ghostTexture);
         // Set ghost size to fit within a cell
         ghost2.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -134,7 +192,7 @@ public class PlayScene extends Scene {
 
         // Ghost 3 - bottom right corner (cyan ghost)
         Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
-        NonPlayableCharacter ghost3 = new NonPlayableCharacter("Ghost3", ghost3Pos, ghostTexture);
+        Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, ghostTexture);
         // Set ghost size to fit within a cell
         ghost3.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -151,35 +209,40 @@ public class PlayScene extends Scene {
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
             Entity entityA = entityManager.getEntity(i);
 
-            // Handles collision between Character -> (NPC & Wall)
-            if (entityA instanceof Character) {
+            // Handles collision between Player -> (NPC & Wall & Food)
+            if (entityA instanceof Player) {
                 for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
                     Entity entityB = entityManager.getEntity(x);
-                    if (entityB instanceof NonPlayableCharacter) {
+                    if (entityB instanceof Enemy) {
                         // Add player-enemy collision detector
-                        CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Character) entityA, (NonPlayableCharacter) entityB);
+                        CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Player) entityA, (Enemy) entityB);
                         collisionManager.addDetectors(playerCollideEnemyDetector);
                     }
 
                     if (entityB instanceof Wall){
-                        CollisionDetector playerCollideWallDetector = new PlayerCollideWallDetector((Character) entityA, (Wall) entityB);
+                        CollisionDetector playerCollideWallDetector = new PlayerCollideWallDetector((Player) entityA, (Wall) entityB);
                         collisionManager.addDetectors(playerCollideWallDetector);
+                    }
+                    
+                    if (entityB instanceof Food) {
+                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB);
+                        collisionManager.addDetectors(playerCollideFoodDetector);
                     }
                 }
             }
 
             // Handles collision between NPC -> (NPC & Wall)
-            if (entityA instanceof NonPlayableCharacter) {
+            if (entityA instanceof Enemy) {
                 for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
                     Entity entityB = entityManager.getEntity(y);
-                    if (entityB instanceof NonPlayableCharacter && entityA != entityB) {
+                    if (entityB instanceof Enemy && entityA != entityB) {
                         // Add enemy-enemy collision detector
-                        CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((NonPlayableCharacter) entityA, (NonPlayableCharacter) entityB);
+                        CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((Enemy) entityA, (Enemy) entityB);
                         collisionManager.addDetectors(enemyCollideEnemyDetector);
                     }
 
                     if (entityB instanceof Wall){
-                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((NonPlayableCharacter) entityA, (Wall) entityB);
+                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
                         collisionManager.addDetectors(enemyCollideWallDetector);
                     }
                 }
@@ -190,14 +253,34 @@ public class PlayScene extends Scene {
     @Override
     public void render(SpriteBatch batch) {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        // Update health display
+        healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
+        
+        // Draw UI
         stage.draw();
 
-        entityManager.drawEntites(batch); // Draw entities on the screen
-        entityManager.moveEntities(); // Move entities according to their movement logic
-        entityManager.checkForEntitiesToBeRemoved(); // Listens to entities removal
+        // Draw Entities on Screen
+        // batch.begin();
+        entityManager.drawEntites(batch);
+        // batch.end();
+        
+        // Update entity movement
+        entityManager.moveEntities();
+        entityManager.checkForEntitiesToBeRemoved();
+        
+        // Check collisions
         collisionManager.checkAllCollisions();
         collisionManager.checkForDetectorsToBeRemoved();
 
-        ioManager.handleInput(); // Listens and handles input
+        // Handle user input
+        ioManager.handleInput();
+        
+        // Check for game over condition
+        if (player.getHealth() <= 0) {
+            // Game over logic
+            System.out.println("Game Over! Player died.");
+            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+        }
     }
 }

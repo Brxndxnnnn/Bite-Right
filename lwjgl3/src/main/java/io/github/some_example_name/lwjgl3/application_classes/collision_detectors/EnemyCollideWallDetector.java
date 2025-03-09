@@ -4,14 +4,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
-import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
-public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayableCharacter, Wall> {
-    private final NonPlayableCharacter npc;
+public class EnemyCollideWallDetector extends EntityCollisionDetector<Enemy, Wall> {
+    private final Enemy npc;
     private final Wall wall;
 
-    public EnemyCollideWallDetector(NonPlayableCharacter npc, Wall wall) {
+    public EnemyCollideWallDetector(Enemy npc, Wall wall) {
         super(npc, wall);
         this.npc = npc;
         this.wall = wall;
@@ -49,7 +49,7 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayabl
                     if (Math.abs(npcVelocity.y) < 0.1f) {
                         // If not already moving vertically, choose a vertical direction
                         float yDir = Math.random() > 0.5f ? 1f : -1f;
-                        npc.setVelocity(new Vector2(0, yDir * NonPlayableCharacter.getBaseSpeed()));
+                        npc.setVelocity(new Vector2(0, yDir * Enemy.getBaseSpeed()));
                     } else {
                         // Continue with current vertical movement
                         npc.setVelocity(new Vector2(0, npcVelocity.y));
@@ -62,7 +62,7 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayabl
                     if (Math.abs(npcVelocity.y) < 0.1f) {
                         // If not already moving vertically, choose a vertical direction
                         float yDir = Math.random() > 0.5f ? 1f : -1f;
-                        npc.setVelocity(new Vector2(0, yDir * NonPlayableCharacter.getBaseSpeed()));
+                        npc.setVelocity(new Vector2(0, yDir * Enemy.getBaseSpeed()));
                     } else {
                         // Continue with current vertical movement
                         npc.setVelocity(new Vector2(0, npcVelocity.y));
@@ -78,7 +78,7 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayabl
                     if (Math.abs(npcVelocity.x) < 0.1f) {
                         // If not already moving horizontally, choose a horizontal direction
                         float xDir = Math.random() > 0.5f ? 1f : -1f;
-                        npc.setVelocity(new Vector2(xDir * NonPlayableCharacter.getBaseSpeed(), 0));
+                        npc.setVelocity(new Vector2(xDir * Enemy.getBaseSpeed(), 0));
                     } else {
                         // Continue with current horizontal movement
                         npc.setVelocity(new Vector2(npcVelocity.x, 0));
@@ -91,7 +91,7 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<NonPlayabl
                     if (Math.abs(npcVelocity.x) < 0.1f) {
                         // If not already moving horizontally, choose a horizontal direction
                         float xDir = Math.random() > 0.5f ? 1f : -1f;
-                        npc.setVelocity(new Vector2(xDir * NonPlayableCharacter.getBaseSpeed(), 0));
+                        npc.setVelocity(new Vector2(xDir * Enemy.getBaseSpeed(), 0));
                     } else {
                         // Continue with current horizontal movement
                         npc.setVelocity(new Vector2(npcVelocity.x, 0));

@@ -4,14 +4,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
-import io.github.some_example_name.lwjgl3.application_classes.entities.Character;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
-public class PlayerCollideWallDetector extends EntityCollisionDetector<Character, Wall>{
-	private final Character character;
+public class PlayerCollideWallDetector extends EntityCollisionDetector<Player, Wall>{
+	private final Player character;
 	private final Wall wall;
 
-    public PlayerCollideWallDetector(Character character, Wall wall) {
+    public PlayerCollideWallDetector(Player character, Wall wall) {
         super(character, wall);
 		this.character = character;
 		this.wall = wall;

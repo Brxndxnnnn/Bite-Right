@@ -12,7 +12,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 
-public class NonPlayableCharacter extends MovableEntity implements Collidable, AIMovable {
+public class Enemy extends MovableEntity implements Collidable, AIMovable {
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 1.0f; // seconds between random direction changes
     private static final float GHOST_SPEED = 150f; // Speed for ghost movement
@@ -46,13 +46,13 @@ public class NonPlayableCharacter extends MovableEntity implements Collidable, A
         SCATTER  // Scatter to predefined corner
     }
 
-    public NonPlayableCharacter() {
+    public Enemy() {
         super();
         this.velocity = getRandomCardinalDirection().scl(GHOST_SPEED);
         this.previousDirection = new Vector2(velocity).nor();
     }
 
-    public NonPlayableCharacter(String name, Vector2 position, Texture texture) {
+    public Enemy(String name, Vector2 position, Texture texture) {
         super(name, position, texture);
         this.velocity = getRandomCardinalDirection().scl(GHOST_SPEED);
         this.previousDirection = new Vector2(velocity).nor();

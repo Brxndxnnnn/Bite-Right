@@ -4,13 +4,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
-import io.github.some_example_name.lwjgl3.application_classes.entities.NonPlayableCharacter;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
 
-public class EnemyCollideEnemyDetector extends EntityCollisionDetector<NonPlayableCharacter, NonPlayableCharacter> {
-    private final NonPlayableCharacter npc1;
-    private final NonPlayableCharacter npc2;
+public class EnemyCollideEnemyDetector extends EntityCollisionDetector<Enemy, Enemy> {
+    private final Enemy npc1;
+    private final Enemy npc2;
 
-    public EnemyCollideEnemyDetector(NonPlayableCharacter npc1, NonPlayableCharacter npc2) {
+    public EnemyCollideEnemyDetector(Enemy npc1, Enemy npc2) {
         super(npc1, npc2);
         this.npc1 = npc1;
         this.npc2 = npc2;
@@ -76,7 +76,7 @@ public class EnemyCollideEnemyDetector extends EntityCollisionDetector<NonPlayab
         Vector2 dir2 = new Vector2(Math.signum(x2), Math.signum(y2));
         
         // Set velocities using the base speed of ghosts
-        float speed = NonPlayableCharacter.getBaseSpeed();
+        float speed = Enemy.getBaseSpeed();
         
         if (dir1.x != 0) {
             npc1.setVelocity(new Vector2(dir1.x * speed, 0));
