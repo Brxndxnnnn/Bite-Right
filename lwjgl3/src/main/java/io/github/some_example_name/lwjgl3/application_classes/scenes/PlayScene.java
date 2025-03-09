@@ -7,11 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDetector;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionManager;
@@ -34,12 +31,10 @@ import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGene
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 
 public class PlayScene extends Scene {
-    private final TextButton pauseBtn;
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
     private final MazeGenerator mazeGenerator;
-    private final int NUM_ENEMIES = 3; // Reduced for Pacman-style gameplay
     private Player player;
     private Label healthLabel;
 
@@ -55,7 +50,7 @@ public class PlayScene extends Scene {
         entityManager = new EntityManager();
         
         // Load wall texture
-        Texture wallTexture = new Texture("wall.png");
+        Texture wallTexture = new Texture("entities_images/wall.png");
         
         // Create and generate maze
         mazeGenerator = new MazeGenerator(entityManager, screenWidth, screenHeight, wallTexture);
@@ -68,7 +63,7 @@ public class PlayScene extends Scene {
         Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1);
         
         // Create player with appropriate size for the maze
-        Texture playerTexture = new Texture("player.png");
+        Texture playerTexture = new Texture("entities_images/player.png");
         player = new Player("Player", playerStartPos, playerTexture, 2f);
         
         // Set player size to fit within a cell (slightly smaller for movement clearance)
@@ -87,8 +82,8 @@ public class PlayScene extends Scene {
         addEnemies();
 
         // Generate food in the maze
-        Texture healthyFoodTexture = new Texture("wall.png");  // Replace with your actual healthy food texture
-        Texture unhealthyFoodTexture = new Texture("wall.png"); // Replace with your actual unhealthy food texture
+        Texture healthyFoodTexture = new Texture("entities_images/healthyfood.png");  // Replace with your actual healthy food texture
+        Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Replace with your actual unhealthy food texture
         
         FoodGenerator foodGenerator = new FoodGenerator(
             entityManager, mazeGenerator, healthyFoodTexture, unhealthyFoodTexture);
@@ -100,12 +95,6 @@ public class PlayScene extends Scene {
         collisionManager = new CollisionManager();
         setupCollisionDetectors();
 
-        // INITIALIZE BUTTONS
-        pauseBtn = new TextButton("Pause", skin);
-        pauseBtn.getLabel().setFontScale(0.6f);
-        pauseBtn.getLabel().setColor(Color.SKY);
-        pauseBtn.setColor(Color.ROYAL);
-        
         // INITIALIZE MAIN TABLE FOR THE TITLE
         Table titleTable = new Table();
         titleTable.setFillParent(true);
@@ -121,23 +110,6 @@ public class PlayScene extends Scene {
         titleTable.row();
         titleTable.add(healthLabel).center().padTop(5);
 
-        // INITIALIZE BUTTON TABLE
-        Table buttonTable = new Table();
-        buttonTable.setFillParent(true);
-        buttonTable.top().left(); // Align to top-left
-        stage.addActor(buttonTable);
-
-        // ADD BUTTONS TO THE BUTTON TABLE
-        buttonTable.add(pauseBtn).pad(10).size(pauseBtn.getWidth() * 0.75f, pauseBtn.getHeight() * 0.75f);
-
-        // INITIALIZE BUTTON LISTENERS
-        pauseBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE);
-            }
-        });
-
         // Set the keybinds required for this PlayScene
         ioManager = new IOManager();
 
@@ -150,7 +122,7 @@ public class PlayScene extends Scene {
 
     private void addEnemies() {
         float cellSize = mazeGenerator.getCellSize();
-        Texture ghostTexture = new Texture("demon.png");
+        Texture ghostTexture = new Texture("entities_images/demon.png");
         
         // Find player entity for the ghosts to target
         Player playerEntity = null;
