@@ -23,13 +23,11 @@ public class HomeScene extends Scene{
 
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
+		AudioPlayer.getInstance().setSceneBGM("home.mp3");
 
-		setAudioFilePath("home.mp3");
-		AudioPlayer.getInstance().playAudio(getAudioFilePath());
-		
         startBtn = new TextButton("Start", skin);
 		quitBtn = new TextButton("Quit", skin);
-		
+
 		startBtn.getLabel().setFontScale(0.6f);
 		quitBtn.getLabel().setFontScale(0.6f);
 
@@ -46,12 +44,12 @@ public class HomeScene extends Scene{
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
-		
+
 		startBtn.getLabel().setColor(Color.SKY);
 		startBtn.setColor(Color.ROYAL);
 		quitBtn.getLabel().setColor(Color.SKY);
 		quitBtn.setColor(Color.ROYAL);
-		
+
 		buttonTable.center();
 		buttonTable.padTop(170);
 		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.75f, startBtn.getHeight() * 0.75f);
@@ -71,7 +69,7 @@ public class HomeScene extends Scene{
 				Gdx.app.exit();
 			}
 		});
-		
+
 		// Set the keybinds required for this HomeScene
 		ioManager = new IOManager();
 

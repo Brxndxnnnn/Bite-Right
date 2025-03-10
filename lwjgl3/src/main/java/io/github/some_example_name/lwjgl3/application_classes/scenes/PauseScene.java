@@ -25,14 +25,12 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
-
-		setAudioFilePath("pause.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
-		AudioPlayer.getInstance().playAudio(getAudioFilePath());
+		AudioPlayer.getInstance().setSceneBGM("pause.mp3");
 
 		resumeBtn = new TextButton("Resume", skin);
 		restartBtn = new TextButton("Restart", skin);
 		quitBtn = new TextButton("Quit", skin);
-		
+
 		resumeBtn.getLabel().setFontScale(0.6f);
 		restartBtn.getLabel().setFontScale(0.6f);
 		quitBtn.getLabel().setFontScale(0.6f);
@@ -56,13 +54,13 @@ public class PauseScene extends Scene{
 		restartBtn.setColor(Color.ROYAL);
 		quitBtn.getLabel().setColor(Color.SKY);
 		quitBtn.setColor(Color.ROYAL);
-		
+
 		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.75f, resumeBtn.getHeight() * 0.75f);
 		buttonTable.row();
 		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.75f, restartBtn.getHeight() * 0.75f);
 		buttonTable.row();
 		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.75f, quitBtn.getHeight() * 0.75f);
-		
+
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

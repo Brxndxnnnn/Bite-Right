@@ -44,9 +44,7 @@ public class PlayScene extends Scene {
 
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
-        
-        setAudioFilePath("play.mp3");
-        AudioPlayer.getInstance().playAudio(getAudioFilePath());
+        AudioPlayer.getInstance().setSceneBGM("play.mp3");
 
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
@@ -126,14 +124,14 @@ public class PlayScene extends Scene {
 			}
 		}
 
-		
+
 
         // INITIALIZE BUTTONS
         pauseBtn = new TextButton("Pause", skin);
         pauseBtn.getLabel().setFontScale(0.6f);
         pauseBtn.getLabel().setColor(Color.SKY);
         pauseBtn.setColor(Color.ROYAL);
-		
+
         // INITIALIZE MAIN TABLE FOR THE TITLE
         Table titleTable = new Table();
         titleTable.setFillParent(true);
@@ -214,4 +212,4 @@ public class PlayScene extends Scene {
         return position;
     }
 }
-       
+
