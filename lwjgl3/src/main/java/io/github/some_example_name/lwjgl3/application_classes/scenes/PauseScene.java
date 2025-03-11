@@ -16,6 +16,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 public class PauseScene extends Scene{
 	private final TextButton resumeBtn;
@@ -33,10 +34,17 @@ public class PauseScene extends Scene{
 		restartBtn = new TextButton("Restart", skin);
 		quitBtn = new TextButton("Quit", skin);
 		
-		resumeBtn.getLabel().setFontScale(0.6f);
-		restartBtn.getLabel().setFontScale(0.6f);
-		quitBtn.getLabel().setFontScale(0.6f);
+		resumeBtn.getLabel().setFontScale(0.5f);
+		restartBtn.getLabel().setFontScale(0.5f);
+		quitBtn.getLabel().setFontScale(0.5f);
 
+		resumeBtn.getLabel().setColor(Color.SKY);
+		resumeBtn.setColor(Color.ROYAL);
+		restartBtn.getLabel().setColor(Color.SKY);
+		restartBtn.setColor(Color.ROYAL);
+		quitBtn.getLabel().setColor(Color.SKY);
+		quitBtn.setColor(Color.ROYAL);
+		
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
 		titleTable.setFillParent(true);
@@ -50,44 +58,39 @@ public class PauseScene extends Scene{
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
 
-		resumeBtn.getLabel().setColor(Color.SKY);
-		resumeBtn.setColor(Color.ROYAL);
-		restartBtn.getLabel().setColor(Color.SKY);
-		restartBtn.setColor(Color.ROYAL);
-		quitBtn.getLabel().setColor(Color.SKY);
-		quitBtn.setColor(Color.ROYAL);
+
 		
-		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.75f, resumeBtn.getHeight() * 0.75f);
+		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.6f, resumeBtn.getHeight() * 0.6f);
 		buttonTable.row();
-		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.75f, restartBtn.getHeight() * 0.75f);
+		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.6f, restartBtn.getHeight() * 0.6f);
 		buttonTable.row();
-		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.75f, quitBtn.getHeight() * 0.75f);
+		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f);
 		
 		resumeBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESUME); // need go back to the old play scene
+				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME); // need go back to the old play scene
 			}
 		});
 
 		restartBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESTART); // need go back to the old play scene
+				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESTART); // need go back to the old play scene
 			}
 		});
 
 		quitBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
 			}
 		});
 
 		// Set the keybinds required for this PlayScene
 		ioManager = new IOManager();
 
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.RESUME), true);
+		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME), true);
 	}
 
     @Override

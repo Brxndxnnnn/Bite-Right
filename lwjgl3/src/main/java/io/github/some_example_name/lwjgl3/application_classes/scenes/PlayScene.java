@@ -25,6 +25,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideBoundaryDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
@@ -37,6 +38,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
 public class PlayScene extends Scene {
     private final TextButton pauseBtn;
+    private final TextButton resultsBtn;
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
@@ -130,9 +132,14 @@ public class PlayScene extends Scene {
 
         // INITIALIZE BUTTONS
         pauseBtn = new TextButton("Pause", skin);
-        pauseBtn.getLabel().setFontScale(0.6f);
+        pauseBtn.getLabel().setFontScale(0.5f);
         pauseBtn.getLabel().setColor(Color.SKY);
         pauseBtn.setColor(Color.ROYAL);
+        
+        resultsBtn = new TextButton("Results", skin);
+        resultsBtn.getLabel().setFontScale(0.5f);
+        resultsBtn.getLabel().setColor(Color.SKY);
+        resultsBtn.setColor(Color.ROYAL);
 		
         // INITIALIZE MAIN TABLE FOR THE TITLE
         Table titleTable = new Table();
@@ -150,13 +157,22 @@ public class PlayScene extends Scene {
         stage.addActor(buttonTable);
 
         // ADD BUTTONS TO THE BUTTON TABLE
-        buttonTable.add(pauseBtn).pad(10).size(pauseBtn.getWidth() * 0.75f, pauseBtn.getHeight() * 0.75f);
-
+        buttonTable.add(pauseBtn).pad(10).size(pauseBtn.getWidth() * 0.6f, pauseBtn.getHeight() * 0.6f);
+        // ADD BUTTONS TO THE BUTTON TABLE
+        buttonTable.add(resultsBtn).pad(10).size(resultsBtn.getWidth() * 0.6f, resultsBtn.getHeight() * 0.6f).expandX().right();
+        
         // INITIALIZE BUTTON LISTENERS
         pauseBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE);
+                sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE);
+            }
+        });
+        
+        resultsBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
             }
         });
 
@@ -167,7 +183,7 @@ public class PlayScene extends Scene {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveUserLeft(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(new PauseScene(sceneManager), SceneTransitionType.PAUSE), true);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
     }
 
     @Override
