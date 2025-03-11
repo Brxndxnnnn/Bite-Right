@@ -15,9 +15,11 @@ import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 public class HomeScene extends Scene{
 	private final TextButton startBtn;
+	private final TextButton settingsBtn;
 	private final TextButton quitBtn;
 	private final IOManager ioManager;
 
@@ -26,8 +28,9 @@ public class HomeScene extends Scene{
 		AudioPlayer.getInstance().setSceneBGM("home.mp3");
 
         startBtn = new TextButton("Start", skin);
+		settingsBtn = new TextButton("Settings", skin);
 		quitBtn = new TextButton("Quit", skin);
-
+		
 		startBtn.getLabel().setFontScale(0.6f);
 		quitBtn.getLabel().setFontScale(0.6f);
 
@@ -47,19 +50,31 @@ public class HomeScene extends Scene{
 
 		startBtn.getLabel().setColor(Color.SKY);
 		startBtn.setColor(Color.ROYAL);
+		settingsBtn.getLabel().setColor(Color.SKY);
+		settingsBtn.setColor(Color.ROYAL);
 		quitBtn.getLabel().setColor(Color.SKY);
 		quitBtn.setColor(Color.ROYAL);
-
+		
 		buttonTable.center();
 		buttonTable.padTop(170);
-		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.75f, startBtn.getHeight() * 0.75f);
+		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.6f, startBtn.getHeight() * 0.6f);
 		buttonTable.row();
-		buttonTable.add(quitBtn).padTop(20).size(quitBtn.getWidth() * 0.75f, quitBtn.getHeight() * 0.75f);
-//		buttonTable.debug();
+		buttonTable.add(settingsBtn).padTop(10).size(settingsBtn.getWidth() * 0.6f, settingsBtn.getHeight() * 0.6f);
+		buttonTable.row();
+		buttonTable.add(quitBtn).padTop(10).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f);
+
+
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(new PlayScene(sceneManager), SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
+			}
+		});
+		
+		settingsBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneManager.changeScene(SceneType.SETTINGS, SceneTransitionType.NORMAL);
 			}
 		});
 
@@ -69,7 +84,7 @@ public class HomeScene extends Scene{
 				Gdx.app.exit();
 			}
 		});
-
+		
 		// Set the keybinds required for this HomeScene
 		ioManager = new IOManager();
 

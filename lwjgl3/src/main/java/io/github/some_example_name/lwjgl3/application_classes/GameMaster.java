@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.scenes.HomeScene;
 public class GameMaster extends ApplicationAdapter {
 	
@@ -14,7 +15,7 @@ public class GameMaster extends ApplicationAdapter {
     @Override
     public void create(){
         sceneManager = new SceneManager(); // Create a new instance of SceneManager
-        sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL); // Render the first scene accordingly
+        sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL); // Render the first scene accordingly
         batch = new SpriteBatch();
     }
 
