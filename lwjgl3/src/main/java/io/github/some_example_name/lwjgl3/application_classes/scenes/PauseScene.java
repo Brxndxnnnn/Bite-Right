@@ -26,9 +26,7 @@ public class PauseScene extends Scene{
 
 	public PauseScene(SceneManager sceneManager) {
 		super(sceneManager);
-
-		setAudioFilePath("pause.mp3"); // WENJUN CHANGE FILEPATH OF THIS!!
-		AudioPlayer.getInstance().playAudio(getAudioFilePath());
+		AudioPlayer.getInstance().setSceneBGM("pause.mp3");
 
 		resumeBtn = new TextButton("Resume", skin);
 		restartBtn = new TextButton("Restart", skin);

@@ -6,27 +6,27 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class Scene {
-	private String audioFilePath;
+//	private String audioFilePath;
 	protected Stage stage;
 	protected Skin skin;
 
 	// Constructor
 	public Scene(SceneManager sceneManager) {
-		audioFilePath = null;
+//		audioFilePath = null;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 	}
-	
+
 	// Getter for AudioFilePath
-	public String getAudioFilePath() {
-		return audioFilePath;
-	}
+//	public String getAudioFilePath() {
+//		return audioFilePath;
+//	}
 
 	// Setter for AudioFilePath
-	public void setAudioFilePath(String audioFilePath){
-		this.audioFilePath = audioFilePath;
-	}
+//	public void setAudioFilePath(String audioFilePath){
+//		this.audioFilePath = audioFilePath;
+//	}
 
 	// This function disposes the Scene
 	public void dispose() {

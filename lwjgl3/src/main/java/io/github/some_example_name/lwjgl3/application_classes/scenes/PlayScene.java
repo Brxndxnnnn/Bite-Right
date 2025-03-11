@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDetector;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
@@ -45,7 +46,7 @@ public class PlayScene extends Scene {
 
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
-        setAudioFilePath("play.mp3");
+        AudioPlayer.getInstance().setSceneBGM("play.mp3");
 
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();

@@ -6,99 +6,118 @@ import com.badlogic.gdx.audio.Music;
 // Audioplayer manages basic audio features such as Playing Audio, Pausing, Setting volume, etc
 
 public class AudioPlayer {
-	private static AudioPlayer instance = null;
-	private float volume;
-	private Music sound;
+    private static AudioPlayer instance = null;
+    private float volume;
+    private Music sound;
+    private String currentTrack;
 
-	// Default Constructor
-	private AudioPlayer() {
-		sound = null;
-		volume = 100;
-	}
+    // Default Constructor
+    private AudioPlayer() {
+        sound = null;
 
-	public static synchronized AudioPlayer getInstance(){
-		if (instance == null){
-			instance = new AudioPlayer();
-		}
-		return instance;
-	}
+        volume = 100;
+    }
 
-	// Constructor 1 (Overloading)
-	public void playAudio(String fileName) {
-		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-		volume = 100;
-		sound.setVolume(volume / 100.0f); 
-		sound.play();
-	}
+    public static synchronized AudioPlayer getInstance() {
+        if (instance == null) {
+            instance = new AudioPlayer();
+        }
+        return instance;
+    }
 
-	// Constructor 2 (Overloading)
-	public void playAudio(String fileName, Boolean loopAudio) {
-		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-		volume = 100;
-		loopAudio(loopAudio);
-		sound.setVolume(volume / 100.0f); 
-		sound.play();
-		System.out.println("Play Audio");
-	}
+    public void setSceneBGM(String fileName) {
+        if (fileName.equals(currentTrack)) {
+            return;
+        }
+        stopAudio(); // Stop previous audio
+        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+        sound.setLooping(true);
+        sound.setVolume(volume / 100.0f);
+        sound.play();
+        currentTrack = fileName;
+    }
 
-	// This function pauses the Audio
-	public void pauseAudio() {
+    public void playSFX(String fileName) {
+        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+        sound.setLooping(false);
+        sound.setVolume(volume / 100.0f);
+        sound.play();
+    }
+//	// Constructor 1 (Overloading)
+//	public void playAudio(String fileName) {
+//		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+//		volume = 100;
+//		sound.setVolume(volume / 100.0f);
+//		sound.play();
+//	}
+//
+
+    public void playSFX(String fileName, Boolean loopAudio) {
+        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+        volume = 100;
+        loopAudio(loopAudio);
+        sound.setVolume(volume / 100.0f);
+        sound.play();
+        System.out.println("Play Audio" + fileName);
+    }
+
+    // This function pauses the Audio
+    public void pauseAudio() {
         if (sound != null && sound.isPlaying()) {
             sound.pause();
             System.out.println("Pause Audio");
         }
-	}
+    }
 
-	// This function resumes the Audio
-	public void resumeAudio() {
+    // This function resumes the Audio
+    public void resumeAudio() {
         if (sound != null && !sound.isPlaying()) {
             sound.play();
             System.out.println("Resume Audio");
         }
-	}
+    }
 
-	// This function stops and dispose the Audio
-	public void stopAudio() {
+    // This function stops and dispose the Audio
+    public void stopAudio() {
         if (sound != null) {
             sound.stop();
-			disposeAudio();
+            disposeAudio();
             System.out.println("Stop and Dispose Audio");
         }
-	}
-	
-	// Getter for Volume
-	public float getVolume() {
-		return volume;
-	}
-	
-	// Setter for Volume
-	public void setVolume(float volume) {
+    }
+
+    // Getter for Volume
+    public float getVolume() {
+        return volume;
+    }
+
+    // Setter for Volume
+    public void setVolume(float volume) {
         if (volume < 0) {
             volume = 0;
-        }
-
-        else if (volume > 100) {
+        } else if (volume > 100) {
             volume = 100;
         }
 
         this.volume = volume;
 
         if (sound != null) {
-            sound.setVolume(volume / 100.0f); 
-            
+            sound.setVolume(volume / 100.0f);
+
         }
-        
+
         System.out.printf("volume %f\n", volume);
-	}
+    }
 
-	// This function loops the current Audio
-	public void loopAudio(boolean loop) {
-		sound.setLooping(loop);
-		System.out.printf("loop %s\n", loop);
-	}
+    // This function loops the current Audio
+    public void loopAudio(boolean loop) {
+        sound.setLooping(loop);
+        System.out.printf("loop %s\n", loop);
+    }
 
-	// This function disposes the current audio;
-	public void disposeAudio() {
-		sound.dispose();
-	}
+    // This function disposes the current audio;
+    public void disposeAudio() {
+        sound.dispose();
+    }
 }
+

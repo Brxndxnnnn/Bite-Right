@@ -25,9 +25,7 @@ public class HomeScene extends Scene{
 
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
-		
-		setAudioFilePath("home.mp3");
-		AudioPlayer.getInstance().playAudio(getAudioFilePath());
+		AudioPlayer.getInstance().setSceneBGM("home.mp3");
 		
         startBtn = new TextButton("Start", skin);
 		settingsBtn = new TextButton("Settings", skin);
