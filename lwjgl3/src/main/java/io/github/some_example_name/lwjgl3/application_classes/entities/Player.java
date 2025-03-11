@@ -13,10 +13,10 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     private final float friction; // Friction for smooth deceleration
     private Vector2 lastDirection; // Track last movement direction for animation
     
-    // Player stats
+    // Character stats
     private int maxHealth = 100;
     private int health = 100;
-    private float strength = 1.0f; // Multiplier for Player abilities
+    private float strength = 1.0f; // Multiplier for character abilities
 
     public Player(String name, Vector2 position, Texture texture, float speed) {
         super(name, position, texture, speed);
@@ -41,7 +41,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         velocity.x = 0;          // Ensure no diagonal movement for grid-based games
         lastDirection.set(0, 1); // Update last direction
         
-        // Move the Player
+        // Move the character
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
@@ -57,7 +57,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         velocity.x = 0;           // Ensure no diagonal movement for grid-based games
         lastDirection.set(0, -1); // Update last direction
         
-        // Move the Player
+        // Move the character
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
@@ -73,7 +73,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         velocity.y = 0;           // Ensure no diagonal movement for grid-based games
         lastDirection.set(-1, 0); // Update last direction
         
-        // Move the Player
+        // Move the character
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
@@ -89,7 +89,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         velocity.y = 0;          // Ensure no diagonal movement for grid-based games
         lastDirection.set(1, 0); // Update last direction
         
-        // Move the Player
+        // Move the character
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
@@ -106,7 +106,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Gets the current health of the Player
+     * Gets the current health of the character
      * @return Current health
      */
     public int getHealth() {
@@ -114,7 +114,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Gets the maximum health of the Player
+     * Gets the maximum health of the character
      * @return Maximum health
      */
     public int getMaxHealth() {
@@ -122,7 +122,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Gets the current strength of the Player
+     * Gets the current strength of the character
      * @return Current strength multiplier
      */
     public float getStrength() {
@@ -130,32 +130,43 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Adjusts the Player's health by the specified amount
-     * @param amount Amount to adjust health by (positive heals, negative damages)
+     * Sets the player's health to a specific value
+     * @param newHealth The new health value
      */
-    public void adjustHealth(int amount) {
-        health += amount;
-        if (health > maxHealth) {
-            health = maxHealth;
-        } else if (health < 0) {
+    public void setHealth(int newHealth) {
+        health = newHealth;
+        if (health < 0) {
             health = 0;
-            // Player death could be handled here
-            System.out.println("Player died!");
+        } else if (health > maxHealth) {
+            health = maxHealth;
         }
-        System.out.println("Player health: " + health + "/" + maxHealth);
+        
+        // Check for death
+        if (health <= 0) {
+            System.out.println("Player has died!");
+            // You could trigger additional death effects here
+        }
     }
     
     /**
-     * Adjusts the Player's strength by the specified amount
+     * Adjusts the character's health by the specified amount
+     * @param amount Amount to adjust health by (positive heals, negative damages)
+     */
+    public void adjustHealth(int amount) {
+        setHealth(health + amount);
+    }
+    
+    /**
+     * Adjusts the character's strength by the specified amount
      * @param amount Amount to adjust strength by
      */
     public void adjustStrength(float amount) {
         strength += amount;
-        System.out.println("Player strength: " + strength);
+        System.out.println("Character strength: " + strength);
     }
     
     /**
-     * Increases the Player's maximum health
+     * Increases the character's maximum health
      * @param amount Amount to increase max health by
      */
     public void increaseMaxHealth(int amount) {

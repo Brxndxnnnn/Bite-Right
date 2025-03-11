@@ -17,6 +17,11 @@ public abstract class Food extends NonMovableEntity implements Collidable {
     protected boolean consumed;
     protected FoodType type;
     
+    // Expiration related fields
+    protected float lifespanInSeconds;
+    protected float elapsedTime;
+    protected boolean expired;
+    
     /**
      * Enumeration for different food types
      */
@@ -32,13 +37,17 @@ public abstract class Food extends NonMovableEntity implements Collidable {
      * @param position Position in the maze
      * @param texture Food texture
      * @param type Food type (healthy or unhealthy)
+     * @param lifespanInSeconds How long the food will exist before expiring
      */
-    public Food(String name, Vector2 position, Texture texture, FoodType type) {
+    public Food(String name, Vector2 position, Texture texture, FoodType type, float lifespanInSeconds) {
         super(name, position, texture);
         this.width = texture.getWidth();
         this.height = texture.getHeight();
         this.consumed = false;
         this.type = type;
+        this.lifespanInSeconds = lifespanInSeconds;
+        this.elapsedTime = 0f;
+        this.expired = false;
     }
     
     /**
@@ -81,6 +90,38 @@ public abstract class Food extends NonMovableEntity implements Collidable {
         this.height = height;
     }
     
+    /**
+     * Updates the food's elapsed time and checks for expiration
+     * @param deltaTime Time elapsed since last update
+     */
+    public void update(float deltaTime) {
+        if (!consumed && !expired) {
+            elapsedTime += deltaTime;
+            
+            // Check for expiration
+            if (elapsedTime >= lifespanInSeconds) {
+                expired = true;
+                setToBeRemoved();
+            }
+        }
+    }
+    
+    /**
+     * Checks if the food has expired
+     * @return True if the food has expired
+     */
+    public boolean isExpired() {
+        return expired;
+    }
+    
+    /**
+     * Gets the remaining lifetime as a percentage (0-1)
+     * @return Percentage of life remaining
+     */
+    public float getRemainingLifePercentage() {
+        return Math.max(0, 1 - (elapsedTime / lifespanInSeconds));
+    }
+    
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, width, height);
@@ -88,7 +129,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
     
     @Override
     public void draw(SpriteBatch batch) {
-        if (!consumed) {
+        if (!consumed && !expired) {
             batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);
         }
     }

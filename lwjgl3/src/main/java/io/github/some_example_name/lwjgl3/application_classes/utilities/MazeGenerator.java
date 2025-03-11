@@ -1,12 +1,16 @@
 package io.github.some_example_name.lwjgl3.application_classes.utilities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
 public class MazeGenerator {
+    private final List<Wall> wallList;
+
     // Maze layout (1 = wall, 0 = path)
     private static final int[][] MAZE_LAYOUT = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -30,34 +34,24 @@ public class MazeGenerator {
     private static final int GRID_WIDTH = 15;
     private static final int GRID_HEIGHT = 15;
 
-    private final EntityManager entityManager;
     private final float cellSize;
-    private final Texture wallTexture;
-
-    /**
-     * Creates a new MazeGenerator
-     * 
-     * @param entityManager The entity manager to add wall entities to
-     * @param screenWidth Screen width to calculate cell size
-     * @param screenHeight Screen height to calculate cell size
-     * @param wallTexture Texture to use for wall entities
-     */
-    public MazeGenerator(EntityManager entityManager, int screenWidth, int screenHeight, Texture wallTexture) {
-        this.entityManager = entityManager;
-        this.wallTexture = wallTexture;
+    
+    // Constructor
+    public MazeGenerator(float cellSize) {
+        wallList = new ArrayList<>();
         
         // Calculate cell size based on screen dimensions and maze size
-        float maxDimension = Math.max(GRID_WIDTH, GRID_HEIGHT);
-        this.cellSize = Math.min(screenWidth / GRID_WIDTH, screenHeight / GRID_HEIGHT);
-        
-        // Ensure textures are properly sized for the grid
-        this.wallTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        this.cellSize = cellSize;
     }
 
     /**
      * Generates the maze walls and adds them to the entity manager
+     * 
+     * * @param wallTexture Texture of the wall entity
      */
-    public void generateMaze() {
+    public void generateMaze(Texture wallTexture) {
+        // Ensure textures are properly sized for the grid
+        wallTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         // Convert layout to wall entities
         for (int y = 0; y < GRID_HEIGHT; y++) {
             for (int x = 0; x < GRID_WIDTH; x++) {
@@ -70,10 +64,29 @@ public class MazeGenerator {
                     );
                     // Ensure wall texture is scaled to match cell size
                     wall.setSize(cellSize, cellSize);
-                    entityManager.addEntities(wall);
+                    wallList.add(wall);
+                    // entityManager.addEntities(wall); <-- need check if its good to pass in EntityManager here, probably not though
                 }
             }
         }
+    }
+
+    /**
+     * Returns true if the position contains a wall in the maze layout
+     * 
+     * @param index Index position in list
+     * @return Wall entity at index
+     */
+    public Wall getWall(int index){
+        return wallList.get(index);
+    }
+
+    /**
+     * Returns true if the position contains a wall in the maze layout
+     * @return Int size of current wall list
+     */
+    public int getWallListSize(){
+        return wallList.size();
     }
     
     /**

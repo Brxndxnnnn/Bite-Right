@@ -18,21 +18,23 @@ public class HealthyFood extends Food {
      * @param texture Food texture
      * @param healthPoints Amount of health restored
      * @param strengthBoost Strength boost provided
+     * @param lifespanInSeconds How long until the food expires
      */
-    public HealthyFood(String name, Vector2 position, Texture texture, int healthPoints, float strengthBoost) {
-        super(name, position, texture, FoodType.HEALTHY);
+    public HealthyFood(String name, Vector2 position, Texture texture, int healthPoints, 
+                      float strengthBoost, float lifespanInSeconds) {
+        super(name, position, texture, FoodType.HEALTHY, lifespanInSeconds);
         this.healthPoints = healthPoints;
         this.strengthBoost = strengthBoost;
     }
     
     /**
-     * Alternate constructor with default values
+     * Alternate constructor with default values and 10 second lifespan
      * 
      * @param position Position in the maze
      * @param texture Food texture
      */
     public HealthyFood(Vector2 position, Texture texture) {
-        super("HealthyFood", position, texture, FoodType.HEALTHY);
+        super("HealthyFood", position, texture, FoodType.HEALTHY, 10f);
         this.healthPoints = 10; // Default health restoration
         this.strengthBoost = 0.1f; // Default strength boost
     }
