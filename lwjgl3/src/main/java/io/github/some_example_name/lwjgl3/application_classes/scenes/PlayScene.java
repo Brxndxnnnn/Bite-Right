@@ -46,7 +46,6 @@ public class PlayScene extends Scene {
 
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
-        AudioPlayer.getInstance().setSceneBGM("play.mp3");
 
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
@@ -66,7 +65,7 @@ public class PlayScene extends Scene {
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize);
-        
+
         // Create and generate maze
         createAndAddMaze(wallTexture);
 
@@ -75,10 +74,10 @@ public class PlayScene extends Scene {
 
         // Create and Add Enemies
         createAndAddEnemies(enemyTexture);
-        
+
         // Generate and add initial food items
         createAndAddFood(healthyFoodTexture, unhealthyFoodTexture);
-        
+
         // Initialize collision manager and setup collision detectors
         setupCollisionDetectors();
 
@@ -91,6 +90,8 @@ public class PlayScene extends Scene {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
+
+        AudioPlayer.getInstance().setSceneBGM("play.mp3");
     }
 
     private void createAndAddMaze(Texture wallTexture) {
@@ -100,12 +101,12 @@ public class PlayScene extends Scene {
             entityManager.addEntities(mazeGenerator.getWall(i));
         }
     }
-    
+
     private void createAndAddFood(Texture healthyFoodTexture, Texture unhealthyFoodTexture) {
         foodGenerator.setTextures(healthyFoodTexture, unhealthyFoodTexture);
         // Generate initial 5 food items
         List<Food> initialFood = foodGenerator.generateFood(5);
-        
+
         // Add food items to entity manager
         for (Food food : initialFood) {
             entityManager.addEntities(food);
@@ -115,19 +116,19 @@ public class PlayScene extends Scene {
     private void createAndAddPlayer(Texture playerTexture) {
         // Get the cell size
         float cellSize = mazeGenerator.getCellSize();
-        
+
         // Create player with appropriate size for the maze
-        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)        
+        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)
         player = new Player("Player", playerStartPos, playerTexture, 2f);
         player.setSize(cellSize * 0.9f, cellSize * 0.9f); // // Set player size to fit within a cell (slightly smaller for movement clearance)
-        
+
         // Center the player within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
         player.setPosition(new Vector2(
-            playerStartPos.x + offset, 
+            playerStartPos.x + offset,
             playerStartPos.y + offset
         ));
-        
+
         entityManager.addEntities(player);
     }
 
@@ -144,7 +145,7 @@ public class PlayScene extends Scene {
         healthLabel.setColor(Color.WHITE);
         titleTable.add(healthLabel).right().padTop(5);
         titleTable.row();
-        
+
         // Add food count label
         foodCountLabel = new Label("Food: 0/7", skin);
         foodCountLabel.setColor(Color.YELLOW);
@@ -153,7 +154,7 @@ public class PlayScene extends Scene {
 
     private void createAndAddEnemies(Texture enemyTexture) {
         float cellSize = mazeGenerator.getCellSize();
-        
+
         // Find player entity for the ghosts to target
         Player playerEntity = null;
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
@@ -163,7 +164,7 @@ public class PlayScene extends Scene {
                 break;
             }
         }
-        
+
         // Add ghosts at specific positions in the maze
         // Ghost 1 - top right corner (red ghost)
         Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
@@ -209,11 +210,11 @@ public class PlayScene extends Scene {
     private void setupCollisionDetectors() {
         // Clear existing collision detectors
         collisionManager.clearDetectors();
-        
+
         // Iterate through entity list to set up collision detectors
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
             Entity entityA = entityManager.getEntity(i);
-            
+
             // Skip entities that should be removed
             if (entityA.shouldBeRemoved()) continue;
 
@@ -221,10 +222,10 @@ public class PlayScene extends Scene {
             if (entityA instanceof Player) {
                 for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
                     Entity entityB = entityManager.getEntity(x);
-                    
+
                     // Skip entities that should be removed
                     if (entityB.shouldBeRemoved()) continue;
-                    
+
                     if (entityB instanceof Enemy) {
                         // Add player-enemy collision detector
                         CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Player) entityA, (Enemy) entityB);
@@ -235,7 +236,7 @@ public class PlayScene extends Scene {
                         CollisionDetector playerCollideWallDetector = new PlayerCollideWallDetector((Player) entityA, (Wall) entityB);
                         collisionManager.addDetectors(playerCollideWallDetector);
                     }
-                    
+
                     if (entityB instanceof Food) {
                         CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB);
                         collisionManager.addDetectors(playerCollideFoodDetector);
@@ -247,10 +248,10 @@ public class PlayScene extends Scene {
             if (entityA instanceof Enemy) {
                 for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
                     Entity entityB = entityManager.getEntity(y);
-                    
+
                     // Skip entities that should be removed
                     if (entityB.shouldBeRemoved()) continue;
-                    
+
                     if (entityB instanceof Enemy && entityA != entityB) {
                         // Add enemy-enemy collision detector
                         CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((Enemy) entityA, (Enemy) entityB);
@@ -269,46 +270,46 @@ public class PlayScene extends Scene {
     @Override
     public void render(SpriteBatch batch) {
         spawnFood();
-        
-        // Update collision detectors 
+
+        // Update collision detectors
         // (needed since new food items might have been spawned)
         setupCollisionDetectors();
-        
+
         // Clear the screen
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+
         // Update health and food count displays
         healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
-        
+
         // Update food count label
         int currentFoodCount = foodGenerator.getFoodListSize();
         foodCountLabel.setText("Food: " + currentFoodCount + "/7");
-        
+
         // Draw UI
         stage.draw();
 
         // Draw Entities on Screen
         entityManager.drawEntites(batch);
-        
+
         // Update entity movement
         entityManager.moveEntities();
         entityManager.checkForEntitiesToBeRemoved();
-        
+
         // Check collisions
         collisionManager.checkAllCollisions();
         collisionManager.checkForDetectorsToBeRemoved();
 
         // Handle user input
         ioManager.handleInput();
-        
+
         // Check for game over condition
         if (player.getHealth() <= 0) {
             // Game over logic
             System.out.println("Game Over! Player died.");
-            
+
             // Uncomment the following line when you have a GameOverScene ready
             // sceneManager.changeScene(new GameOverScene(sceneManager), SceneTransitionType.NORMAL);
-            
+
             // Or transition back to the home scene
             // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);www
         }
@@ -316,7 +317,7 @@ public class PlayScene extends Scene {
 
     private void spawnFood() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        
+
         // Update food generator and add any new food items
         List<Food> newFood = foodGenerator.update(deltaTime);
         for (Food food : newFood) {

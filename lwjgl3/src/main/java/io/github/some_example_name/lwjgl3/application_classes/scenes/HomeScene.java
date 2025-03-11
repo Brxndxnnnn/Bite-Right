@@ -26,7 +26,7 @@ public class HomeScene extends Scene{
 	public HomeScene(SceneManager sceneManager) {
 		super(sceneManager);
 		AudioPlayer.getInstance().setSceneBGM("home.mp3");
-		
+
         startBtn = new TextButton("Start", skin);
 		settingsBtn = new TextButton("Settings", skin);
 		quitBtn = new TextButton("Quit", skin);
@@ -35,7 +35,7 @@ public class HomeScene extends Scene{
 		settingsBtn.getLabel().setFontScale(0.5f);
 		quitBtn.getLabel().setFontScale(0.5f);
 
-		
+
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
 		titleTable.setFillParent(true);
@@ -49,7 +49,7 @@ public class HomeScene extends Scene{
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
-		
+
 		startBtn.getLabel().setColor(Color.SKY);
 		startBtn.setColor(Color.ROYAL);
 		settingsBtn.getLabel().setColor(Color.SKY);
@@ -57,7 +57,7 @@ public class HomeScene extends Scene{
 		quitBtn.getLabel().setColor(Color.SKY);
 		quitBtn.setColor(Color.ROYAL);
 
-		
+
 		buttonTable.center();
 		buttonTable.padTop(170);
 		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.6f, startBtn.getHeight() * 0.6f);
@@ -73,7 +73,7 @@ public class HomeScene extends Scene{
 				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
 			}
 		});
-		
+
 		settingsBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -87,8 +87,8 @@ public class HomeScene extends Scene{
 				Gdx.app.exit();
 			}
 		});
-		
-		
+
+
 		// Set the keybinds required for this HomeScene
 		ioManager = new IOManager();
 

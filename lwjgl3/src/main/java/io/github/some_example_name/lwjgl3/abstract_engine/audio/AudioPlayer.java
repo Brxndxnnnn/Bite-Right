@@ -2,20 +2,26 @@ package io.github.some_example_name.lwjgl3.abstract_engine.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.Array;
 
 // Audioplayer manages basic audio features such as Playing Audio, Pausing, Setting volume, etc
 
 public class AudioPlayer {
     private static AudioPlayer instance = null;
     private float volume;
+    private Music bgm;
+    private Music sfx;
     private Music sound;
     private String currentTrack;
+    private boolean isSFXPlaying = false;
+    private Array<Music> activeSFX;;
 
     // Default Constructor
     private AudioPlayer() {
         sound = null;
-
         volume = 100;
+        activeSFX = new Array<>();
+        currentTrack = null;
     }
 
     public static synchronized AudioPlayer getInstance() {
@@ -29,20 +35,30 @@ public class AudioPlayer {
         if (fileName.equals(currentTrack)) {
             return;
         }
-        stopAudio(); // Stop previous audio
-        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-        sound.setLooping(true);
-        sound.setVolume(volume / 100.0f);
-        sound.play();
+        stopBGM(); // Stop previous audio
+        bgm = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+        bgm.setLooping(true);
+        bgm.setVolume(volume / 100.0f);
+        bgm.play();
         currentTrack = fileName;
     }
 
+
     public void playSFX(String fileName) {
-        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-        sound.setLooping(false);
-        sound.setVolume(volume / 100.0f);
-        sound.play();
+
+        sfx = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+        sfx.setLooping(false);
+        sfx.setVolume(volume / 100.0f);
+        sfx.play();
+
+        activeSFX.add(sfx);
+
+        sfx.setOnCompletionListener(music -> {
+            activeSFX.removeValue(music,true);
+            music.dispose();
+        });
     }
+
 //	// Constructor 1 (Overloading)
 //	public void playAudio(String fileName) {
 //		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
@@ -51,15 +67,14 @@ public class AudioPlayer {
 //		sound.play();
 //	}
 //
-
-    public void playSFX(String fileName, Boolean loopAudio) {
-        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-        volume = 100;
-        loopAudio(loopAudio);
-        sound.setVolume(volume / 100.0f);
-        sound.play();
-        System.out.println("Play Audio" + fileName);
-    }
+//
+//    public void playSFX(String fileName, Boolean loopAudio) {
+//        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+//        volume = 100;
+//        sound.setVolume(volume / 100.0f);
+//        sound.play();
+//        System.out.println("Play Audio" + fileName);
+//    }
 
     // This function pauses the Audio
     public void pauseAudio() {
@@ -84,6 +99,26 @@ public class AudioPlayer {
             disposeAudio();
             System.out.println("Stop and Dispose Audio");
         }
+    }
+
+    public void stopBGM() {
+        if (bgm != null) {
+            bgm.stop();
+            bgm.dispose();
+            bgm = null;
+            currentTrack = null;
+            System.out.println("Stop and Dispose BGM");
+        }
+    }
+
+    public void stopAllAudio() {
+        stopBGM();
+        if (sfx != null) {
+            sfx.stop();
+            sfx.dispose();
+            sfx = null;
+        }
+        isSFXPlaying = false;
     }
 
     // Getter for Volume
