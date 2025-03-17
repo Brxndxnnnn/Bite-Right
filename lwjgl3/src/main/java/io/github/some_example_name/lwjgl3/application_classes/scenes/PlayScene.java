@@ -43,7 +43,8 @@ public class PlayScene extends Scene {
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
-
+    private Label pointsLabel;
+    
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
 
@@ -60,11 +61,13 @@ public class PlayScene extends Scene {
         Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
 
         // INITIALIZE REQUIRED MANAGERS
+ 
         ioManager = new IOManager();
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize);
+        
 
         // Create and generate maze
         createAndAddMaze(wallTexture);
@@ -139,17 +142,24 @@ public class PlayScene extends Scene {
         titleTable.top().right(); // Align content to the top right
         titleTable.padRight(10).padTop(10); // Add padding for better visibility
         stage.addActor(titleTable);
-
+        
         // Add health label
         healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
         healthLabel.setColor(Color.WHITE);
         titleTable.add(healthLabel).right().padTop(5);
         titleTable.row();
 
+        // Add points label
+        pointsLabel = new Label("Points: 100", skin);
+        pointsLabel.setColor(Color.GREEN);
+        titleTable.add(pointsLabel).right().padTop(5);
+        titleTable.row();
+
         // Add food count label
         foodCountLabel = new Label("Food: 0/7", skin);
         foodCountLabel.setColor(Color.YELLOW);
         titleTable.add(foodCountLabel).right().padTop(5);
+
     }
 
     private void createAndAddEnemies(Texture enemyTexture) {
@@ -285,6 +295,9 @@ public class PlayScene extends Scene {
         int currentFoodCount = foodGenerator.getFoodListSize();
         foodCountLabel.setText("Food: " + currentFoodCount + "/7");
 
+        // Update points label
+        pointsLabel.setText("Points: " + player.getPoints());
+
         // Draw UI
         stage.draw();
 
@@ -306,13 +319,24 @@ public class PlayScene extends Scene {
         if (player.getHealth() <= 0) {
             // Game over logic
             System.out.println("Game Over! Player died.");
-
+            
             // Uncomment the following line when you have a GameOverScene ready
-            // sceneManager.changeScene(new GameOverScene(sceneManager), SceneTransitionType.NORMAL);
+             // sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
 
             // Or transition back to the home scene
-            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);www
+            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+        } else if (player.getPoints() >= 500) {
+            // Game win logic
+            System.out.println("Game Win! Player reached 500 points.");
+
+            // Uncomment the following line when you have a GameWinScene ready
+            // sceneManager.changeScene(new GameWinScene(sceneManager), SceneTransitionType.NORMAL);
+
+            // Or transition back to the home scene
+            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
         }
+
+
     }
 
     private void spawnFood() {
