@@ -7,12 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class Scene {
 //	private String audioFilePath;
+	protected SceneManager sceneManager;
 	protected Stage stage;
 	protected Skin skin;
 
 	// Constructor
 	public Scene(SceneManager sceneManager) {
 //		audioFilePath = null;
+		this.sceneManager = sceneManager;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));

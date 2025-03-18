@@ -44,6 +44,8 @@ public class PlayScene extends Scene {
     private Label healthLabel;
     private Label foodCountLabel;
     private Label pointsLabel;
+    private static int finalPoints;
+    private static boolean gameWon;
     
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
@@ -150,7 +152,7 @@ public class PlayScene extends Scene {
         titleTable.row();
 
         // Add points label
-        pointsLabel = new Label("Points: 100", skin);
+        pointsLabel = new Label("Points: 100/500", skin);
         pointsLabel.setColor(Color.GREEN);
         titleTable.add(pointsLabel).right().padTop(5);
         titleTable.row();
@@ -277,6 +279,14 @@ public class PlayScene extends Scene {
 		}
     }
 
+    public static int getfinalPoints() {
+    	return finalPoints;
+    }
+
+    public static boolean isGameWon() {
+    	return gameWon;
+    }
+    
     @Override
     public void render(SpriteBatch batch) {
         spawnFood();
@@ -296,7 +306,7 @@ public class PlayScene extends Scene {
         foodCountLabel.setText("Food: " + currentFoodCount + "/7");
 
         // Update points label
-        pointsLabel.setText("Points: " + player.getPoints());
+        pointsLabel.setText("Points: " + player.getPoints() + "/500");
 
         // Draw UI
         stage.draw();
@@ -318,24 +328,17 @@ public class PlayScene extends Scene {
         // Check for game over condition
         if (player.getHealth() <= 0) {
             // Game over logic
+        	finalPoints = player.getPoints();
+        	gameWon = false;
             System.out.println("Game Over! Player died.");
-            
-            // Uncomment the following line when you have a GameOverScene ready
-             // sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
-
-            // Or transition back to the home scene
-            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         } else if (player.getPoints() >= 500) {
             // Game win logic
+        	finalPoints = player.getPoints();
+        	gameWon = true;
             System.out.println("Game Win! Player reached 500 points.");
-
-            // Uncomment the following line when you have a GameWinScene ready
-            // sceneManager.changeScene(new GameWinScene(sceneManager), SceneTransitionType.NORMAL);
-
-            // Or transition back to the home scene
-            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
-
 
     }
 
@@ -348,4 +351,6 @@ public class PlayScene extends Scene {
             entityManager.addEntities(food);
         }
     }
+
+
 }
