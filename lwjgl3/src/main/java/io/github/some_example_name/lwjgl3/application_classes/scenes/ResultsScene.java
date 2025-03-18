@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,11 +17,17 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
-public class ResultsScene extends Scene {
+public class ResultsScene implements Scene {
 	private final TextButton quitBtn;
+	private Stage stage;
+	private Skin skin;
 	
 	public ResultsScene(SceneManager sceneManager) {
-		super(sceneManager);
+//		super(sceneManager);
+		
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 		
         quitBtn = new TextButton("Quit", skin);
         quitBtn.getLabel().setFontScale(0.5f);
@@ -72,4 +80,9 @@ public class ResultsScene extends Scene {
 		stage.draw();		
 	}
 
+	@Override
+	public void dispose() {
+		stage.dispose();
+		skin.dispose();		
+	}
 }

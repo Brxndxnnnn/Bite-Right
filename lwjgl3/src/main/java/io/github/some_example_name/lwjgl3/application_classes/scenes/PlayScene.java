@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
@@ -34,22 +36,28 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 
-public class PlayScene extends Scene {
+public class PlayScene implements Scene {
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
     private final MazeGenerator mazeGenerator;
     private final FoodGenerator foodGenerator;
+    private final SceneManager sceneManager;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
-    private Label pointsLabel;
+	private Stage stage;
+	private Skin skin;
+	private Label pointsLabel;
     private static int finalPoints;
     private static boolean gameWon;
     
     public PlayScene(SceneManager sceneManager) {
-        super(sceneManager);
-
+        this.sceneManager = sceneManager;
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+		
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
@@ -351,6 +359,10 @@ public class PlayScene extends Scene {
             entityManager.addEntities(food);
         }
     }
-
-
+    
+    @Override
+	public void dispose() {
+		stage.dispose();
+		skin.dispose();		
+	}
 }
