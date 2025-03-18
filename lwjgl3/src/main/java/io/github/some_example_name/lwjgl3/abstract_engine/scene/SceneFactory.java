@@ -1,5 +1,6 @@
 package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 
+import io.github.some_example_name.lwjgl3.application_classes.scenes.DifficultyScene;
 import io.github.some_example_name.lwjgl3.application_classes.scenes.HomeScene;
 import io.github.some_example_name.lwjgl3.application_classes.scenes.PauseScene;
 import io.github.some_example_name.lwjgl3.application_classes.scenes.PlayScene;
@@ -10,6 +11,8 @@ public class SceneFactory {
 		switch (sceneType) {
 	        case HOME:
 	            return new HomeScene(sceneManager);
+	        case DIFFICULTY:
+	            return new DifficultyScene(sceneManager);
 	        case PLAY:
 	            return new PlayScene(sceneManager);
 	        case PAUSE:
