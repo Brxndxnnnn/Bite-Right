@@ -16,6 +16,8 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
 
 public class DifficultyScene implements Scene {
 	private final TextButton easyBtn;
@@ -81,6 +83,7 @@ public class DifficultyScene implements Scene {
 		easyBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				GameDifficulty.getInstance().setDifficulty(Difficulty.EASY);
 				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
 			}
 		});
@@ -88,6 +91,7 @@ public class DifficultyScene implements Scene {
 		normalBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				GameDifficulty.getInstance().setDifficulty(Difficulty.NORMAL);
 				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
 			}
 		});
@@ -95,6 +99,7 @@ public class DifficultyScene implements Scene {
 		hardBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				GameDifficulty.getInstance().setDifficulty(Difficulty.HARD);
 				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
 			}
 		});

@@ -66,8 +66,6 @@ public class PauseScene implements Scene{
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
 
-
-
 		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.6f, resumeBtn.getHeight() * 0.6f);
 		buttonTable.row();
 		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.6f, restartBtn.getHeight() * 0.6f);

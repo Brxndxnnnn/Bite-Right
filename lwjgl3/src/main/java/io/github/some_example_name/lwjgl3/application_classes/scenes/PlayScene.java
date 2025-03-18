@@ -34,6 +34,8 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 
 public class PlayScene implements Scene {
@@ -51,6 +53,8 @@ public class PlayScene implements Scene {
 	private Label pointsLabel;
     private static int finalPoints;
     private static boolean gameWon;
+    private float speed;
+    private int targetPoint;
     
     public PlayScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
@@ -79,6 +83,8 @@ public class PlayScene implements Scene {
         foodGenerator = new FoodGenerator(cellSize);
         
 
+        adjustElementsByDifficulty();
+        
         // Create and generate maze
         createAndAddMaze(wallTexture);
 
@@ -105,6 +111,21 @@ public class PlayScene implements Scene {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
 
         AudioPlayer.getInstance().setSceneBGM("play.mp3");
+    }
+    
+    private void adjustElementsByDifficulty() {
+    	if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
+    		speed = 100f;
+    		targetPoint = 200;
+    	}
+    	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
+    		speed = 150f;
+    		targetPoint = 300;
+		}
+    	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
+			speed = 300f;
+    		targetPoint = 400;
+    	}
     }
 
     private void createAndAddMaze(Texture wallTexture) {
@@ -160,7 +181,7 @@ public class PlayScene implements Scene {
         titleTable.row();
 
         // Add points label
-        pointsLabel = new Label("Points: 100/500", skin);
+        pointsLabel = new Label("Points: 100/" + targetPoint, skin);
         pointsLabel.setColor(Color.GREEN);
         titleTable.add(pointsLabel).right().padTop(5);
         titleTable.row();
@@ -188,7 +209,7 @@ public class PlayScene implements Scene {
         // Add ghosts at specific positions in the maze
         // Ghost 1 - top right corner (red ghost)
         Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, enemyTexture);
+        Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell (slightly smaller for movement clearance)
         ghost1.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -202,7 +223,7 @@ public class PlayScene implements Scene {
 
         // Ghost 2 - top left corner (pink ghost)
         Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, enemyTexture);
+        Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell
         ghost2.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -215,7 +236,7 @@ public class PlayScene implements Scene {
 
         // Ghost 3 - bottom right corner (cyan ghost)
         Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
-        Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, enemyTexture);
+        Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell
         ghost3.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -314,7 +335,7 @@ public class PlayScene implements Scene {
         foodCountLabel.setText("Food: " + currentFoodCount + "/7");
 
         // Update points label
-        pointsLabel.setText("Points: " + player.getPoints() + "/500");
+        pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
 
         // Draw UI
         stage.draw();
@@ -340,11 +361,11 @@ public class PlayScene implements Scene {
         	gameWon = false;
             System.out.println("Game Over! Player died.");
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
-        } else if (player.getPoints() >= 500) {
+        } else if (player.getPoints() >= targetPoint && targetPoint != 0) {
             // Game win logic
         	finalPoints = player.getPoints();
         	gameWon = true;
-            System.out.println("Game Win! Player reached 500 points.");
+            System.out.println("Game Win! Player reached " + targetPoint + " points.");
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
 
