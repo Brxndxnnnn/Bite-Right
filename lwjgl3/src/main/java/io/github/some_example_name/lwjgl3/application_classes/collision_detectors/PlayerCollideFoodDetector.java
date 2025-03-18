@@ -56,6 +56,9 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
 
                 // Boost player strength
                 player.adjustStrength(healthyFood.getStrengthBoost());
+
+                // Add points to player
+                player.adjustPoints(20);
             }
             else if (food instanceof UnhealthyFood) {
                 UnhealthyFood unhealthyFood = (UnhealthyFood) food;
@@ -63,6 +66,9 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
 
                 // Reduce player health
                 player.adjustHealth(-unhealthyFood.getDamage());
+                
+                // Reduce player points
+                player.adjustPoints(-10);
 
                 // Check if player died
                 if (player.getHealth() <= 0) {

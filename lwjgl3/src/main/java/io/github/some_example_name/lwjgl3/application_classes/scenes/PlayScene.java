@@ -24,7 +24,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideEnemyDetector;
@@ -43,15 +42,18 @@ public class PlayScene implements Scene {
     private final IOManager ioManager;
     private final MazeGenerator mazeGenerator;
     private final FoodGenerator foodGenerator;
+    private final SceneManager sceneManager;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
 	private Stage stage;
 	private Skin skin;
-	
+	private Label pointsLabel;
+    private static int finalPoints;
+    private static boolean gameWon;
+    
     public PlayScene(SceneManager sceneManager) {
-//        super(sceneManager);
-
+        this.sceneManager = sceneManager;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
@@ -69,11 +71,13 @@ public class PlayScene implements Scene {
         Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
 
         // INITIALIZE REQUIRED MANAGERS
+ 
         ioManager = new IOManager();
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize);
+        
 
         // Create and generate maze
         createAndAddMaze(wallTexture);
@@ -148,17 +152,24 @@ public class PlayScene implements Scene {
         titleTable.top().right(); // Align content to the top right
         titleTable.padRight(10).padTop(10); // Add padding for better visibility
         stage.addActor(titleTable);
-
+        
         // Add health label
         healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
         healthLabel.setColor(Color.WHITE);
         titleTable.add(healthLabel).right().padTop(5);
         titleTable.row();
 
+        // Add points label
+        pointsLabel = new Label("Points: 100/500", skin);
+        pointsLabel.setColor(Color.GREEN);
+        titleTable.add(pointsLabel).right().padTop(5);
+        titleTable.row();
+
         // Add food count label
         foodCountLabel = new Label("Food: 0/7", skin);
         foodCountLabel.setColor(Color.YELLOW);
         titleTable.add(foodCountLabel).right().padTop(5);
+
     }
 
     private void createAndAddEnemies(Texture enemyTexture) {
@@ -276,6 +287,14 @@ public class PlayScene implements Scene {
 		}
     }
 
+    public static int getfinalPoints() {
+    	return finalPoints;
+    }
+
+    public static boolean isGameWon() {
+    	return gameWon;
+    }
+    
     @Override
     public void render(SpriteBatch batch) {
         spawnFood();
@@ -293,6 +312,9 @@ public class PlayScene implements Scene {
         // Update food count label
         int currentFoodCount = foodGenerator.getFoodListSize();
         foodCountLabel.setText("Food: " + currentFoodCount + "/7");
+
+        // Update points label
+        pointsLabel.setText("Points: " + player.getPoints() + "/500");
 
         // Draw UI
         stage.draw();
@@ -314,14 +336,18 @@ public class PlayScene implements Scene {
         // Check for game over condition
         if (player.getHealth() <= 0) {
             // Game over logic
+        	finalPoints = player.getPoints();
+        	gameWon = false;
             System.out.println("Game Over! Player died.");
-
-            // Uncomment the following line when you have a GameOverScene ready
-            // sceneManager.changeScene(new GameOverScene(sceneManager), SceneTransitionType.NORMAL);
-
-            // Or transition back to the home scene
-            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);www
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        } else if (player.getPoints() >= 500) {
+            // Game win logic
+        	finalPoints = player.getPoints();
+        	gameWon = true;
+            System.out.println("Game Win! Player reached 500 points.");
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
+
     }
 
     private void spawnFood() {

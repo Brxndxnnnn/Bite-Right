@@ -16,7 +16,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 
 public class ResultsScene implements Scene {
 	private final TextButton quitBtn;
@@ -35,6 +34,13 @@ public class ResultsScene implements Scene {
         quitBtn.getLabel().setColor(Color.SKY);
         quitBtn.setColor(Color.ROYAL);
         
+        String outcome;
+        if (PlayScene.isGameWon()) {
+        	outcome = "You Win! Points is at least 500!";
+        } else {
+        	outcome = "You Lose! Health is 0.";
+        }
+        
         Table titleTable = new Table();
 		titleTable.setFillParent(true);
 		titleTable.top(); // Align content to the top
@@ -42,9 +48,21 @@ public class ResultsScene implements Scene {
 		
 		Label label = new Label("Results", skin, "subtitle");
 		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
+		titleTable.row();
+		
+		Label outcomeLabel = new Label(outcome, skin, "subtitle");
+		titleTable.add(outcomeLabel).center().padTop(20);
+		titleTable.row();
+		
+		int points = PlayScene.getfinalPoints();
+		String pointstxt = "Points = " + points;
+		Label pointsLabel = new Label(pointstxt, skin, "subtitle"); 
+		titleTable.add(pointsLabel).center().padTop(20);
+		
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
 		buttonTable.bottom(); // Align content to the bottom
+		
 		stage.addActor(buttonTable);
 		buttonTable.add(quitBtn).padBottom(30).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f).expandX().center();
 		
