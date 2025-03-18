@@ -58,9 +58,7 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
 
     public Enemy(String name, Vector2 position, Texture texture, float speed) {
         super(name, position, texture, speed);
-    	if (speed != 0) {
-        	setBaseSpeed(speed);
-    	}
+        setBaseSpeed(speed);
         this.velocity = getRandomCardinalDirection().scl(GHOST_SPEED);
         this.previousDirection = new Vector2(velocity).nor();
     }
