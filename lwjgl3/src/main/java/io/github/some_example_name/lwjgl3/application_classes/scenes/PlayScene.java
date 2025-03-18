@@ -361,7 +361,7 @@ public class PlayScene implements Scene {
         	gameWon = false;
             System.out.println("Game Over! Player died.");
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
-        } else if (player.getPoints() >= targetPoint && targetPoint != 0) {
+        } else if (player.getPoints() >= targetPoint) {
             // Game win logic
         	finalPoints = player.getPoints();
         	gameWon = true;
