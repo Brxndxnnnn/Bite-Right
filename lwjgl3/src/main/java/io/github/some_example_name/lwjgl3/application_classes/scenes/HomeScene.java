@@ -22,6 +22,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 
 public class HomeScene implements Scene{
 	private final TextButton startBtn;
+	private final TextButton tutBtn;
 	private final TextButton quitBtn;
 	private final IOManager ioManager;
 	private Stage stage;
@@ -37,9 +38,11 @@ public class HomeScene implements Scene{
 		AudioPlayer.getInstance().setSceneBGM("home.mp3");
 
         startBtn = new TextButton("Start", skin);
+		tutBtn = new TextButton("Tutorial", skin);
 		quitBtn = new TextButton("Quit", skin);
 
 		startBtn.getLabel().setFontScale(0.5f);
+		tutBtn.getLabel().setFontScale(0.5f);
 		quitBtn.getLabel().setFontScale(0.5f);
 
 
@@ -59,14 +62,18 @@ public class HomeScene implements Scene{
 
 		startBtn.getLabel().setColor(Color.SKY);
 		startBtn.setColor(Color.ROYAL);
+
 		quitBtn.getLabel().setColor(Color.SKY);
 		quitBtn.setColor(Color.ROYAL);
 
+		tutBtn.getLabel().setColor(Color.SKY);
+		tutBtn.setColor(Color.ROYAL);
 
 		buttonTable.center();
 		buttonTable.padTop(170);
 		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.6f, startBtn.getHeight() * 0.6f);
-		buttonTable.row();
+		buttonTable.row();		
+		buttonTable.add(tutBtn).padTop(10).size(tutBtn.getWidth() * 0.6f, tutBtn.getHeight() * 0.6f);
 		buttonTable.row();
 		buttonTable.add(quitBtn).padTop(10).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f);
 
@@ -75,6 +82,13 @@ public class HomeScene implements Scene{
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				sceneManager.changeScene(SceneType.DIFFICULTY, SceneTransitionType.NORMAL);
+			}
+		});
+		
+		tutBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				sceneManager.changeScene(SceneType.TUTORIAL, SceneTransitionType.NORMAL);
 			}
 		});
 
