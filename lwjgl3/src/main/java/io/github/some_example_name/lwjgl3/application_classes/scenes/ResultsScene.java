@@ -36,7 +36,7 @@ public class ResultsScene implements Scene {
         
         String outcome;
         if (PlayScene.isGameWon()) {
-        	outcome = "You Win! Points is at least 500!";
+        	outcome = "You Win!";
         } else {
         	outcome = "You Lose! Health is 0.";
         }
@@ -50,14 +50,19 @@ public class ResultsScene implements Scene {
 		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
 		titleTable.row();
 		
+		Table resultTable = new Table();
+		resultTable.setFillParent(true);
+		resultTable.center(); // Align content to the top
+		stage.addActor(resultTable);
+		
 		Label outcomeLabel = new Label(outcome, skin, "subtitle");
-		titleTable.add(outcomeLabel).center().padTop(20);
-		titleTable.row();
+		resultTable.add(outcomeLabel).center().padTop(20);
+		resultTable.row();
 		
 		int points = PlayScene.getfinalPoints();
 		String pointstxt = "Points = " + points;
 		Label pointsLabel = new Label(pointstxt, skin, "subtitle"); 
-		titleTable.add(pointsLabel).center().padTop(20);
+		resultTable.add(pointsLabel).center().padTop(20);
 		
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);

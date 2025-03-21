@@ -74,7 +74,7 @@ public class HomeScene implements Scene{
 		startBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.NORMAL);
+				sceneManager.changeScene(SceneType.DIFFICULTY, SceneTransitionType.NORMAL);
 			}
 		});
 
