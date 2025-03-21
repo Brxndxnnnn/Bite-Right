@@ -8,6 +8,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.HealthyFood;
 import io.github.some_example_name.lwjgl3.application_classes.entities.UnhealthyFood;
+import io.github.some_example_name.lwjgl3.application_classes.ui.DialogPopUpManager;
 
 /**
  * Handles collisions between the player and food entities
@@ -15,17 +16,20 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Unhealthy
 public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, Food> {
     private final Player player;
     private final Food food;
+    private final DialogPopUpManager popupManager;
 
     /**
      * Constructor for food collision detector
      *
      * @param player The player Player
      * @param food The food entity
+     * @param popupManager The popup manager for showing food effects
      */
-    public PlayerCollideFoodDetector(Player player, Food food) {
+    public PlayerCollideFoodDetector(Player player, Food food, DialogPopUpManager popupManager) {
         super(player, food);
         this.player = player;
         this.food = food;
+        this.popupManager = popupManager;
     }
 
     @Override
@@ -45,6 +49,8 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
 
         // Check collision
         if (playerBounds.overlaps(foodBounds) && !food.isConsumed()) {
+            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+            
             // Handle based on food type
             if (food instanceof HealthyFood) {
                 HealthyFood healthyFood = (HealthyFood) food;
@@ -73,17 +79,18 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
                 // Check if player died
                 if (player.getHealth() <= 0) {
                     System.out.println("Player died from unhealthy food!");
-                    // Potentially trigger game over here
+                    // Death will be handled in PlayScene render method
                 }
             }
 
             // Mark food as consumed
             food.consume();
+            
+            // Show popup with food info
+            popupManager.showFoodPopup(food, null);
 
             // Mark this collision detector to be removed
             setToBeRemoved();
         }
-
-        AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
     }
 }

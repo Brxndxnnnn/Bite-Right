@@ -33,6 +33,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.ui.DialogPopUpManager;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
@@ -48,20 +49,26 @@ public class PlayScene implements Scene {
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
-	private Stage stage;
-	private Skin skin;
-	private Label pointsLabel;
+    private Stage stage;
+    private Skin skin;
+    private Label pointsLabel;
     private static int finalPoints;
     private static boolean gameWon;
     private float speed;
     private int targetPoint;
     
+    // New field for popup manager
+    private DialogPopUpManager popupManager;
+    
     public PlayScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
-		
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        
+        // Initialize popup manager
+        popupManager = new DialogPopUpManager(skin);
+        
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
@@ -190,7 +197,6 @@ public class PlayScene implements Scene {
         foodCountLabel = new Label("Food: 0/7", skin);
         foodCountLabel.setColor(Color.YELLOW);
         titleTable.add(foodCountLabel).right().padTop(5);
-
     }
 
     private void createAndAddEnemies(Texture enemyTexture) {
@@ -279,7 +285,9 @@ public class PlayScene implements Scene {
                     }
 
                     if (entityB instanceof Food) {
-                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB);
+                        // Pass popup manager to food collision detector
+                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector(
+                            (Player) entityA, (Food) entityB, popupManager);
                         collisionManager.addDetectors(playerCollideFoodDetector);
                     }
                 }
@@ -300,7 +308,7 @@ public class PlayScene implements Scene {
                     }
 
 					if (entityB instanceof Wall){
-						                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
+						CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
 						collisionManager.addDetectors(enemyCollideWallDetector);
 					}
 				}
@@ -343,32 +351,37 @@ public class PlayScene implements Scene {
         // Draw Entities on Screen
         entityManager.drawEntites(batch);
 
-        // Update entity movement
-        entityManager.moveEntities();
-        entityManager.checkForEntitiesToBeRemoved();
-
-        // Check collisions
-        collisionManager.checkAllCollisions();
-        collisionManager.checkForDetectorsToBeRemoved();
-
-        // Handle user input
-        ioManager.handleInput();
-
-        // Check for game over condition
-        if (player.getHealth() <= 0) {
-            // Game over logic
-        	finalPoints = player.getPoints();
-        	gameWon = false;
-            System.out.println("Game Over! Player died.");
-            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
-        } else if (player.getPoints() >= targetPoint) {
-            // Game win logic
-        	finalPoints = player.getPoints();
-        	gameWon = true;
-            System.out.println("Game Win! Player reached " + targetPoint + " points.");
-            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        // Check if popup is active and render it
+        boolean popupActive = popupManager.render(batch);
+        
+        // Only update game state if popup isn't shown
+        if (!popupActive) {
+            // Update entity movement
+            entityManager.moveEntities();
+            entityManager.checkForEntitiesToBeRemoved();
+            
+            // Check collisions
+            collisionManager.checkAllCollisions();
+            collisionManager.checkForDetectorsToBeRemoved();
+            
+            // Handle user input
+            ioManager.handleInput();
+            
+            // Check for game over condition
+            if (player.getHealth() <= 0) {
+                // Game over logic
+                finalPoints = player.getPoints();
+                gameWon = false;
+                System.out.println("Game Over! Player died.");
+                sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+            } else if (player.getPoints() >= targetPoint) {
+                // Game win logic
+                finalPoints = player.getPoints();
+                gameWon = true;
+                System.out.println("Game Win! Player reached " + targetPoint + " points.");
+                sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+            }
         }
-
     }
 
     private void spawnFood() {
@@ -382,8 +395,9 @@ public class PlayScene implements Scene {
     }
     
     @Override
-	public void dispose() {
-		stage.dispose();
-		skin.dispose();		
-	}
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
+        popupManager.dispose();
+    }
 }
