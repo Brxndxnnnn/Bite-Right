@@ -18,6 +18,7 @@ public class AudioPlayer {
 
     // Default Constructor
     private AudioPlayer() {
+        bgm = null;
         sound = null;
         volume = 100;
         activeSFX = new Array<>();
@@ -45,16 +46,21 @@ public class AudioPlayer {
 
 
     public void playSFX(String fileName) {
+        if(sfx != null) {
+            sfx.stop();
+            sfx.dispose();
+        }
 
         sfx = Gdx.audio.newMusic(Gdx.files.internal(fileName));
         sfx.setLooping(false);
         sfx.setVolume(volume / 100.0f);
         sfx.play();
 
-        activeSFX.add(sfx);
+        activeSFX.add(sfx); // Add to active SFX list
 
+        // Dispose the SFX after it finishes playing
         sfx.setOnCompletionListener(music -> {
-            activeSFX.removeValue(music,true);
+            activeSFX.removeValue(music, true);
             music.dispose();
         });
     }
