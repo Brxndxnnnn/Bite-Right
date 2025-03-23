@@ -136,8 +136,8 @@ public class MazeGenerator {
      * @return Vector2 containing screen X and Y coordinates
      */
     public Vector2 gridToScreen(int gridX, int gridY) {
-        float screenX = gridX * cellSize + cellSize / 2;
-        float screenY = gridY * cellSize + cellSize / 2;
+        float screenX = startX + gridX * cellSize;
+        float screenY = startY + gridY * cellSize;
         return new Vector2(screenX, screenY);
     }
 
@@ -149,8 +149,8 @@ public class MazeGenerator {
      * @return Vector2 containing screen X and Y coordinates
      */
     public Vector2 gridToScreenTopLeft(int gridX, int gridY) {
-        float screenX = gridX * cellSize;
-        float screenY = gridY * cellSize;
+        float screenX = startX + gridX * cellSize;
+        float screenY = startY + gridY * cellSize;
         return new Vector2(screenX, screenY);
     }
 

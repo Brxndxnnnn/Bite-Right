@@ -78,28 +78,4 @@ public abstract class Entity{
 		return toBeRemoved;
 	}
 
-    /**
-     * Ensures that the entity's position stays within the maze bounds.
-     * It checks if the position is out of bounds and corrects it if necessary.
-     *
-     * @param mazeWidth Width of the maze.
-     * @param mazeHeight Height of the maze.
-     */
-    public void ensurePositionInsideBounds(float mazeWidth, float mazeHeight) {
-        // Ensure that the entity does not go out of bounds
-        position.x = Math.max(0, Math.min(position.x, mazeWidth - texture.getWidth()));
-        position.y = Math.max(0, Math.min(position.y, mazeHeight - texture.getHeight()));
-    }
-
-    /**
-     * Checks if the entity's position is valid and inside the maze bounds.
-     *
-     * @param mazeWidth The width of the maze.
-     * @param mazeHeight The height of the maze.
-     * @return True if the position is inside the bounds, false otherwise.
-     */
-    public boolean isInsideBounds(float mazeWidth, float mazeHeight) {
-        return position.x >= 0 && position.x <= mazeWidth - texture.getWidth() &&
-            position.y >= 0 && position.y <= mazeHeight - texture.getHeight();
-    }
 }

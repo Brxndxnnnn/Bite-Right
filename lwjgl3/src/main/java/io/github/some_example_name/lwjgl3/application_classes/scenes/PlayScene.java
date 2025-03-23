@@ -66,6 +66,7 @@ public class PlayScene implements Scene {
         this.sceneManager = sceneManager;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+        playBackground = new Texture(Gdx.files.internal("assets/homebackground.jpg"));
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 
         // Get screen width and height
@@ -395,8 +396,6 @@ public class PlayScene implements Scene {
 
 
     }
-
-
 
     private void spawnFood() {
         float deltaTime = Gdx.graphics.getDeltaTime();
