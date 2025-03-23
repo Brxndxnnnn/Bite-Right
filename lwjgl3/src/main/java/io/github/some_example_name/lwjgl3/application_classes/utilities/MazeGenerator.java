@@ -35,31 +35,42 @@ public class MazeGenerator {
     private static final int GRID_HEIGHT = 15;
 
     private final float cellSize;
-    
+
+    private float startX;
+    private float startY;
+
     // Constructor
     public MazeGenerator(float cellSize) {
         wallList = new ArrayList<>();
-        
+
         // Calculate cell size based on screen dimensions and maze size
         this.cellSize = cellSize;
     }
 
     /**
      * Generates the maze walls and adds them to the entity manager
-     * 
+     *
      * * @param wallTexture Texture of the wall entity
      */
-    public void generateMaze(Texture wallTexture) {
+    public void generateMaze(Texture wallTexture, int screenWidth, int screenHeight) {
         // Ensure textures are properly sized for the grid
         wallTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        // Calculate the total width and height of the maze
+        float mazeWidth = GRID_WIDTH * cellSize;
+        float mazeHeight = GRID_HEIGHT * cellSize;
+
+        // Calculate the position to center the maze on the screen
+        startX = (screenWidth - mazeWidth) / 2f; // Offset to center the maze horizontally
+        startY = (screenHeight - mazeHeight) / 2f; // Offset to center the maze vertically
         // Convert layout to wall entities
         for (int y = 0; y < GRID_HEIGHT; y++) {
             for (int x = 0; x < GRID_WIDTH; x++) {
                 if (MAZE_LAYOUT[y][x] == 1) {
                     // Create a wall at this position
                     Wall wall = new Wall(
-                        "Wall_" + x + "_" + y, 
-                        new Vector2(x * cellSize, y * cellSize),
+                        "Wall_" + x + "_" + y,
+                        new Vector2(startX + x * cellSize, startY + y * cellSize),
                         wallTexture
                     );
                     // Ensure wall texture is scaled to match cell size
@@ -73,7 +84,7 @@ public class MazeGenerator {
 
     /**
      * Returns true if the position contains a wall in the maze layout
-     * 
+     *
      * @param index Index position in list
      * @return Wall entity at index
      */
@@ -88,10 +99,10 @@ public class MazeGenerator {
     public int getWallListSize(){
         return wallList.size();
     }
-    
+
     /**
      * Returns true if the position contains a wall in the maze layout
-     * 
+     *
      * @param gridX X position in the grid
      * @param gridY Y position in the grid
      * @return True if position contains a wall
@@ -103,10 +114,10 @@ public class MazeGenerator {
         }
         return MAZE_LAYOUT[gridY][gridX] == 1;
     }
-    
+
     /**
      * Converts a screen position to a grid position
-     * 
+     *
      * @param screenX X position on screen
      * @param screenY Y position on screen
      * @return Vector2 containing grid X and Y coordinates
@@ -116,33 +127,33 @@ public class MazeGenerator {
         int gridY = (int)(screenY / cellSize);
         return new Vector2(gridX, gridY);
     }
-    
+
     /**
      * Converts a grid position to a screen position (center of the cell)
-     * 
+     *
      * @param gridX X position in grid
      * @param gridY Y position in grid
      * @return Vector2 containing screen X and Y coordinates
      */
     public Vector2 gridToScreen(int gridX, int gridY) {
-        float screenX = gridX * cellSize + cellSize / 2;
-        float screenY = gridY * cellSize + cellSize / 2;
+        float screenX = startX + gridX * cellSize;
+        float screenY = startY + gridY * cellSize;
         return new Vector2(screenX, screenY);
     }
-    
+
     /**
      * Converts a grid position to a screen position (top-left corner of the cell)
-     * 
+     *
      * @param gridX X position in grid
      * @param gridY Y position in grid
      * @return Vector2 containing screen X and Y coordinates
      */
     public Vector2 gridToScreenTopLeft(int gridX, int gridY) {
-        float screenX = gridX * cellSize;
-        float screenY = gridY * cellSize;
+        float screenX = startX + gridX * cellSize;
+        float screenY = startY + gridY * cellSize;
         return new Vector2(screenX, screenY);
     }
-    
+
     /**
      * Gets the cell size used for the maze
      * @return Cell size in pixels
@@ -150,7 +161,7 @@ public class MazeGenerator {
     public float getCellSize() {
         return cellSize;
     }
-    
+
     /**
      * Gets the grid width of the maze
      * @return Grid width
@@ -158,7 +169,7 @@ public class MazeGenerator {
     public static int getGridWidth() {
         return GRID_WIDTH;
     }
-    
+
     /**
      * Gets the grid height of the maze
      * @return Grid height

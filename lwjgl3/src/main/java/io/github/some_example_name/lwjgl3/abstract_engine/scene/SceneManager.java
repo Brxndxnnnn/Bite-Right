@@ -30,7 +30,7 @@ public class SceneManager {
 //	            throw new IllegalArgumentException("Unknown SceneType: " + sceneType);
 //    	}
 //    }
-    
+
     // This function changes the scene
     // Usage: changeScene(new PauseScene(), SceneTransitionType.PAUSE);
     //        changeScene(new PlayScene(), SceneTransitionType.NORMAL);
@@ -38,7 +38,7 @@ public class SceneManager {
 //        Scene newScene = createScene(sceneType);
     	SceneFactory sceneFactory = new SceneFactory();
     	Scene newScene = sceneFactory.getScene(sceneType, this);
-    	
+
         switch (transitionType) {
             case PAUSE:
                 storedScene = currentScene;
@@ -77,5 +77,6 @@ public class SceneManager {
         if (currentScene != null) {
             currentScene.render(batch);
         }
+
     }
 }

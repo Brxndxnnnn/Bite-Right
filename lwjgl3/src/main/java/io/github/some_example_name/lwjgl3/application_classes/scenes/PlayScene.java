@@ -37,6 +37,10 @@ import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGene
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayScene implements Scene {
     private final EntityManager entityManager;
@@ -55,17 +59,32 @@ public class PlayScene implements Scene {
     private static boolean gameWon;
     private float speed;
     private int targetPoint;
-    
+    private Texture playBackground;
+    private SpriteBatch batch;
+
+
     public PlayScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
-		
+
+
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
-        float cellSize = Math.min(screenWidth / 15, screenHeight / 15);
+
+        float cellSize = Math.min(screenWidth / 15f, screenHeight / 15f);
+        float scalefactor = 0.8f;
+        cellSize *= scalefactor;
+
+        // Calculate the total width and height of the maze (based on the number of grid cells)
+        float mazeWidth = 15 * cellSize;
+        float mazeHeight = 15 * cellSize;
+
+        // Calculate the position to center the maze on the screen
+        float startX = (screenWidth - mazeWidth) / 2f; // Offset to center the maze horizontally
+        float startY = (screenHeight - mazeHeight) / 2f; // Offset to center the maze vertically
 
         // Loading all required Textures
         Texture wallTexture = new Texture("entities_images/wall.png"); // Load Wall Texture
@@ -75,16 +94,16 @@ public class PlayScene implements Scene {
         Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
 
         // INITIALIZE REQUIRED MANAGERS
- 
         ioManager = new IOManager();
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
-        foodGenerator = new FoodGenerator(cellSize);
-        
+        foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
+        batch = new SpriteBatch();
+
 
         adjustElementsByDifficulty();
-        
+
         // Create and generate maze
         createAndAddMaze(wallTexture);
 
@@ -112,29 +131,45 @@ public class PlayScene implements Scene {
 
         AudioPlayer.getInstance().setSceneBGM("play.mp3");
     }
-    
+
+
     private void adjustElementsByDifficulty() {
     	if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
     		speed = 100f;
     		targetPoint = 200;
+            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
     	}
     	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
     		speed = 150f;
     		targetPoint = 300;
+            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
 		}
     	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
 			speed = 300f;
     		targetPoint = 400;
+            playBackground = new Texture(Gdx.files.internal("assets/hardPlay.jpg")); // Load hard background
     	}
+
+        Image backgroundImage = new Image(new TextureRegionDrawable(new TextureRegion(playBackground)));
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundImage.setPosition(0, 0);
+        stage.addActor(backgroundImage);
     }
 
     private void createAndAddMaze(Texture wallTexture) {
-        mazeGenerator.generateMaze(wallTexture);
+        // Get the screen width and height
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
 
-        for (int i = 0; i < mazeGenerator.getWallListSize(); i++){
+        // Generate the maze with the calculated cell size and screen dimensions
+        mazeGenerator.generateMaze(wallTexture, screenWidth, screenHeight);
+
+        // Add generated walls to the entity manager
+        for (int i = 0; i < mazeGenerator.getWallListSize(); i++) {
             entityManager.addEntities(mazeGenerator.getWall(i));
         }
     }
+
 
     private void createAndAddFood(Texture healthyFoodTexture, Texture unhealthyFoodTexture) {
         foodGenerator.setTextures(healthyFoodTexture, unhealthyFoodTexture);
@@ -152,12 +187,14 @@ public class PlayScene implements Scene {
         float cellSize = mazeGenerator.getCellSize();
 
         // Create player with appropriate size for the maze
-        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)
+        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1);// Calculate player starting position (top-left of cell 1,1)
         player = new Player("Player", playerStartPos, playerTexture, 2f);
+
         player.setSize(cellSize * 0.9f, cellSize * 0.9f); // // Set player size to fit within a cell (slightly smaller for movement clearance)
 
         // Center the player within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
+
         player.setPosition(new Vector2(
             playerStartPos.x + offset,
             playerStartPos.y + offset
@@ -170,26 +207,24 @@ public class PlayScene implements Scene {
         // INITIALIZE MAIN TABLE FOR THE TITLE
         Table titleTable = new Table();
         titleTable.setFillParent(true);
-        titleTable.top().right(); // Align content to the top right
-        titleTable.padRight(10).padTop(10); // Add padding for better visibility
+        titleTable.bottom(); // Align content to the top right
+        titleTable.padBottom(20);// Add padding for better visibility
         stage.addActor(titleTable);
-        
+
         // Add health label
         healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
         healthLabel.setColor(Color.WHITE);
-        titleTable.add(healthLabel).right().padTop(5);
-        titleTable.row();
+        titleTable.add(healthLabel).left().pad(10);
 
         // Add points label
         pointsLabel = new Label("Points: 100/" + targetPoint, skin);
         pointsLabel.setColor(Color.GREEN);
-        titleTable.add(pointsLabel).right().padTop(5);
-        titleTable.row();
+        titleTable.add(pointsLabel).expandX().center().pad(10);
 
         // Add food count label
         foodCountLabel = new Label("Food: 0/7", skin);
         foodCountLabel.setColor(Color.YELLOW);
-        titleTable.add(foodCountLabel).right().padTop(5);
+        titleTable.add(foodCountLabel).right().pad(10);
 
     }
 
@@ -315,7 +350,7 @@ public class PlayScene implements Scene {
     public static boolean isGameWon() {
     	return gameWon;
     }
-    
+
     @Override
     public void render(SpriteBatch batch) {
         spawnFood();
@@ -326,6 +361,7 @@ public class PlayScene implements Scene {
 
         // Clear the screen
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 
         // Update health and food count displays
         healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
@@ -369,6 +405,7 @@ public class PlayScene implements Scene {
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
 
+
     }
 
     private void spawnFood() {
@@ -380,10 +417,11 @@ public class PlayScene implements Scene {
             entityManager.addEntities(food);
         }
     }
-    
+
     @Override
 	public void dispose() {
 		stage.dispose();
-		skin.dispose();		
+		skin.dispose();
+        playBackground.dispose();
 	}
 }

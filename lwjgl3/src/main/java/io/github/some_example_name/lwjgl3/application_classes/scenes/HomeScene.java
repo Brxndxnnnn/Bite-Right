@@ -3,13 +3,11 @@ package io.github.some_example_name.lwjgl3.application_classes.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
@@ -27,14 +25,28 @@ public class HomeScene implements Scene{
 	private final IOManager ioManager;
 	private Stage stage;
 	private Skin skin;
-	
+    private Texture homeBackground;
+    private SpriteBatch batch;
+    private float alpha = 0f;
+    private float fadeSpeed = 0.01f;
+    private boolean fadingIn = true;
+    private Image backgroundImage;
+
+
 	public HomeScene(SceneManager sceneManager) {
 //		super(sceneManager);
-		
+
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+        homeBackground = new Texture(Gdx.files.internal("assets/homebackground.jpg"));
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
-		
+
+        Image backgroundImage = new Image(homeBackground);
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Add the background image to the stage (this will make it part of the UI)
+        stage.addActor(backgroundImage);
+
 		AudioPlayer.getInstance().setSceneBGM("home.mp3");
 
         startBtn = new TextButton("Start", skin);
@@ -45,14 +57,13 @@ public class HomeScene implements Scene{
 		tutBtn.getLabel().setFontScale(0.5f);
 		quitBtn.getLabel().setFontScale(0.5f);
 
-
 		// INITIALIZE MAIN TABLE FOR THE TITLE
 		Table titleTable = new Table();
 		titleTable.setFillParent(true);
 		titleTable.top(); // Align content to the top
 		stage.addActor(titleTable);
 
-		Label label = new Label("Pac-Man", skin, "title");
+		Label label = new Label("Hungry Dash", skin, "title");
 		label.setColor(Color.YELLOW);
 		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
 
@@ -107,17 +118,22 @@ public class HomeScene implements Scene{
 		// ioManager.addIOBind(ioManager.getKeyboard(), Keys.UP, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() + 5), true);
 	}
 
+
+
 	@Override
 	public void render(SpriteBatch batch) {
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.draw();
 
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
+        stage.draw();
 		ioManager.handleInput();
+
 	}
 
 	@Override
 	public void dispose() {
 		stage.dispose();
-		skin.dispose();		
+		skin.dispose();
 	}
 }
