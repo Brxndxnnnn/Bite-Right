@@ -11,14 +11,13 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.HealthyFood;
 import io.github.some_example_name.lwjgl3.application_classes.entities.UnhealthyFood;
-import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
-
 /**
  * Utility class to generate food items in the maze
  */
 public class FoodGenerator {
     private final List<Food> foodList;
     private final float cellSize;
+    private final MazeGenerator mazeGenerator;
     // Food generation parameters
     private static final float HEALTHY_FOOD_RATIO = 0.7f; // 70% healthy, 30% unhealthy
     private static final int MAX_FOOD_ATTEMPTS = 100; // Maximum attempts to place food
@@ -37,9 +36,10 @@ public class FoodGenerator {
      *
      * @param cellSize Size of each cell in the maze
      */
-    public FoodGenerator(float cellSize) {
+    public FoodGenerator(float cellSize, MazeGenerator mazeGenerator) {
         this.foodList = new ArrayList<>();
         this.cellSize = cellSize;
+        this.mazeGenerator = mazeGenerator;
         this.spawnTimer = 0;
     }
 
@@ -147,7 +147,8 @@ public class FoodGenerator {
         }
 
         // Convert to screen coordinates
-        Vector2 position = new Vector2(gridX * cellSize, gridY * cellSize);
+        Vector2 position = mazeGenerator.gridToScreenTopLeft(gridX, gridY);
+
 
         // Add offset to center food in cell
         float offset = cellSize * 0.25f; // 25% offset to create a smaller food item

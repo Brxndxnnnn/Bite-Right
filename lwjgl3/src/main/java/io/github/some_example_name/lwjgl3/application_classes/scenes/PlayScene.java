@@ -37,6 +37,10 @@ import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGene
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayScene implements Scene {
     private final EntityManager entityManager;
@@ -57,17 +61,14 @@ public class PlayScene implements Scene {
     private int targetPoint;
     private Texture playBackground;
     private SpriteBatch batch;
-    private float alpha = 0f;
-    private float fadeSpeed = 0.01f;
-    private boolean fadingIn = true;
 
 
     public PlayScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-        playBackground = new Texture(Gdx.files.internal("assets/homebackground.jpg"));
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+
 
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
@@ -97,7 +98,7 @@ public class PlayScene implements Scene {
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
-        foodGenerator = new FoodGenerator(cellSize);
+        foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
         batch = new SpriteBatch();
 
 
@@ -131,19 +132,28 @@ public class PlayScene implements Scene {
         AudioPlayer.getInstance().setSceneBGM("play.mp3");
     }
 
+
     private void adjustElementsByDifficulty() {
     	if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
     		speed = 100f;
     		targetPoint = 200;
+            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
     	}
     	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
     		speed = 150f;
     		targetPoint = 300;
+            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
 		}
     	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
 			speed = 300f;
     		targetPoint = 400;
+            playBackground = new Texture(Gdx.files.internal("assets/hardPlay.jpg")); // Load hard background
     	}
+
+        Image backgroundImage = new Image(new TextureRegionDrawable(new TextureRegion(playBackground)));
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundImage.setPosition(0, 0);
+        stage.addActor(backgroundImage);
     }
 
     private void createAndAddMaze(Texture wallTexture) {
@@ -351,6 +361,7 @@ public class PlayScene implements Scene {
 
         // Clear the screen
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 
         // Update health and food count displays
         healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
