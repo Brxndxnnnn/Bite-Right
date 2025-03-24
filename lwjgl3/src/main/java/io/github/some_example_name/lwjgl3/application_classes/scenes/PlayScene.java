@@ -67,6 +67,7 @@ public class PlayScene implements Scene {
     private SpriteBatch batch;
     private Nutritionist activeNutritionist;
     private Texture nutritionistTexture;
+    private Texture floorTexture;
 
 
     public PlayScene(SceneManager sceneManager) {
@@ -94,11 +95,12 @@ public class PlayScene implements Scene {
 
         // Loading all required Textures
         Texture wallTexture = new Texture("entities_images/wall.png"); // Load Wall Texture
+        floorTexture = new Texture("entities_images/floor.png"); // Load Floor Texture
         Texture enemyTexture = new Texture("entities_images/demon.png"); // Load Enemy Texture
         Texture playerTexture = new Texture("entities_images/player.png"); // Load Player Texture
         Texture healthyFoodTexture = new Texture("entities_images/healthyfood.png"); // Load Healthy Food Texture
         Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
-        nutritionistTexture = new Texture("entities_images/player.png"); // Load Nutritionist Texture
+        nutritionistTexture = new Texture("entities_images/nutritionist.png"); // Load Nutritionist Texture
 
         // INITIALIZE REQUIRED MANAGERS
         ioManager = new IOManager();
@@ -112,6 +114,9 @@ public class PlayScene implements Scene {
 
         adjustElementsByDifficulty();
 
+        // Create and generate floor first (so it appears behind other entities)
+        createAndAddFloor(floorTexture);
+        
         // Create and generate maze
         createAndAddMaze(wallTexture);
 
@@ -162,6 +167,21 @@ public class PlayScene implements Scene {
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundImage.setPosition(0, 0);
         stage.addActor(backgroundImage);
+    }
+
+    private void createAndAddFloor(Texture floorTexture) {
+        // Get the screen width and height
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+
+        // Generate the floor with the calculated cell size and screen dimensions
+        mazeGenerator.generateFloor(floorTexture, screenWidth, screenHeight);
+
+        // Add generated floor tiles to the entity manager
+        for (int i = 0; i < mazeGenerator.getFloorListSize(); i++) {
+            // Add floor tiles first so they're rendered behind other entities
+            entityManager.addEntities(mazeGenerator.getFloor(i));
+        }
     }
 
     private void createAndAddMaze(Texture wallTexture) {
@@ -482,5 +502,6 @@ public class PlayScene implements Scene {
         skin.dispose();
         playBackground.dispose();
         nutritionistTexture.dispose(); // Make sure to dispose the nutritionist texture
+        floorTexture.dispose(); // Make sure to dispose the floor texture
     }
 }
