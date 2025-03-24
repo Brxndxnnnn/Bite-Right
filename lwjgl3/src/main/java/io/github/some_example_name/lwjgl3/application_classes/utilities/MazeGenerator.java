@@ -6,10 +6,12 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.some_example_name.lwjgl3.application_classes.entities.Floor;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
 public class MazeGenerator {
     private final List<Wall> wallList;
+    private final List<Floor> floorList;
 
     // Maze layout (1 = wall, 0 = path)
     private static final int[][] MAZE_LAYOUT = {
@@ -42,6 +44,7 @@ public class MazeGenerator {
     // Constructor
     public MazeGenerator(float cellSize) {
         wallList = new ArrayList<>();
+        floorList = new ArrayList<>();
 
         // Calculate cell size based on screen dimensions and maze size
         this.cellSize = cellSize;
@@ -50,7 +53,9 @@ public class MazeGenerator {
     /**
      * Generates the maze walls and adds them to the entity manager
      *
-     * * @param wallTexture Texture of the wall entity
+     * @param wallTexture Texture of the wall entity
+     * @param screenWidth Width of the screen
+     * @param screenHeight Height of the screen
      */
     public void generateMaze(Texture wallTexture, int screenWidth, int screenHeight) {
         // Ensure textures are properly sized for the grid
@@ -63,6 +68,7 @@ public class MazeGenerator {
         // Calculate the position to center the maze on the screen
         startX = (screenWidth - mazeWidth) / 2f; // Offset to center the maze horizontally
         startY = (screenHeight - mazeHeight) / 2f; // Offset to center the maze vertically
+        
         // Convert layout to wall entities
         for (int y = 0; y < GRID_HEIGHT; y++) {
             for (int x = 0; x < GRID_WIDTH; x++) {
@@ -76,14 +82,50 @@ public class MazeGenerator {
                     // Ensure wall texture is scaled to match cell size
                     wall.setSize(cellSize, cellSize);
                     wallList.add(wall);
-                    // entityManager.addEntities(wall); <-- need check if its good to pass in EntityManager here, probably not though
+                }
+            }
+        }
+    }
+    
+    /**
+     * Generates the maze floor tiles and adds them to the floor list
+     *
+     * @param floorTexture Texture of the floor entity
+     * @param screenWidth Width of the screen
+     * @param screenHeight Height of the screen
+     */
+    public void generateFloor(Texture floorTexture, int screenWidth, int screenHeight) {
+        // Ensure textures are properly sized for the grid
+        floorTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        // Calculate the total width and height of the maze
+        float mazeWidth = GRID_WIDTH * cellSize;
+        float mazeHeight = GRID_HEIGHT * cellSize;
+
+        // Calculate the position to center the maze on the screen
+        startX = (screenWidth - mazeWidth) / 2f; // Offset to center the maze horizontally
+        startY = (screenHeight - mazeHeight) / 2f; // Offset to center the maze vertically
+        
+        // Convert layout to floor entities
+        for (int y = 0; y < GRID_HEIGHT; y++) {
+            for (int x = 0; x < GRID_WIDTH; x++) {
+                if (MAZE_LAYOUT[y][x] == 0) {
+                    // Create a floor at this position
+                    Floor floor = new Floor(
+                        "Floor_" + x + "_" + y,
+                        new Vector2(startX + x * cellSize, startY + y * cellSize),
+                        floorTexture
+                    );
+                    // Ensure floor texture is scaled to match cell size
+                    floor.setSize(cellSize, cellSize);
+                    floorList.add(floor);
                 }
             }
         }
     }
 
     /**
-     * Returns true if the position contains a wall in the maze layout
+     * Returns a wall entity by index
      *
      * @param index Index position in list
      * @return Wall entity at index
@@ -93,11 +135,31 @@ public class MazeGenerator {
     }
 
     /**
-     * Returns true if the position contains a wall in the maze layout
+     * Returns the size of the wall list
+     * 
      * @return Int size of current wall list
      */
     public int getWallListSize(){
         return wallList.size();
+    }
+    
+    /**
+     * Gets a floor entity at the specified index
+     *
+     * @param index Index position in list
+     * @return Floor entity at index
+     */
+    public Floor getFloor(int index) {
+        return floorList.get(index);
+    }
+
+    /**
+     * Gets the size of the floor list
+     * 
+     * @return Int size of current floor list
+     */
+    public int getFloorListSize() {
+        return floorList.size();
     }
 
     /**
