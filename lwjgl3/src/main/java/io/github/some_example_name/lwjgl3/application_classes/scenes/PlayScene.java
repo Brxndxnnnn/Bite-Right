@@ -8,11 +8,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDetector;
@@ -26,21 +29,21 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionT
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.NutritionistCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideFoodDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideNutritionistDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Nutritionist;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.NutritionistGenerator;
 
 public class PlayScene implements Scene {
     private final EntityManager entityManager;
@@ -48,26 +51,29 @@ public class PlayScene implements Scene {
     private final IOManager ioManager;
     private final MazeGenerator mazeGenerator;
     private final FoodGenerator foodGenerator;
+    private final NutritionistGenerator nutritionistGenerator;
     private final SceneManager sceneManager;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
-	private Stage stage;
-	private Skin skin;
-	private Label pointsLabel;
+    private Stage stage;
+    private Skin skin;
+    private Label pointsLabel;
     private static int finalPoints;
     private static boolean gameWon;
     private float speed;
     private int targetPoint;
     private Texture playBackground;
     private SpriteBatch batch;
+    private Nutritionist activeNutritionist;
+    private Texture nutritionistTexture;
 
 
     public PlayScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 
 
         // Get screen width and height
@@ -92,6 +98,7 @@ public class PlayScene implements Scene {
         Texture playerTexture = new Texture("entities_images/player.png"); // Load Player Texture
         Texture healthyFoodTexture = new Texture("entities_images/healthyfood.png"); // Load Healthy Food Texture
         Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
+        nutritionistTexture = new Texture("entities_images/player.png"); // Load Nutritionist Texture
 
         // INITIALIZE REQUIRED MANAGERS
         ioManager = new IOManager();
@@ -99,6 +106,7 @@ public class PlayScene implements Scene {
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
+        nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator);
         batch = new SpriteBatch();
 
 
@@ -134,21 +142,21 @@ public class PlayScene implements Scene {
 
 
     private void adjustElementsByDifficulty() {
-    	if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
-    		speed = 100f;
-    		targetPoint = 200;
+        if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
+            speed = 100f;
+            targetPoint = 200;
             playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
-    	}
-    	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
-    		speed = 150f;
-    		targetPoint = 300;
+        }
+        else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
+            speed = 150f;
+            targetPoint = 300;
             playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
-		}
-    	else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
-			speed = 300f;
-    		targetPoint = 400;
+        }
+        else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
+            speed = 300f;
+            targetPoint = 400;
             playBackground = new Texture(Gdx.files.internal("assets/hardPlay.jpg")); // Load hard background
-    	}
+        }
 
         Image backgroundImage = new Image(new TextureRegionDrawable(new TextureRegion(playBackground)));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -187,10 +195,10 @@ public class PlayScene implements Scene {
         float cellSize = mazeGenerator.getCellSize();
 
         // Create player with appropriate size for the maze
-        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1);// Calculate player starting position (top-left of cell 1,1)
+        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)
         player = new Player("Player", playerStartPos, playerTexture, 2f);
 
-        player.setSize(cellSize * 0.9f, cellSize * 0.9f); // // Set player size to fit within a cell (slightly smaller for movement clearance)
+        player.setSize(cellSize * 0.9f, cellSize * 0.9f); // Set player size to fit within a cell (slightly smaller for movement clearance)
 
         // Center the player within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
@@ -201,31 +209,6 @@ public class PlayScene implements Scene {
         ));
 
         entityManager.addEntities(player);
-    }
-
-    private void setTitleLabels() {
-        // INITIALIZE MAIN TABLE FOR THE TITLE
-        Table titleTable = new Table();
-        titleTable.setFillParent(true);
-        titleTable.bottom(); // Align content to the top right
-        titleTable.padBottom(20);// Add padding for better visibility
-        stage.addActor(titleTable);
-
-        // Add health label
-        healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
-        healthLabel.setColor(Color.WHITE);
-        titleTable.add(healthLabel).left().pad(10);
-
-        // Add points label
-        pointsLabel = new Label("Points: 100/" + targetPoint, skin);
-        pointsLabel.setColor(Color.GREEN);
-        titleTable.add(pointsLabel).expandX().center().pad(10);
-
-        // Add food count label
-        foodCountLabel = new Label("Food: 0/7", skin);
-        foodCountLabel.setColor(Color.YELLOW);
-        titleTable.add(foodCountLabel).right().pad(10);
-
     }
 
     private void createAndAddEnemies(Texture enemyTexture) {
@@ -294,7 +277,7 @@ public class PlayScene implements Scene {
             // Skip entities that should be removed
             if (entityA.shouldBeRemoved()) continue;
 
-            // Handles collision between Player -> (NPC & Wall & Food)
+            // Handles collision between Player -> (NPC & Wall & Food & Nutritionist)
             if (entityA instanceof Player) {
                 for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
                     Entity entityB = entityManager.getEntity(x);
@@ -317,6 +300,11 @@ public class PlayScene implements Scene {
                         CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB);
                         collisionManager.addDetectors(playerCollideFoodDetector);
                     }
+                    
+                    if (entityB instanceof Nutritionist) {
+                        CollisionDetector playerCollideNutritionistDetector = new PlayerCollideNutritionistDetector((Player) entityA, (Nutritionist) entityB);
+                        collisionManager.addDetectors(playerCollideNutritionistDetector);
+                    }
                 }
             }
 
@@ -334,26 +322,101 @@ public class PlayScene implements Scene {
                         collisionManager.addDetectors(enemyCollideEnemyDetector);
                     }
 
-					if (entityB instanceof Wall){
-						                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
-						collisionManager.addDetectors(enemyCollideWallDetector);
-					}
-				}
-			}
-		}
+                    if (entityB instanceof Wall) {
+                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
+                        collisionManager.addDetectors(enemyCollideWallDetector);
+                    }
+                }
+            }
+            
+            // Handles collision between Nutritionist -> Wall
+            if (entityA instanceof Nutritionist) {
+                for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
+                    Entity entityB = entityManager.getEntity(y);
+                    
+                    // Skip entities that should be removed
+                    if (entityB.shouldBeRemoved()) continue;
+                    
+                    if (entityB instanceof Wall) {
+                        CollisionDetector nutritionistCollideWallDetector = new NutritionistCollideWallDetector((Nutritionist) entityA, (Wall) entityB);
+                        collisionManager.addDetectors(nutritionistCollideWallDetector);
+                    }
+                }
+            }
+        }
     }
 
-    public static int getfinalPoints() {
-    	return finalPoints;
+    private void setTitleLabels() {
+        // INITIALIZE MAIN TABLE FOR THE TITLE
+        Table titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.bottom(); // Align content to the top right
+        titleTable.padBottom(20);// Add padding for better visibility
+        stage.addActor(titleTable);
+
+        // Add health label
+        healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
+        healthLabel.setColor(Color.WHITE);
+        titleTable.add(healthLabel).left().pad(10);
+
+        // Add points label
+        pointsLabel = new Label("Points: 100/" + targetPoint, skin);
+        pointsLabel.setColor(Color.GREEN);
+        titleTable.add(pointsLabel).expandX().center().pad(10);
+
+        // Add food count label
+        foodCountLabel = new Label("Food: 0/7", skin);
+        foodCountLabel.setColor(Color.YELLOW);
+        titleTable.add(foodCountLabel).right().pad(10);
+    }
+    
+    private void updateNutritionist() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        
+        // Check if we have an active nutritionist
+        boolean nutritionistExists = false;
+        for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
+            Entity entity = entityManager.getEntity(i);
+            if (entity instanceof Nutritionist && !entity.shouldBeRemoved()) {
+                nutritionistExists = true;
+                activeNutritionist = (Nutritionist) entity;
+                break;
+            }
+        }
+        
+        // If no nutritionist exists, check if we should spawn one
+        if (!nutritionistExists && nutritionistGenerator.update(deltaTime, nutritionistExists)) {
+            // Generate a new nutritionist with 80% of enemy speed
+            Nutritionist newNutritionist = nutritionistGenerator.generateNutritionist(nutritionistTexture, speed * 0.8f);
+            if (newNutritionist != null) {
+                entityManager.addEntities(newNutritionist);
+                activeNutritionist = newNutritionist;
+                System.out.println("Nutritionist spawned");
+            }
+        }
+        
+        // If nutritionist was removed, update the generator
+        if (activeNutritionist != null && activeNutritionist.shouldBeRemoved()) {
+            nutritionistGenerator.onNutritionistRemoved();
+            activeNutritionist = null;
+        }
     }
 
-    public static boolean isGameWon() {
-    	return gameWon;
+    private void spawnFood() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+
+        // Update food generator and add any new food items
+        List<Food> newFood = foodGenerator.update(deltaTime);
+        for (Food food : newFood) {
+            entityManager.addEntities(food);
+        }
     }
 
     @Override
     public void render(SpriteBatch batch) {
+        // Update food and nutritionist
         spawnFood();
+        updateNutritionist();
 
         // Update collision detectors
         // (needed since new food items might have been spawned)
@@ -361,7 +424,6 @@ public class PlayScene implements Scene {
 
         // Clear the screen
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         // Update health and food count displays
         healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
@@ -393,35 +455,32 @@ public class PlayScene implements Scene {
         // Check for game over condition
         if (player.getHealth() <= 0) {
             // Game over logic
-        	finalPoints = player.getPoints();
-        	gameWon = false;
+            finalPoints = player.getPoints();
+            gameWon = false;
             System.out.println("Game Over! Player died.");
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         } else if (player.getPoints() >= targetPoint) {
             // Game win logic
-        	finalPoints = player.getPoints();
-        	gameWon = true;
+            finalPoints = player.getPoints();
+            gameWon = true;
             System.out.println("Game Win! Player reached " + targetPoint + " points.");
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
-
-
     }
 
-    private void spawnFood() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
+    public static int getfinalPoints() {
+        return finalPoints;
+    }
 
-        // Update food generator and add any new food items
-        List<Food> newFood = foodGenerator.update(deltaTime);
-        for (Food food : newFood) {
-            entityManager.addEntities(food);
-        }
+    public static boolean isGameWon() {
+        return gameWon;
     }
 
     @Override
-	public void dispose() {
-		stage.dispose();
-		skin.dispose();
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
         playBackground.dispose();
-	}
+        nutritionistTexture.dispose(); // Make sure to dispose the nutritionist texture
+    }
 }

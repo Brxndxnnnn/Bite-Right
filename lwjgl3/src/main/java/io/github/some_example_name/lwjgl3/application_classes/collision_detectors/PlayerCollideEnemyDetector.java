@@ -33,7 +33,7 @@ public class PlayerCollideEnemyDetector extends EntityCollisionDetector<Player, 
                 // This loop only runs once
                 AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
 //            Set player health to 0 (instant death)
-//            player.setHealth(0);
+            player.setHealth(0);
 
             // Mark this collision detector to be removed
             setToBeRemoved();
