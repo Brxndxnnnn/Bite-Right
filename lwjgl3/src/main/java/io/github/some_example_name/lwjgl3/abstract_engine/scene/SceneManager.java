@@ -2,42 +2,52 @@ package io.github.some_example_name.lwjgl3.abstract_engine.scene;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.some_example_name.lwjgl3.application_classes.scenes.HomeScene;
-import io.github.some_example_name.lwjgl3.application_classes.scenes.PauseScene;
-import io.github.some_example_name.lwjgl3.application_classes.scenes.PlayScene;
-import io.github.some_example_name.lwjgl3.application_classes.scenes.ResultsScene;
-import io.github.some_example_name.lwjgl3.application_classes.scenes.SettingsScene;
+/**
+ * Abstract base class for scene management
+ */
+public abstract class SceneManager {
+    protected Scene currentScene;
+    protected Scene storedScene; // For pausing/resuming scenarios
 
-public class SceneManager {
-    private Scene currentScene;
-    private Scene storedScene; // Store PlayScene when pausing
-
-    // Constructor
+    /**
+     * Constructor
+     */
     public SceneManager() {}
 
-    private Scene createScene(SceneType sceneType) {
-    	switch (sceneType) {
-	        case HOME:
-	            return new HomeScene(this);
-	        case PLAY:
-	            return new PlayScene(this);
-	        case SETTINGS:
-	            return new SettingsScene(this);
-	        case PAUSE:
-	            return new PauseScene(this);
-	        case RESULTS:
-	            return new ResultsScene(this);
-	        default:
-	            throw new IllegalArgumentException("Unknown SceneType: " + sceneType);
-    	}
-    }
-    
-    // This function changes the scene
-    // Usage: changeScene(new PauseScene(), SceneTransitionType.PAUSE);
-    //        changeScene(new PlayScene(), SceneTransitionType.NORMAL);
-    public void changeScene(SceneType sceneType, SceneTransitionType transitionType) {
-        Scene newScene = createScene(sceneType);
+    /**
+     * Changes the current scene with the specified transition type
+     * 
+     * @param sceneType The type of scene to change to
+     * @param transitionType How the transition should be handled
+     */
+    public abstract void changeScene(SceneType sceneType, SceneTransitionType transitionType);
 
+    /**
+     * Gets a scene of the specified type
+     * 
+     * @param sceneType The type of scene to create
+     * @return A new instance of the requested scene
+     */
+    protected abstract Scene getScene(SceneType sceneType);
+
+    /**
+     * Renders the current scene using the provided batch
+     * 
+     * @param batch The sprite batch to use for rendering
+     */
+    public void render(SpriteBatch batch) {
+        if (currentScene != null) {
+            currentScene.render(batch);
+        }
+    }
+
+    /**
+     * Handles scene transitions based on the specified transition type
+     * 
+     * @param newScene The new scene to transition to
+     * @param transitionType The type of transition to perform
+     */
+    protected void handleSceneTransition(Scene newScene, SceneTransitionType transitionType) {
         switch (transitionType) {
             case PAUSE:
                 storedScene = currentScene;
@@ -57,7 +67,7 @@ public class SceneManager {
                     storedScene = null;
                 }
                 if (currentScene != null) {
-                    currentScene.dispose(); // Dispose PauseScene
+                    currentScene.dispose(); // Dispose current scene
                 }
                 break;
 
@@ -70,11 +80,17 @@ public class SceneManager {
 
         currentScene = newScene;
     }
-
-    // This function render the current scene
-    public void render(SpriteBatch batch) {
+    
+    /**
+     * Cleans up resources when the manager is no longer needed
+     */
+    public void dispose() {
         if (currentScene != null) {
-            currentScene.render(batch);
+            currentScene.dispose();
+        }
+        
+        if (storedScene != null) {
+            storedScene.dispose();
         }
     }
 }

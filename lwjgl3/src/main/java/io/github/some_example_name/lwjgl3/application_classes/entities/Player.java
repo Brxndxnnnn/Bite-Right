@@ -17,6 +17,7 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     private int maxHealth = 100;
     private int health = 100;
     private float strength = 1.0f; // Multiplier for character abilities
+    private int points = 100;
 
     public Player(String name, Vector2 position, Texture texture, float speed) {
         super(name, position, texture, speed);
@@ -173,5 +174,18 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         maxHealth += amount;
         health += amount; // Also increase current health
         System.out.println("Max health increased to: " + maxHealth);
+    }
+
+    // adjust points
+    public void adjustPoints(int amount) {
+        points += amount;
+        if (this.points < 0) {
+            this.points = 0;
+        }
+    }
+
+    // get points
+    public int getPoints() {
+        return points;
     }
 }

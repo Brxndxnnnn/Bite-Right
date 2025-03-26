@@ -15,7 +15,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 public class Enemy extends MovableEntity implements Collidable, AIMovable {
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 1.0f; // seconds between random direction changes
-    private static final float GHOST_SPEED = 150f; // Speed for ghost movement
+    private static float GHOST_SPEED = 150f; // Speed for ghost movement
     
     /**
      * Returns the base speed used for ghost movement
@@ -24,6 +24,10 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
     public static float getBaseSpeed() {
         return GHOST_SPEED;
     }
+    public static void setBaseSpeed(float speed) {
+        GHOST_SPEED = speed;
+    }
+    
     private Vector2 previousDirection; // Track previous direction to avoid 180-degree turns
     private long lastCollisionTime = 0; // To prevent rapid direction changes
     private static final long COLLISION_COOLDOWN = 500; // milliseconds
@@ -52,8 +56,9 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
         this.previousDirection = new Vector2(velocity).nor();
     }
 
-    public Enemy(String name, Vector2 position, Texture texture) {
-        super(name, position, texture);
+    public Enemy(String name, Vector2 position, Texture texture, float speed) {
+        super(name, position, texture, speed);
+        setBaseSpeed(speed);
         this.velocity = getRandomCardinalDirection().scl(GHOST_SPEED);
         this.previousDirection = new Vector2(velocity).nor();
     }

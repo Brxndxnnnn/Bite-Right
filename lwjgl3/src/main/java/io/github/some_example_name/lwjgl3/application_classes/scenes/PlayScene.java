@@ -8,9 +8,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionDetector;
@@ -24,54 +29,97 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionT
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideWallDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.NutritionistCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideEnemyDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideFoodDetector;
+import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideNutritionistDetector;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.PlayerCollideWallDetector;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Nutritionist;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
-import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogEventListener;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.NutritionistGenerator;
 
-public class PlayScene extends Scene implements DialogEventListener {
+public class PlayScene implements Scene {
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
-    private final DialogPopUpManager dialogManager;
     private final MazeGenerator mazeGenerator;
     private final FoodGenerator foodGenerator;
+    private final NutritionistGenerator nutritionistGenerator;
+    private final SceneManager sceneManager;
+    private final DialogPopUpManager dialogPopUpManager;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
-    private boolean isPaused;
+    private Stage stage;
+    private Skin skin;
+    private Label pointsLabel;
+    private static int finalPoints;
+    private static boolean gameWon;
+    private float speed;
+    private int targetPoint;
+    private Texture playBackground;
+    private SpriteBatch batch;
+    private Nutritionist activeNutritionist;
+    private Texture nutritionistTexture;
+    private Texture floorTexture;
+    private boolean showPopup;
+
 
     public PlayScene(SceneManager sceneManager) {
-        super(sceneManager);
+        this.sceneManager = sceneManager;
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+
 
         // Get screen width and height
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
-        float cellSize = Math.min(screenWidth / 15, screenHeight / 15);
+
+        float cellSize = Math.min(screenWidth / 15f, screenHeight / 15f);
+        float scalefactor = 0.8f;
+        cellSize *= scalefactor;
+
+        // Calculate the total width and height of the maze (based on the number of grid cells)
+        float mazeWidth = 15 * cellSize;
+        float mazeHeight = 15 * cellSize;
+
+        // Calculate the position to center the maze on the screen
+        float startX = (screenWidth - mazeWidth) / 2f; // Offset to center the maze horizontally
+        float startY = (screenHeight - mazeHeight) / 2f; // Offset to center the maze vertically
 
         // Loading all required Textures
         Texture wallTexture = new Texture("entities_images/wall.png"); // Load Wall Texture
+        floorTexture = new Texture("entities_images/floor.png"); // Load Floor Texture
         Texture enemyTexture = new Texture("entities_images/demon.png"); // Load Enemy Texture
         Texture playerTexture = new Texture("entities_images/player.png"); // Load Player Texture
         Texture healthyFoodTexture = new Texture("entities_images/healthyfood.png"); // Load Healthy Food Texture
         Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
+        nutritionistTexture = new Texture("entities_images/nutritionist.png"); // Load Nutritionist Texture
 
         // INITIALIZE REQUIRED MANAGERS
         ioManager = new IOManager();
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
-        foodGenerator = new FoodGenerator(cellSize);
-        dialogManager = new DialogPopUpManager(stage, skin);
-        
-        dialogManager.setDialogEventListener(this); // Register PlayScene as a listener
+        foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
+        nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator);
+        dialogPopUpManager = new DialogPopUpManager(stage, skin);
+        batch = new SpriteBatch();
+
+
+        adjustElementsByDifficulty();
+
+        // Create and generate floor first (so it appears behind other entities)
+        createAndAddFloor(floorTexture);
         
         // Create and generate maze
         createAndAddMaze(wallTexture);
@@ -99,16 +147,61 @@ public class PlayScene extends Scene implements DialogEventListener {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
 
         AudioPlayer.getInstance().setSceneBGM("play.mp3");
+    }
 
+
+    private void adjustElementsByDifficulty() {
+        if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
+            speed = 100f;
+            targetPoint = 200;
+            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
+        }
+        else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
+            speed = 150f;
+            targetPoint = 300;
+            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
+        }
+        else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
+            speed = 300f;
+            targetPoint = 400;
+            playBackground = new Texture(Gdx.files.internal("assets/hardPlay.jpg")); // Load hard background
+        }
+
+        Image backgroundImage = new Image(new TextureRegionDrawable(new TextureRegion(playBackground)));
+        backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundImage.setPosition(0, 0);
+        stage.addActor(backgroundImage);
+    }
+
+    private void createAndAddFloor(Texture floorTexture) {
+        // Get the screen width and height
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+
+        // Generate the floor with the calculated cell size and screen dimensions
+        mazeGenerator.generateFloor(floorTexture, screenWidth, screenHeight);
+
+        // Add generated floor tiles to the entity manager
+        for (int i = 0; i < mazeGenerator.getFloorListSize(); i++) {
+            // Add floor tiles first so they're rendered behind other entities
+            entityManager.addEntities(mazeGenerator.getFloor(i));
+        }
     }
 
     private void createAndAddMaze(Texture wallTexture) {
-        mazeGenerator.generateMaze(wallTexture);
+        // Get the screen width and height
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
 
-        for (int i = 0; i < mazeGenerator.getWallListSize(); i++){
+        // Generate the maze with the calculated cell size and screen dimensions
+        mazeGenerator.generateMaze(wallTexture, screenWidth, screenHeight);
+
+        // Add generated walls to the entity manager
+        for (int i = 0; i < mazeGenerator.getWallListSize(); i++) {
             entityManager.addEntities(mazeGenerator.getWall(i));
         }
     }
+
 
     private void createAndAddFood(Texture healthyFoodTexture, Texture unhealthyFoodTexture) {
         foodGenerator.setTextures(healthyFoodTexture, unhealthyFoodTexture);
@@ -128,36 +221,18 @@ public class PlayScene extends Scene implements DialogEventListener {
         // Create player with appropriate size for the maze
         Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)
         player = new Player("Player", playerStartPos, playerTexture, 2f);
-        player.setSize(cellSize * 0.9f, cellSize * 0.9f); // // Set player size to fit within a cell (slightly smaller for movement clearance)
+
+        player.setSize(cellSize * 0.9f, cellSize * 0.9f); // Set player size to fit within a cell (slightly smaller for movement clearance)
 
         // Center the player within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
+
         player.setPosition(new Vector2(
             playerStartPos.x + offset,
             playerStartPos.y + offset
         ));
 
         entityManager.addEntities(player);
-    }
-
-    private void setTitleLabels() {
-        // INITIALIZE MAIN TABLE FOR THE TITLE
-        Table titleTable = new Table();
-        titleTable.setFillParent(true);
-        titleTable.top().right(); // Align content to the top right
-        titleTable.padRight(10).padTop(10); // Add padding for better visibility
-        stage.addActor(titleTable);
-
-        // Add health label
-        healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
-        healthLabel.setColor(Color.WHITE);
-        titleTable.add(healthLabel).right().padTop(5);
-        titleTable.row();
-
-        // Add food count label
-        foodCountLabel = new Label("Food: 0/7", skin);
-        foodCountLabel.setColor(Color.YELLOW);
-        titleTable.add(foodCountLabel).right().padTop(5);
     }
 
     private void createAndAddEnemies(Texture enemyTexture) {
@@ -176,7 +251,7 @@ public class PlayScene extends Scene implements DialogEventListener {
         // Add ghosts at specific positions in the maze
         // Ghost 1 - top right corner (red ghost)
         Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, enemyTexture);
+        Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell (slightly smaller for movement clearance)
         ghost1.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -190,7 +265,7 @@ public class PlayScene extends Scene implements DialogEventListener {
 
         // Ghost 2 - top left corner (pink ghost)
         Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, enemyTexture);
+        Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell
         ghost2.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -203,7 +278,7 @@ public class PlayScene extends Scene implements DialogEventListener {
 
         // Ghost 3 - bottom right corner (cyan ghost)
         Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
-        Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, enemyTexture);
+        Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell
         ghost3.setSize(cellSize * 0.9f, cellSize * 0.9f);
         // Center the ghost within the cell
@@ -226,7 +301,7 @@ public class PlayScene extends Scene implements DialogEventListener {
             // Skip entities that should be removed
             if (entityA.shouldBeRemoved()) continue;
 
-            // Handles collision between Player -> (NPC & Wall & Food)
+            // Handles collision between Player -> (NPC & Wall & Food & Nutritionist)
             if (entityA instanceof Player) {
                 for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
                     Entity entityB = entityManager.getEntity(x);
@@ -246,8 +321,13 @@ public class PlayScene extends Scene implements DialogEventListener {
                     }
 
                     if (entityB instanceof Food) {
-                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB, dialogManager);
+                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB, dialogPopUpManager);
                         collisionManager.addDetectors(playerCollideFoodDetector);
+                    }
+                    
+                    if (entityB instanceof Nutritionist) {
+                        CollisionDetector playerCollideNutritionistDetector = new PlayerCollideNutritionistDetector((Player) entityA, (Nutritionist) entityB);
+                        collisionManager.addDetectors(playerCollideNutritionistDetector);
                     }
                 }
             }
@@ -266,69 +346,84 @@ public class PlayScene extends Scene implements DialogEventListener {
                         collisionManager.addDetectors(enemyCollideEnemyDetector);
                     }
 
-					if (entityB instanceof Wall){
-						                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
-						collisionManager.addDetectors(enemyCollideWallDetector);
-					}
-				}
-			}
-		}
+                    if (entityB instanceof Wall) {
+                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
+                        collisionManager.addDetectors(enemyCollideWallDetector);
+                    }
+                }
+            }
+            
+            // Handles collision between Nutritionist -> Wall
+            if (entityA instanceof Nutritionist) {
+                for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
+                    Entity entityB = entityManager.getEntity(y);
+                    
+                    // Skip entities that should be removed
+                    if (entityB.shouldBeRemoved()) continue;
+                    
+                    if (entityB instanceof Wall) {
+                        CollisionDetector nutritionistCollideWallDetector = new NutritionistCollideWallDetector((Nutritionist) entityA, (Wall) entityB);
+                        collisionManager.addDetectors(nutritionistCollideWallDetector);
+                    }
+                }
+            }
+        }
     }
 
-    @Override
-    public void render(SpriteBatch batch) {
-    	// if game resumes
-    	if (!isPaused) {
-    		spawnFood();
-    		// Update collision detectors
-            // (needed since new food items might have been spawned)
-        	setupCollisionDetectors();
-			//Update entity movement
-			entityManager.moveEntities();
-			entityManager.checkForEntitiesToBeRemoved();
-			
-			// Check collisions
-			collisionManager.checkAllCollisions();
-			collisionManager.checkForDetectorsToBeRemoved();
-			
-			// Handle user input5
-			ioManager.handleInput();
-    		
-	
-    	}
+    private void setTitleLabels() {
+        // INITIALIZE MAIN TABLE FOR THE TITLE
+        Table titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.bottom(); // Align content to the top right
+        titleTable.padBottom(20);// Add padding for better visibility
+        stage.addActor(titleTable);
 
-        // Clear the screen
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        // Add health label
+        healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
+        healthLabel.setColor(Color.WHITE);
+        titleTable.add(healthLabel).left().pad(10);
 
-        // Update health and food count displays
-        healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
+        // Add points label
+        pointsLabel = new Label("Points: 100/" + targetPoint, skin);
+        pointsLabel.setColor(Color.GREEN);
+        titleTable.add(pointsLabel).expandX().center().pad(10);
 
-        // Update food count label
-        int currentFoodCount = foodGenerator.getFoodListSize();
-        foodCountLabel.setText("Food: " + currentFoodCount + "/7");
-
-  
-
-        // Draw Entities on Screen
-        entityManager.drawEntites(batch);
+        // Add food count label
+        foodCountLabel = new Label("Food: 0/7", skin);
+        foodCountLabel.setColor(Color.YELLOW);
+        titleTable.add(foodCountLabel).right().pad(10);
+    }
+    
+    private void updateNutritionist() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         
-        dialogManager.render(batch);
-	    // Draw UI
-	    stage.draw();
-
-        // Check for game over condition
-        if (player.getHealth() <= 0) {
-            // Game over logic
-            System.out.println("Game Over! Player died.");
-
-            // Uncomment the following line when you have a GameOverScene ready
-            // sceneManager.changeScene(new GameOverScene(sceneManager), SceneTransitionType.NORMAL);
-
-            // Or transition back to the home scene
-            // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);www
+        // Check if we have an active nutritionist
+        boolean nutritionistExists = false;
+        for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
+            Entity entity = entityManager.getEntity(i);
+            if (entity instanceof Nutritionist && !entity.shouldBeRemoved()) {
+                nutritionistExists = true;
+                activeNutritionist = (Nutritionist) entity;
+                break;
+            }
         }
-    	
         
+        // If no nutritionist exists, check if we should spawn one
+        if (!nutritionistExists && nutritionistGenerator.update(deltaTime, nutritionistExists)) {
+            // Generate a new nutritionist with 80% of enemy speed
+            Nutritionist newNutritionist = nutritionistGenerator.generateNutritionist(nutritionistTexture, speed * 0.8f);
+            if (newNutritionist != null) {
+                entityManager.addEntities(newNutritionist);
+                activeNutritionist = newNutritionist;
+                System.out.println("Nutritionist spawned");
+            }
+        }
+        
+        // If nutritionist was removed, update the generator
+        if (activeNutritionist != null && activeNutritionist.shouldBeRemoved()) {
+            nutritionistGenerator.onNutritionistRemoved();
+            activeNutritionist = null;
+        }
     }
 
     private void spawnFood() {
@@ -341,15 +436,76 @@ public class PlayScene extends Scene implements DialogEventListener {
         }
     }
 
-	@Override
-	public void onDialogOpened() {
-		isPaused = true;
-		
-	}
+    @Override
+    public void render(SpriteBatch batch) {
+        // Update food and nutritionist
+        spawnFood();
+        updateNutritionist();
 
-	@Override
-	public void onDialogClosed() {
-		isPaused = false;
-		
-	}
+        // Update collision detectors
+        // (needed since new food items might have been spawned)
+        setupCollisionDetectors();
+
+        // Clear the screen
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // Update health and food count displays
+        healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
+
+        // Update food count label
+        int currentFoodCount = foodGenerator.getFoodListSize();
+        foodCountLabel.setText("Food: " + currentFoodCount + "/7");
+
+        // Update points label
+        pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
+
+        // Draw UI
+        stage.draw();
+
+        // Draw Entities on Screen
+        entityManager.drawEntites(batch);
+
+        // Update entity movement
+        entityManager.moveEntities();
+        entityManager.checkForEntitiesToBeRemoved();
+
+        // Check collisions
+        collisionManager.checkAllCollisions();
+        collisionManager.checkForDetectorsToBeRemoved();
+
+        // Handle user input
+        ioManager.handleInput();
+
+        // Check for game over condition
+        if (player.getHealth() <= 0) {
+            // Game over logic
+            finalPoints = player.getPoints();
+            gameWon = false;
+            System.out.println("Game Over! Player died.");
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        } else if (player.getPoints() >= targetPoint) {
+            // Game win logic
+            finalPoints = player.getPoints();
+            gameWon = true;
+            System.out.println("Game Win! Player reached " + targetPoint + " points.");
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        }
+    }
+
+    public static int getfinalPoints() {
+        return finalPoints;
+    }
+
+    public static boolean isGameWon() {
+        return gameWon;
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
+        playBackground.dispose();
+        nutritionistTexture.dispose(); // Make sure to dispose the nutritionist texture
+        floorTexture.dispose(); // Make sure to dispose the floor texture
+    }
 }

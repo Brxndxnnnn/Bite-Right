@@ -42,8 +42,8 @@ public abstract class Entity{
     // Setter for Position
     public void setPosition(Vector2 position){
         this.position = position;
-    }	
-    
+    }
+
     // Setter for Position X
     public void setPositionX(float x){
         position.x = x;
@@ -69,11 +69,11 @@ public abstract class Entity{
         batch.draw(texture, position.x, position.y);
     }
 
-    // For Collision Handling	
+    // For Collision Handling
 	public void setToBeRemoved() {
 		toBeRemoved = true;
 	}
-	
+
 	public boolean shouldBeRemoved() {
 		return toBeRemoved;
 	}

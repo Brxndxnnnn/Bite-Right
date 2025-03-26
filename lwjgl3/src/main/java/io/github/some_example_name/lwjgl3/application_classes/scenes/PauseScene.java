@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,15 +19,23 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
+import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 
-public class PauseScene extends Scene{
+public class PauseScene implements Scene{
 	private final TextButton resumeBtn;
 	private final TextButton restartBtn;
 	private final TextButton quitBtn;
 	private final IOManager ioManager;
-
+	private Stage stage;
+	private Skin skin;
+	
 	public PauseScene(SceneManager sceneManager) {
-		super(sceneManager);
+//		super(sceneManager);
+		
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+		
 		AudioPlayer.getInstance().setSceneBGM("pause.mp3");
 
 		resumeBtn = new TextButton("Resume", skin);
@@ -55,8 +65,6 @@ public class PauseScene extends Scene{
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
 		stage.addActor(buttonTable);
-
-
 
 		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.6f, resumeBtn.getHeight() * 0.6f);
 		buttonTable.row();
@@ -98,5 +106,10 @@ public class PauseScene extends Scene{
 
 		ioManager.handleInput();
 	}
-
+    
+    @Override
+	public void dispose() {
+		stage.dispose();
+		skin.dispose();		
+	}
 }
