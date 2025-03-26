@@ -277,15 +277,11 @@ public class PlayScene extends Scene implements DialogEventListener {
 
     @Override
     public void render(SpriteBatch batch) {
-    	// show true when collided
-    	if(isPaused == true) {
-//    		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-    		dialogManager.render(batch);
-//    		return;
-    	}
-    	
+    	// if game resumes
     	if (!isPaused) {
     		spawnFood();
+    		// Update collision detectors
+            // (needed since new food items might have been spawned)
         	setupCollisionDetectors();
 			//Update entity movement
 			entityManager.moveEntities();
@@ -298,18 +294,8 @@ public class PlayScene extends Scene implements DialogEventListener {
 			// Handle user input5
 			ioManager.handleInput();
     		
-    		
-    		
-    		
-    		
-    		
+	
     	}
-    	
-//		spawnFood();
-//
-//        // Update collision detectors
-//        // (needed since new food items might have been spawned)
-//        setupCollisionDetectors();
 
         // Clear the screen
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -323,24 +309,12 @@ public class PlayScene extends Scene implements DialogEventListener {
 
   
 
-            // Draw Entities on Screen
+        // Draw Entities on Screen
         entityManager.drawEntites(batch);
         
+        dialogManager.render(batch);
 	    // Draw UI
 	    stage.draw();
-	    
-	    
-
-//        // Update entity movement
-//        entityManager.moveEntities();
-//        entityManager.checkForEntitiesToBeRemoved();
-//
-//        // Check collisions
-//        collisionManager.checkAllCollisions();
-//        collisionManager.checkForDetectorsToBeRemoved();
-//
-//        // Handle user input
-//        ioManager.handleInput();
 
         // Check for game over condition
         if (player.getHealth() <= 0) {
