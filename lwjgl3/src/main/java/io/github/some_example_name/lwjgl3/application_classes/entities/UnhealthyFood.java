@@ -18,8 +18,8 @@ public class UnhealthyFood extends Food {
      * @param damage Amount of damage caused
      * @param lifespanInSeconds How long until the food expires
      */
-    public UnhealthyFood(String name, Vector2 position, Texture texture, int damage, float lifespanInSeconds) {
-        super(name, position, texture, FoodType.UNHEALTHY, lifespanInSeconds);
+    public UnhealthyFood(String name, Vector2 position, Texture texture, int damage, float lifespanInSeconds, String funFact) {
+        super(name, position, texture, FoodType.UNHEALTHY, lifespanInSeconds, funFact);
         this.damage = damage;
     }
     
@@ -29,8 +29,8 @@ public class UnhealthyFood extends Food {
      * @param position Position in the maze
      * @param texture Food texture
      */
-    public UnhealthyFood(Vector2 position, Texture texture) {
-        super("UnhealthyFood", position, texture, FoodType.UNHEALTHY, 10f);
+    public UnhealthyFood(Vector2 position, Texture texture, String funFact) {
+        super("UnhealthyFood", position, texture, FoodType.UNHEALTHY, 10f, funFact);
         this.damage = 10; // Default damage
     }
     

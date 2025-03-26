@@ -1,0 +1,8 @@
+Healthy;Apples;apple.png;Contain fiber and vitamin C, and they float because they are 25% air!
+Healthy;Bananas;banana.png;Help boost energy and improve mood due to natural sugars and serotonin.
+Healthy;Blueberries;blueberry.png;Rich in antioxidants that help improve brain function and memory.
+Healthy;Carrots;carrot.png;Originally purple! The orange ones were created through selective breeding.
+Unhealthy;Ice Cream;icecream.png;Many commercial brands add artificial thickeners and extra sugar.
+Unhealthy;Fried Chicken;friedchicken.png;Deep-fried foods absorb unhealthy fats that can clog arteries.
+Unhealthy;Soda;coke.png;One can of soda can have 10 teaspoons of sugar, leading to energy crashes.
+Unhealthy;French Fries;fries.png;The average person eats 30 pounds of fries per year!

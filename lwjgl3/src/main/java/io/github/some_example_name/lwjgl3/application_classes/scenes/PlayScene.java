@@ -39,6 +39,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Nutritionist;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
@@ -53,6 +54,7 @@ public class PlayScene implements Scene {
     private final FoodGenerator foodGenerator;
     private final NutritionistGenerator nutritionistGenerator;
     private final SceneManager sceneManager;
+    private final DialogPopUpManager dialogPopUpManager;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
@@ -68,6 +70,7 @@ public class PlayScene implements Scene {
     private Nutritionist activeNutritionist;
     private Texture nutritionistTexture;
     private Texture floorTexture;
+    private boolean showPopup;
 
 
     public PlayScene(SceneManager sceneManager) {
@@ -109,6 +112,7 @@ public class PlayScene implements Scene {
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
         nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator);
+        dialogPopUpManager = new DialogPopUpManager(stage, skin);
         batch = new SpriteBatch();
 
 
@@ -317,7 +321,7 @@ public class PlayScene implements Scene {
                     }
 
                     if (entityB instanceof Food) {
-                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB);
+                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB, dialogPopUpManager);
                         collisionManager.addDetectors(playerCollideFoodDetector);
                     }
                     

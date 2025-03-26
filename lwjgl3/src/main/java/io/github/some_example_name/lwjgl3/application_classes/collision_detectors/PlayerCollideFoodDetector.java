@@ -8,6 +8,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.HealthyFood;
 import io.github.some_example_name.lwjgl3.application_classes.entities.UnhealthyFood;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 
 /**
  * Handles collisions between the player and food entities
@@ -15,17 +16,18 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Unhealthy
 public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, Food> {
     private final Player player;
     private final Food food;
-
+    private DialogPopUpManager dialogPopUpManager;
     /**
      * Constructor for food collision detector
      *
      * @param player The player Player
      * @param food The food entity
      */
-    public PlayerCollideFoodDetector(Player player, Food food) {
+    public PlayerCollideFoodDetector(Player player, Food food, DialogPopUpManager dialogManager) {
         super(player, food);
         this.player = player;
         this.food = food;
+        this.dialogPopUpManager = dialogManager;
     }
 
     @Override
@@ -82,8 +84,12 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
 
             // Mark this collision detector to be removed
             setToBeRemoved();
+           
         }
-
+        
+        // Dialog pop up
+        dialogPopUpManager.showPopUp("Did you know?", food.getFunFact());
+        
         AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
     }
 }
