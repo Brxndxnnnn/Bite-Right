@@ -1,22 +1,22 @@
 package io.github.some_example_name.lwjgl3.application_classes.collision_detectors;
 
-import com.badlogic.gdx.math.Rectangle;
-
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
-import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.Removable;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.HealthyFood;
+import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.UnhealthyFood;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 
 /**
  * Handles collisions between the player and food entities
  */
-public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, Food> {
+public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, Food> implements Removable {
     private final Player player;
     private final Food food;
     private DialogPopUpManager dialogPopUpManager;
+    private boolean toBeRemoved;
     /**
      * Constructor for food collision detector
      *
@@ -28,25 +28,13 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
         this.player = player;
         this.food = food;
         this.dialogPopUpManager = dialogManager;
-    }
-
-    @Override
-    public boolean checkCollision() {
-        // Only check collision if the food hasn't been consumed yet
-        if (food.isConsumed()) {
-            return false;
-        }
-        return super.checkCollision();
+        this.toBeRemoved = false;
     }
 
     @Override
     public void resolveCollision() {
-        // Get bounding boxes
-        Rectangle playerBounds = player.getBoundingBox();
-        Rectangle foodBounds = food.getBoundingBox();
-
+        if (food.shouldBeRemoved()) return;
         // Check collision
-        if (playerBounds.overlaps(foodBounds) && !food.isConsumed()) {
             // Handle based on food type
             if (food instanceof HealthyFood) {
                 HealthyFood healthyFood = (HealthyFood) food;
@@ -80,16 +68,26 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
             }
 
             // Mark food as consumed
-            food.consume();
+            food.setToBeRemoved();
 
             // Mark this collision detector to be removed
             setToBeRemoved();
            
-        }
+        
         
         // Dialog pop up
         dialogPopUpManager.showPopUp("Did you know?", food.getFunFact());
         
         AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+    }
+
+    @Override
+    public void setToBeRemoved() {
+        toBeRemoved = true;
+    }
+
+    @Override
+    public boolean shouldBeRemoved() {
+        return toBeRemoved;
     }
 }

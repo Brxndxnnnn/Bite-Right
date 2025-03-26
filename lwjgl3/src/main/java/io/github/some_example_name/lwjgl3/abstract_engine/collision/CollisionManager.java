@@ -38,7 +38,7 @@ public class CollisionManager {
         // Checks if there are more elements in the collection
         while(iterator.hasNext()) {
             CollisionDetector detector = iterator.next();
-            if(detector.shouldBeRemoved()) {
+            if((detector instanceof Removable) && ((Removable) detector).shouldBeRemoved()) {
                 iterator.remove();
             }
         }

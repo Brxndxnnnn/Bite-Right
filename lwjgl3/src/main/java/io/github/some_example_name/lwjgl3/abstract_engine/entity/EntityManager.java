@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.Removable;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 
 public class EntityManager {
@@ -29,7 +30,7 @@ public class EntityManager {
         // Checks if there are more elements in the collection
         while(iterator.hasNext()) {
             Entity entity = iterator.next();
-            if(entity.shouldBeRemoved()) {
+            if((entity instanceof Removable) && ((Removable) entity).shouldBeRemoved()) {
                 iterator.remove();
             }
         }

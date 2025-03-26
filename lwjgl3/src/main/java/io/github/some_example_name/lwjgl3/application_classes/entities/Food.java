@@ -6,15 +6,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.Collidable;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.Removable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.NonMovableEntity;
 
 /**
  * Base class for food items in the maze
  */
-public abstract class Food extends NonMovableEntity implements Collidable {
+public abstract class Food extends NonMovableEntity implements Collidable, Removable {
     protected float width;
     protected float height;
-    protected boolean consumed;
+    protected boolean toBeRemoved;
     protected FoodType type;
     protected String funFact;
     
@@ -44,7 +45,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
         super(name, position, texture);
         this.width = texture.getWidth();
         this.height = texture.getHeight();
-        this.consumed = false;
+        this.toBeRemoved = false;
         this.type = type;
         this.lifespanInSeconds = lifespanInSeconds;
         this.elapsedTime = 0f;
@@ -62,24 +63,24 @@ public abstract class Food extends NonMovableEntity implements Collidable {
     
     /**
      * Gets the effect value of this food (positive for healthy, negative for unhealthy)
-     * @return Effect value when consumed
+     * @return Effect value when toBeRemoved
      */
     public abstract int getEffectValue();
     
     /**
-     * Marks the food as consumed
+     * Marks the food as toBeRemoved
      */
-    public void consume() {
-        this.consumed = true;
-        setToBeRemoved();
-    }
+    // public void consume() {
+    //     this.toBeRemoved = true;
+    //     setToBeRemoved();
+    // }
     
     /**
-     * Checks if the food has been consumed
-     * @return True if the food is consumed
+     * Checks if the food has been toBeRemoved
+     * @return True if the food is toBeRemoved
      */
-    public boolean isConsumed() {
-        return consumed;
+    public boolean shouldBeRemoved() {
+        return toBeRemoved;
     }
     
     /**
@@ -97,7 +98,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
      * @param deltaTime Time elapsed since last update
      */
     public void update(float deltaTime) {
-        if (!consumed && !expired) {
+        if (!toBeRemoved && !expired) {
             elapsedTime += deltaTime;
             
             // Check for expiration
@@ -135,7 +136,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
     
     @Override
     public void draw(SpriteBatch batch) {
-        if (!consumed && !expired) {
+        if (!toBeRemoved && !expired) {
             batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);
         }
     }

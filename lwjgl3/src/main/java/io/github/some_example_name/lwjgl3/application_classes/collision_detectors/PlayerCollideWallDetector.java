@@ -25,7 +25,6 @@ public class PlayerCollideWallDetector extends EntityCollisionDetector<Player, W
         Rectangle wallBounds = wall.getBoundingBox();
 
         // Check collision
-        if (npcBounds.overlaps(wallBounds)) {
             System.out.println("Player collided with Wall");
 
             // Determine which side the collision happened on
@@ -54,6 +53,5 @@ public class PlayerCollideWallDetector extends EntityCollisionDetector<Player, W
                 }
                 character.setVelocity(new Vector2(npcVelocity.x, -npcVelocity.y)); // Reverse Y movement
             }
-        }
     }
 }

@@ -24,7 +24,6 @@ public class EnemyCollideEnemyDetector extends EntityCollisionDetector<Enemy, En
         Rectangle npc2Bounds = npc2.getBoundingBox();
 
         // Check collision
-        if (npc1Bounds.overlaps(npc2Bounds)) {
             // Get NPC positions
             Vector2 pos1 = npc1.getPosition();
             Vector2 pos2 = npc2.getPosition();
@@ -64,7 +63,6 @@ public class EnemyCollideEnemyDetector extends EntityCollisionDetector<Enemy, En
             // Mark both ghosts as recently collided to prevent behavior changes
             npc1.setCollisionState(true);
             npc2.setCollisionState(true);
-        }
     }
     
     /**

@@ -25,7 +25,6 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<Enemy, Wal
         Rectangle wallBounds = wall.getBoundingBox();
 
         // Check collision
-        if (npcBounds.overlaps(wallBounds)) {
             System.out.println("Ghost collided with Wall");
 
             // Get ghost position and velocity
@@ -101,6 +100,5 @@ public class EnemyCollideWallDetector extends EntityCollisionDetector<Enemy, Wal
             
             // Put the ghost in collision state to ensure smooth transition
             npc.setCollisionState(true);
-        }
     }
 }

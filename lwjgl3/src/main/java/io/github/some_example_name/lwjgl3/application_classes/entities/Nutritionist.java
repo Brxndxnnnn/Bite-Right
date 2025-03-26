@@ -7,14 +7,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.Collidable;
+import io.github.some_example_name.lwjgl3.abstract_engine.collision.Removable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 
-public class Nutritionist extends MovableEntity implements Collidable, AIMovable {
+public class Nutritionist extends MovableEntity implements Collidable, AIMovable, Removable {
     private float directionChangeTimer = 0;
     private static final float DIRECTION_CHANGE_INTERVAL = 2.0f; // seconds between random direction changes
     private static float MOVEMENT_SPEED = 100f; // Speed for nutritionist movement
-    
+    private String funFact;
+    private boolean toBeRemoved;
+
     private Vector2 previousDirection; // Track previous direction to avoid 180-degree turns
     private long lastCollisionTime = 0; // To prevent rapid direction changes
     private static final long COLLISION_COOLDOWN = 500; // milliseconds
@@ -38,13 +41,16 @@ public class Nutritionist extends MovableEntity implements Collidable, AIMovable
         super();
         this.velocity = getRandomCardinalDirection().scl(MOVEMENT_SPEED);
         this.previousDirection = new Vector2(velocity).nor();
+        this.toBeRemoved = false;
     }
 
-    public Nutritionist(String name, Vector2 position, Texture texture, float speed) {
+    public Nutritionist(String name, Vector2 position, Texture texture, float speed, String funFact) {
         super(name, position, texture, speed);
         setBaseSpeed(speed);
         this.velocity = getRandomCardinalDirection().scl(MOVEMENT_SPEED);
         this.previousDirection = new Vector2(velocity).nor();
+        this.funFact = funFact;
+        this.toBeRemoved = false;
     }
 
     /**
@@ -209,5 +215,20 @@ public class Nutritionist extends MovableEntity implements Collidable, AIMovable
      */
     public boolean isInCollisionState() {
         return inCollisionState;
+    }
+
+    public String getFunFact(){
+        return funFact;
+    }
+
+    
+    @Override
+    public void setToBeRemoved() {
+        toBeRemoved = true;
+    }
+
+    @Override
+    public boolean shouldBeRemoved() {
+        return toBeRemoved;
     }
 }
