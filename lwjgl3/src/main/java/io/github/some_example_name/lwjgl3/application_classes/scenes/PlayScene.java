@@ -41,6 +41,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogEventListener;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodDictionary;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty.Difficulty;
@@ -56,6 +57,7 @@ public class PlayScene implements Scene, DialogEventListener {
     private final NutritionistGenerator nutritionistGenerator;
     private final SceneManager sceneManager;
     private final DialogPopUpManager dialogPopUpManager;
+    private final FoodDictionary foodDictionary;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
@@ -104,17 +106,17 @@ public class PlayScene implements Scene, DialogEventListener {
         floorTexture = new Texture("entities_images/floor.png"); // Load Floor Texture
         Texture enemyTexture = new Texture("entities_images/demon.png"); // Load Enemy Texture
         Texture playerTexture = new Texture("entities_images/player.png"); // Load Player Texture
-        Texture healthyFoodTexture = new Texture("entities_images/healthyfood.png"); // Load Healthy Food Texture
-        Texture unhealthyFoodTexture = new Texture("entities_images/unhealthyfood.png"); // Load Unhealthy Food Texture
         nutritionistTexture = new Texture("entities_images/nutritionist.png"); // Load Nutritionist Texture
 
+
+        foodDictionary = new FoodDictionary();
         // INITIALIZE REQUIRED MANAGERS
         ioManager = new IOManager();
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
-        foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
-        nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator);
+        foodGenerator = new FoodGenerator(cellSize, mazeGenerator, foodDictionary);
+        nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator, foodDictionary);
         dialogPopUpManager = new DialogPopUpManager(overlayStage, skin);
         dialogPopUpManager.setDialogEventListener(this); // Register PlayScene as a listener
 
@@ -136,7 +138,7 @@ public class PlayScene implements Scene, DialogEventListener {
         createAndAddEnemies(enemyTexture);
 
         // Generate and add initial food items
-        createAndAddFood(healthyFoodTexture, unhealthyFoodTexture);
+        createAndAddFood();
 
         // Initialize collision manager and setup collision detectors
         setupCollisionDetectors();
@@ -208,11 +210,10 @@ public class PlayScene implements Scene, DialogEventListener {
     }
 
 
-    private void createAndAddFood(Texture healthyFoodTexture, Texture unhealthyFoodTexture) {
-        foodGenerator.setTextures(healthyFoodTexture, unhealthyFoodTexture);
+    private void createAndAddFood() {
         // Generate initial 5 food items
         List<Food> initialFood = foodGenerator.generateFood(5);
-
+    
         // Add food items to entity manager
         for (Food food : initialFood) {
             entityManager.addEntities(food);
@@ -227,7 +228,7 @@ public class PlayScene implements Scene, DialogEventListener {
         Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)
         player = new Player("Player", playerStartPos, playerTexture, 2f);
 
-        player.setSize(cellSize * 0.9f, cellSize * 0.9f); // Set player size to fit within a cell (slightly smaller for movement clearance)
+        player.setSize(cellSize * 0.95f, cellSize * 0.95f); // Set player size to fit within a cell (slightly smaller for movement clearance)
 
         // Center the player within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
@@ -258,7 +259,7 @@ public class PlayScene implements Scene, DialogEventListener {
         Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
         Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell (slightly smaller for movement clearance)
-        ghost1.setSize(cellSize * 0.9f, cellSize * 0.9f);
+        ghost1.setSize(cellSize * 0.8f, cellSize * 0.8f);
         // Center the ghost within the cell
         float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
         ghost1.setPosition(new Vector2(ghost1Pos.x + offset, ghost1Pos.y + offset));
@@ -272,7 +273,7 @@ public class PlayScene implements Scene, DialogEventListener {
         Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
         Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell
-        ghost2.setSize(cellSize * 0.9f, cellSize * 0.9f);
+        ghost2.setSize(cellSize * 0.8f, cellSize * 0.8f);
         // Center the ghost within the cell
         ghost2.setPosition(new Vector2(ghost2Pos.x + offset, ghost2Pos.y + offset));
         // Set player as target
@@ -285,7 +286,7 @@ public class PlayScene implements Scene, DialogEventListener {
         Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
         Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, enemyTexture, speed);
         // Set ghost size to fit within a cell
-        ghost3.setSize(cellSize * 0.9f, cellSize * 0.9f);
+        ghost3.setSize(cellSize * 0.8f, cellSize * 0.8f);
         // Center the ghost within the cell
         ghost3.setPosition(new Vector2(ghost3Pos.x + offset, ghost3Pos.y + offset));
         // Set player as target
@@ -473,6 +474,7 @@ public class PlayScene implements Scene, DialogEventListener {
         playBackground.dispose();
         nutritionistTexture.dispose(); // Make sure to dispose the nutritionist texture
         floorTexture.dispose(); // Make sure to dispose the floor texture
+        foodGenerator.dispose();
     }
 
 

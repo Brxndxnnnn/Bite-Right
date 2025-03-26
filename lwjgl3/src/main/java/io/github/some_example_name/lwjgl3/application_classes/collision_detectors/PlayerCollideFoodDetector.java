@@ -35,50 +35,48 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
     public void resolveCollision() {
         if (food.shouldBeRemoved()) return;
         // Check collision
-            // Handle based on food type
-            if (food instanceof HealthyFood) {
-                HealthyFood healthyFood = (HealthyFood) food;
-                System.out.println("Player consumed healthy food: +" + healthyFood.getHealthPoints() + " HP, +"
-                                  + healthyFood.getStrengthBoost() + " strength");
+        // Handle based on food type
+        if (food instanceof HealthyFood) {
+            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+            HealthyFood healthyFood = (HealthyFood) food;
+            System.out.println("Player consumed healthy food: +" + healthyFood.getHealthPoints() + " HP, +"
+                                + healthyFood.getStrengthBoost() + " strength");
 
-                // Add health to player
-                player.adjustHealth(healthyFood.getHealthPoints());
+            // Add health to player
+            player.adjustHealth(healthyFood.getHealthPoints());
 
-                // Boost player strength
-                player.adjustStrength(healthyFood.getStrengthBoost());
+            // Boost player strength
+            player.adjustStrength(healthyFood.getStrengthBoost());
 
-                // Add points to player
-                player.adjustPoints(20);
+            // Add points to player
+            player.adjustPoints(20);
+        }
+        else if (food instanceof UnhealthyFood) {
+            AudioPlayer.getInstance().playSFX("SFX/bad.mp3");
+            UnhealthyFood unhealthyFood = (UnhealthyFood) food;
+            System.out.println("Player consumed unhealthy food: -" + unhealthyFood.getDamage() + " HP");
+
+            // Reduce player health
+            player.adjustHealth(-unhealthyFood.getDamage());
+            
+            // Reduce player points
+            player.adjustPoints(-10);
+
+            // Check if player died
+            if (player.getHealth() <= 0) {
+                System.out.println("Player died from unhealthy food!");
+                // Potentially trigger game over here
             }
-            else if (food instanceof UnhealthyFood) {
-                UnhealthyFood unhealthyFood = (UnhealthyFood) food;
-                System.out.println("Player consumed unhealthy food: -" + unhealthyFood.getDamage() + " HP");
+        }
 
-                // Reduce player health
-                player.adjustHealth(-unhealthyFood.getDamage());
-                
-                // Reduce player points
-                player.adjustPoints(-10);
+        // Mark food as consumed
+        food.setToBeRemoved();
 
-                // Check if player died
-                if (player.getHealth() <= 0) {
-                    System.out.println("Player died from unhealthy food!");
-                    // Potentially trigger game over here
-                }
-            }
-
-            // Mark food as consumed
-            food.setToBeRemoved();
-
-            // Mark this collision detector to be removed
-            setToBeRemoved();
+        // Mark this collision detector to be removed
+        setToBeRemoved();
            
-        
-        
         // Dialog pop up
         dialogPopUpManager.showPopUp("Did you know?", food.getFunFact());
-        
-        AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
     }
 
     @Override

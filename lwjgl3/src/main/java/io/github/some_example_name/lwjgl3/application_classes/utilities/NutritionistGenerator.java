@@ -13,19 +13,22 @@ public class NutritionistGenerator {
     private MazeGenerator mazeGenerator;
     private float cellSize;
     private float spawnTimer;
-    private final float spawnInterval = 5.0f; // Spawn a new nutritionist every 25 seconds if none exists
+    private final float spawnInterval = 5.0f; // Spawn a new nutritionist every 5 seconds if none exists
     private boolean nutritionistActive = false; // Flag to track if a nutritionist is already active
+    private final FoodDictionary foodDictionary;
     
     /**
      * Constructor for nutritionist generator
      *
      * @param cellSize Size of each cell in the maze
      * @param mazeGenerator Reference to the maze generator
+     * @param foodDictionary Reference to the food dictionary
      */
-    public NutritionistGenerator(float cellSize, MazeGenerator mazeGenerator) {
+    public NutritionistGenerator(float cellSize, MazeGenerator mazeGenerator, FoodDictionary foodDictionary) {
         this.cellSize = cellSize;
         this.mazeGenerator = mazeGenerator;
         this.spawnTimer = 0;
+        this.foodDictionary = foodDictionary;
     }
     
     /**
@@ -70,11 +73,14 @@ public class NutritionistGenerator {
             // Convert to screen coordinates
             Vector2 position = mazeGenerator.gridToScreenTopLeft(gridX, gridY);
             
+            // Get random nutritionist fact
+            String funFact = foodDictionary.getRandomNutritionistFact();
+            
             // Create nutritionist with appropriate size for the maze
-            Nutritionist nutritionist = new Nutritionist("Nutritionist", position, texture, speed, "BITCH");
+            Nutritionist nutritionist = new Nutritionist("Nutritionist", position, texture, speed, funFact);
             
             // Set nutritionist size to fit within a cell (slightly smaller for movement clearance)
-            nutritionist.setSize(cellSize * 0.9f, cellSize * 0.9f);
+            nutritionist.setSize(cellSize * 0.95f, cellSize * 0.95f);
             
             // Center the nutritionist within the cell
             float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity

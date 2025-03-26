@@ -1,8 +1,11 @@
 package io.github.some_example_name.lwjgl3.application_classes.utilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.HealthyFood;
 import io.github.some_example_name.lwjgl3.application_classes.entities.UnhealthyFood;
+
 /**
  * Utility class to generate food items in the maze
  */
@@ -28,31 +32,64 @@ public class FoodGenerator {
     private final int maxFoodCount = 7; // Maximum number of food items allowed at once
     private final float foodLifespan = 10.0f; // Food expires after 10 seconds
 
-    private Texture healthyFoodTexture;
-    private Texture unhealthyFoodTexture;
+    // Texture caches
+    private Map<String, Texture> healthyFoodTextures = new HashMap<>();
+    private Map<String, Texture> unhealthyFoodTextures = new HashMap<>();
     
+    // Reference to the food dictionary
+    private final FoodDictionary foodDictionary;
     
     /**
      * Constructor for food generator
      *
      * @param cellSize Size of each cell in the maze
+     * @param mazeGenerator Reference to the maze generator
+     * @param foodDictionary Reference to the food dictionary
      */
-    public FoodGenerator(float cellSize, MazeGenerator mazeGenerator) {
+    public FoodGenerator(float cellSize, MazeGenerator mazeGenerator, FoodDictionary foodDictionary) {
         this.foodList = new ArrayList<>();
         this.cellSize = cellSize;
         this.mazeGenerator = mazeGenerator;
         this.spawnTimer = 0;
+        this.foodDictionary = foodDictionary;
+        
+        // Initialize texture caches
+        initializeTextures();
+    }
+    
+    /**
+     * Initialize the texture caches for all food types
+     */
+    private void initializeTextures() {
+        // Load healthy food textures
+        String[] healthyKeys = {"apple.png", "banana.png", "blueberry.png", "carrot.png"};
+        for (String key : healthyKeys) {
+            healthyFoodTextures.put(key, new Texture(Gdx.files.internal("entities_images/" + key)));
+        }
+        
+        // Load unhealthy food textures
+        String[] unhealthyKeys = {"icecream.png", "friedchicken.png", "coke.png", "fries.png"};
+        for (String key : unhealthyKeys) {
+            unhealthyFoodTextures.put(key, new Texture(Gdx.files.internal("entities_images/" + key)));
+        }
     }
 
     /**
-     * Sets the textures for food items
-     *
-     * @param healthyFoodTexture Texture for healthy food
-     * @param unhealthyFoodTexture Texture for unhealthy food
+     * Disposes all loaded textures
      */
-    public void setTextures(Texture healthyFoodTexture, Texture unhealthyFoodTexture) {
-        this.healthyFoodTexture = healthyFoodTexture;
-        this.unhealthyFoodTexture = unhealthyFoodTexture;
+    public void dispose() {
+        // Dispose healthy food textures
+        for (Texture texture : healthyFoodTextures.values()) {
+            texture.dispose();
+        }
+        
+        // Dispose unhealthy food textures
+        for (Texture texture : unhealthyFoodTextures.values()) {
+            texture.dispose();
+        }
+        
+        healthyFoodTextures.clear();
+        unhealthyFoodTextures.clear();
     }
 
     /**
@@ -133,11 +170,6 @@ public class FoodGenerator {
      * @return The generated food item, or null if generation failed
      */
     private Food generateSingleFood() {
-        if (healthyFoodTexture == null || unhealthyFoodTexture == null) {
-            System.err.println("Food textures not set!");
-            return null;
-        }
-
         // Generate a random position in the grid
         int gridX = MathUtils.random(1, MazeGenerator.getGridWidth() - 2);
         int gridY = MathUtils.random(1, MazeGenerator.getGridHeight() - 2);
@@ -150,9 +182,9 @@ public class FoodGenerator {
         // Convert to screen coordinates
         Vector2 position = mazeGenerator.gridToScreenTopLeft(gridX, gridY);
 
-
+        float sizeFactor = 0.8f; // Adjust this to your preferred size (70% of cell size)
         // Add offset to center food in cell
-        float offset = cellSize * 0.25f; // 25% offset to create a smaller food item
+        float offset = cellSize * (1.0f - sizeFactor) / 2;// 25% offset to create a smaller food item
         position.add(offset, offset);
 
         // Check for collision with existing food items
@@ -169,20 +201,36 @@ public class FoodGenerator {
         Food food;
 
         if (isHealthy) {
+            // Get random healthy food
+            String[] healthyFood = foodDictionary.getRandomHealthyFood();
+            String textureName = healthyFood[0];
+            String foodFact = healthyFood[1];
+            
+            // Get texture from cache
+            Texture foodTexture = healthyFoodTextures.get(textureName);
+            
             // Create healthy food with random health boost (5-15)
             int healthBoost = MathUtils.random(5, 15);
             float strengthBoost = MathUtils.random(0.05f, 0.15f);
             food = new HealthyFood("HealthyFood_" + System.currentTimeMillis(), position, 
-                                  healthyFoodTexture, healthBoost, strengthBoost, foodLifespan, "This is healthy");
+                                  foodTexture, healthBoost, strengthBoost, foodLifespan, foodFact);
         } else {
+            // Get random unhealthy food
+            String[] unhealthyFood = foodDictionary.getRandomUnhealthyFood();
+            String textureName = unhealthyFood[0];
+            String foodFact = unhealthyFood[1];
+            
+            // Get texture from cache
+            Texture foodTexture = unhealthyFoodTextures.get(textureName);
+            
             // Create unhealthy food with random damage (5-15)
             int damage = MathUtils.random(5, 15);
             food = new UnhealthyFood("UnhealthyFood_" + System.currentTimeMillis(), position,
-                                    unhealthyFoodTexture, damage, foodLifespan, "This is not healthy");
+                                    foodTexture, damage, foodLifespan, foodFact);
         }
 
         // Set food size to half a cell
-        food.setSize(cellSize * 0.5f, cellSize * 0.5f);
+        food.setSize(cellSize * sizeFactor, cellSize * sizeFactor);
 
         return food;
     }

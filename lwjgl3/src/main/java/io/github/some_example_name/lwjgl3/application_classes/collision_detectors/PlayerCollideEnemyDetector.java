@@ -26,7 +26,7 @@ public class PlayerCollideEnemyDetector extends EntityCollisionDetector<Player, 
         // Check collision
             System.out.println("Player collided with Enemy - INSTANT DEATH!");
                 // This loop only runs once
-                AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+                AudioPlayer.getInstance().playSFX("SFX/bad.mp3");
 //            Set player health to 0 (instant death)
             player.setHealth(0);
     }

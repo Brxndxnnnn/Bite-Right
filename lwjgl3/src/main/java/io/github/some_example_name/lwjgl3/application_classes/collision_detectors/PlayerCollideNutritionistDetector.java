@@ -39,7 +39,6 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         // Play a sound effect for the collision
         AudioPlayer.getInstance().playSFX("SFX/nutritionist.mp3");
         
-        // TODO: Add popup logic or other nutritionist-specific behavior here
         // For now, just apply a small health bonus
         player.adjustHealth(5);
         
