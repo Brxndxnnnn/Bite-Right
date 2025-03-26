@@ -21,16 +21,16 @@ public class FoodDictionary {
      */
     public FoodDictionary() {
         // Initialize healthy food dictionary
-        healthyDict.put("apple.png", "Contain fiber and vitamin C, and they float because they are 25% air!");
-        healthyDict.put("banana.png", "Help boost energy and improve mood due to natural sugars and serotonin.");
-        healthyDict.put("blueberry.png", "Rich in antioxidants that help improve brain function and memory.");
-        healthyDict.put("carrot.png", "Originally purple! The orange ones were created through selective breeding.");
+        healthyDict.put("apple.png", "Healthy Food!\nApple contain fiber and vitamin C, and they float because they are 25% air!");
+        healthyDict.put("banana.png", "Healthy Food!\nBanana help boost energy and improve mood due to natural sugars and serotonin.");
+        healthyDict.put("blueberry.png", "Healthy Food!\nBlueberries are rich in antioxidants that help improve brain function and memory.");
+        healthyDict.put("carrot.png", "Healthy Food!\nCarrots are originally purple! The orange ones were created through selective breeding.");
         
         // Initialize unhealthy food dictionary
-        unhealthyDict.put("icecream.png", "Many commercial brands add artificial thickeners and extra sugar.");
-        unhealthyDict.put("friedchicken.png", "Deep-fried foods absorb unhealthy fats that can clog arteries.");
-        unhealthyDict.put("coke.png", "One can of soda can have 10 teaspoons of sugar, leading to energy crashes.");
-        unhealthyDict.put("fries.png", "The average person eats 30 pounds of fries per year!");
+        unhealthyDict.put("icecream.png", "Unhealthy Food!\nMany commercial brands add artificial thickeners and extra sugar to Ice Cream.");
+        unhealthyDict.put("friedchicken.png", "Unhealthy Food!\nDeep-fried foods like fried chicken absorb unhealthy fats that can clog arteries.");
+        unhealthyDict.put("coke.png", "Unhealthy Food!\nOne can of coke can have 10 teaspoons of sugar, leading to energy crashes.");
+        unhealthyDict.put("fries.png", "Unhealthy Food!\nThe average person eats 30 pounds of fries per year!");
         
         // Initialize nutritionist facts
         nutritionistFacts = new String[] {
