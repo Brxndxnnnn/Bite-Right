@@ -16,6 +16,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
     protected float height;
     protected boolean consumed;
     protected FoodType type;
+    protected String funFact;
     
     // Expiration related fields
     protected float lifespanInSeconds;
@@ -39,7 +40,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
      * @param type Food type (healthy or unhealthy)
      * @param lifespanInSeconds How long the food will exist before expiring
      */
-    public Food(String name, Vector2 position, Texture texture, FoodType type, float lifespanInSeconds) {
+    public Food(String name, Vector2 position, Texture texture, FoodType type, float lifespanInSeconds, String funFact) {
         super(name, position, texture);
         this.width = texture.getWidth();
         this.height = texture.getHeight();
@@ -48,6 +49,7 @@ public abstract class Food extends NonMovableEntity implements Collidable {
         this.lifespanInSeconds = lifespanInSeconds;
         this.elapsedTime = 0f;
         this.expired = false;
+        this.funFact = funFact;
     }
     
     /**
@@ -127,10 +129,15 @@ public abstract class Food extends NonMovableEntity implements Collidable {
         return new Rectangle(getPosition().x, getPosition().y, width, height);
     }
     
+    public String getFunFact() {
+        return funFact;
+    }
+    
     @Override
     public void draw(SpriteBatch batch) {
         if (!consumed && !expired) {
             batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);
         }
     }
+    
 }

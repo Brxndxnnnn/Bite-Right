@@ -31,18 +31,22 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Enemy;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogEventListener;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 
-public class PlayScene extends Scene {
+public class PlayScene extends Scene implements DialogEventListener {
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
+    private final DialogPopUpManager dialogManager;
     private final MazeGenerator mazeGenerator;
     private final FoodGenerator foodGenerator;
     private Player player;
     private Label healthLabel;
     private Label foodCountLabel;
+    private boolean isPaused;
 
     public PlayScene(SceneManager sceneManager) {
         super(sceneManager);
@@ -65,7 +69,10 @@ public class PlayScene extends Scene {
         collisionManager = new CollisionManager();
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize);
-
+        dialogManager = new DialogPopUpManager(stage, skin);
+        
+        dialogManager.setDialogEventListener(this); // Register PlayScene as a listener
+        
         // Create and generate maze
         createAndAddMaze(wallTexture);
 
@@ -92,6 +99,7 @@ public class PlayScene extends Scene {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
 
         AudioPlayer.getInstance().setSceneBGM("play.mp3");
+
     }
 
     private void createAndAddMaze(Texture wallTexture) {
@@ -238,7 +246,7 @@ public class PlayScene extends Scene {
                     }
 
                     if (entityB instanceof Food) {
-                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB);
+                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB, dialogManager);
                         collisionManager.addDetectors(playerCollideFoodDetector);
                     }
                 }
@@ -269,11 +277,39 @@ public class PlayScene extends Scene {
 
     @Override
     public void render(SpriteBatch batch) {
-        spawnFood();
-
-        // Update collision detectors
-        // (needed since new food items might have been spawned)
-        setupCollisionDetectors();
+    	// show true when collided
+    	if(isPaused == true) {
+//    		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    		dialogManager.render(batch);
+//    		return;
+    	}
+    	
+    	if (!isPaused) {
+    		spawnFood();
+        	setupCollisionDetectors();
+			//Update entity movement
+			entityManager.moveEntities();
+			entityManager.checkForEntitiesToBeRemoved();
+			
+			// Check collisions
+			collisionManager.checkAllCollisions();
+			collisionManager.checkForDetectorsToBeRemoved();
+			
+			// Handle user input5
+			ioManager.handleInput();
+    		
+    		
+    		
+    		
+    		
+    		
+    	}
+    	
+//		spawnFood();
+//
+//        // Update collision detectors
+//        // (needed since new food items might have been spawned)
+//        setupCollisionDetectors();
 
         // Clear the screen
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -285,22 +321,26 @@ public class PlayScene extends Scene {
         int currentFoodCount = foodGenerator.getFoodListSize();
         foodCountLabel.setText("Food: " + currentFoodCount + "/7");
 
-        // Draw UI
-        stage.draw();
+  
 
-        // Draw Entities on Screen
+            // Draw Entities on Screen
         entityManager.drawEntites(batch);
+        
+	    // Draw UI
+	    stage.draw();
+	    
+	    
 
-        // Update entity movement
-        entityManager.moveEntities();
-        entityManager.checkForEntitiesToBeRemoved();
-
-        // Check collisions
-        collisionManager.checkAllCollisions();
-        collisionManager.checkForDetectorsToBeRemoved();
-
-        // Handle user input
-        ioManager.handleInput();
+//        // Update entity movement
+//        entityManager.moveEntities();
+//        entityManager.checkForEntitiesToBeRemoved();
+//
+//        // Check collisions
+//        collisionManager.checkAllCollisions();
+//        collisionManager.checkForDetectorsToBeRemoved();
+//
+//        // Handle user input
+//        ioManager.handleInput();
 
         // Check for game over condition
         if (player.getHealth() <= 0) {
@@ -313,6 +353,8 @@ public class PlayScene extends Scene {
             // Or transition back to the home scene
             // sceneManager.changeScene(new HomeScene(sceneManager), SceneTransitionType.NORMAL);www
         }
+    	
+        
     }
 
     private void spawnFood() {
@@ -324,4 +366,16 @@ public class PlayScene extends Scene {
             entityManager.addEntities(food);
         }
     }
+
+	@Override
+	public void onDialogOpened() {
+		isPaused = true;
+		
+	}
+
+	@Override
+	public void onDialogClosed() {
+		isPaused = false;
+		
+	}
 }

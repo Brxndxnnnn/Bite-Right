@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
-import io.github.some_example_name.lwjgl3.application_classes.scenes.HomeScene;
 public class GameMaster extends ApplicationAdapter {
 	
     private SceneManager sceneManager;

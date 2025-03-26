@@ -32,6 +32,7 @@ public class FoodGenerator {
     private Texture healthyFoodTexture;
     private Texture unhealthyFoodTexture;
     
+    
     /**
      * Constructor for food generator
      * 
@@ -171,12 +172,12 @@ public class FoodGenerator {
             int healthBoost = MathUtils.random(5, 15);
             float strengthBoost = MathUtils.random(0.05f, 0.15f);
             food = new HealthyFood("HealthyFood_" + System.currentTimeMillis(), position, 
-                                  healthyFoodTexture, healthBoost, strengthBoost, foodLifespan);
+                                  healthyFoodTexture, healthBoost, strengthBoost, foodLifespan, "This is healthy");
         } else {
             // Create unhealthy food with random damage (5-15)
             int damage = MathUtils.random(5, 15);
             food = new UnhealthyFood("UnhealthyFood_" + System.currentTimeMillis(), position,
-                                    unhealthyFoodTexture, damage, foodLifespan);
+                                    unhealthyFoodTexture, damage, foodLifespan, "This is not healthy");
         }
         
         // Set food size to half a cell
