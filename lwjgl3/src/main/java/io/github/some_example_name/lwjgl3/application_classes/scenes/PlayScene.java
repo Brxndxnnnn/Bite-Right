@@ -304,7 +304,7 @@ public class PlayScene implements Scene, DialogEventListener {
             Entity entityA = entityManager.getEntity(i);
 
             // Skip entities that should be removed
-            if (entityA.shouldBeRemoved()) continue;
+            // if (entityA.shouldBeRemoved()) continue;
 
             // Handles collision between Player -> (NPC & Wall & Food & Nutritionist)
             if (entityA instanceof Player) {
@@ -312,7 +312,7 @@ public class PlayScene implements Scene, DialogEventListener {
                     Entity entityB = entityManager.getEntity(x);
 
                     // Skip entities that should be removed
-                    if (entityB.shouldBeRemoved()) continue;
+                    // if (entityB.shouldBeRemoved()) continue;
 
                     if (entityB instanceof Enemy) {
                         // Add player-enemy collision detector
@@ -331,7 +331,7 @@ public class PlayScene implements Scene, DialogEventListener {
                     }
                     
                     if (entityB instanceof Nutritionist) {
-                        CollisionDetector playerCollideNutritionistDetector = new PlayerCollideNutritionistDetector((Player) entityA, (Nutritionist) entityB);
+                        CollisionDetector playerCollideNutritionistDetector = new PlayerCollideNutritionistDetector((Player) entityA, (Nutritionist) entityB, dialogPopUpManager);
                         collisionManager.addDetectors(playerCollideNutritionistDetector);
                     }
                 }
@@ -343,7 +343,7 @@ public class PlayScene implements Scene, DialogEventListener {
                     Entity entityB = entityManager.getEntity(y);
 
                     // Skip entities that should be removed
-                    if (entityB.shouldBeRemoved()) continue;
+                    // if (entityB.shouldBeRemoved()) continue;
 
                     if (entityB instanceof Enemy && entityA != entityB) {
                         // Add enemy-enemy collision detector
@@ -364,7 +364,7 @@ public class PlayScene implements Scene, DialogEventListener {
                     Entity entityB = entityManager.getEntity(y);
                     
                     // Skip entities that should be removed
-                    if (entityB.shouldBeRemoved()) continue;
+                    // if (entityB.shouldBeRemoved()) continue;
                     
                     if (entityB instanceof Wall) {
                         CollisionDetector nutritionistCollideWallDetector = new NutritionistCollideWallDetector((Nutritionist) entityA, (Wall) entityB);
@@ -406,7 +406,7 @@ public class PlayScene implements Scene, DialogEventListener {
         boolean nutritionistExists = false;
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
             Entity entity = entityManager.getEntity(i);
-            if (entity instanceof Nutritionist && !entity.shouldBeRemoved()) {
+            if (entity instanceof Nutritionist) {
                 nutritionistExists = true;
                 activeNutritionist = (Nutritionist) entity;
                 break;

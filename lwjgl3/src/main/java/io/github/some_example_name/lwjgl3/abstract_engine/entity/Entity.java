@@ -8,7 +8,6 @@ public abstract class Entity{
     private String name;
     private Vector2 position;
     private Texture texture;
-    private boolean toBeRemoved = false;
 
     // Default Constructor
     public Entity(){
@@ -68,14 +67,4 @@ public abstract class Entity{
     public void draw(SpriteBatch batch){
         batch.draw(texture, position.x, position.y);
     }
-
-    // For Collision Handling
-	public void setToBeRemoved() {
-		toBeRemoved = true;
-	}
-
-	public boolean shouldBeRemoved() {
-		return toBeRemoved;
-	}
-
 }

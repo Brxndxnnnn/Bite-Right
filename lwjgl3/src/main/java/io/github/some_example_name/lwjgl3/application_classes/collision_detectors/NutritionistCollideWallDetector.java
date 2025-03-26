@@ -25,7 +25,6 @@ public class NutritionistCollideWallDetector extends EntityCollisionDetector<Nut
         Rectangle wallBounds = wall.getBoundingBox();
 
         // Check collision
-        if (nutritionistBounds.overlaps(wallBounds)) {
             System.out.println("Nutritionist collided with Wall");
 
             // Get nutritionist position and velocity
@@ -101,6 +100,5 @@ public class NutritionistCollideWallDetector extends EntityCollisionDetector<Nut
             
             // Put the nutritionist in collision state to ensure smooth transition
             nutritionist.setCollisionState(true);
-        }
     }
 }

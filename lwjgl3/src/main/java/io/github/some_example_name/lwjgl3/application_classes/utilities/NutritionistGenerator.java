@@ -71,7 +71,7 @@ public class NutritionistGenerator {
             Vector2 position = mazeGenerator.gridToScreenTopLeft(gridX, gridY);
             
             // Create nutritionist with appropriate size for the maze
-            Nutritionist nutritionist = new Nutritionist("Nutritionist", position, texture, speed);
+            Nutritionist nutritionist = new Nutritionist("Nutritionist", position, texture, speed, "BITCH");
             
             // Set nutritionist size to fit within a cell (slightly smaller for movement clearance)
             nutritionist.setSize(cellSize * 0.9f, cellSize * 0.9f);

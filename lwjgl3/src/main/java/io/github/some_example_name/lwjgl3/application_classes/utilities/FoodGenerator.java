@@ -94,7 +94,7 @@ public class FoodGenerator {
             food.update(deltaTime);
 
             // Check if food has expired or been consumed
-            if (food.isExpired() || food.isConsumed()) {
+            if (food.isExpired() || food.shouldBeRemoved()) {
                 expiredFood.add(food);
             }
         }

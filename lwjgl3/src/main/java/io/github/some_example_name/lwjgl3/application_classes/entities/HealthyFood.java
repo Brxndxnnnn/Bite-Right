@@ -59,4 +59,14 @@ public class HealthyFood extends Food {
     public int getEffectValue() {
         return healthPoints;
     }
+
+    @Override
+    public void setToBeRemoved() {
+        toBeRemoved = true;
+    }
+
+    @Override
+    public boolean shouldBeRemoved() {
+        return toBeRemoved;
+    }
 }

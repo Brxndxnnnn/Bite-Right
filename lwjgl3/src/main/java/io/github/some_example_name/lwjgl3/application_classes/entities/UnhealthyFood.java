@@ -46,4 +46,14 @@ public class UnhealthyFood extends Food {
     public int getEffectValue() {
         return -damage; // Negative to indicate damage
     }
+
+    @Override
+    public void setToBeRemoved() {
+        toBeRemoved = true;
+    }
+
+    @Override
+    public boolean shouldBeRemoved() {
+        return toBeRemoved;
+    }
 }
