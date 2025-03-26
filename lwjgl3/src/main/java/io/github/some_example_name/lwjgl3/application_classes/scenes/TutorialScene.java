@@ -14,140 +14,117 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 
-import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 
-public class TutorialScene implements Scene{
-	private final TextButton backBtn;
-	private final IOManager ioManager;
-	private Stage stage;
-	private Skin skin;
-	
-	public TutorialScene(SceneManager sceneManager) {
-//		super(sceneManager);
-		
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
-		
-		//AudioPlayer.getInstance().setSceneBGM("home.mp3");
+public class TutorialScene implements Scene {
+    private final TextButton backBtn;
+    private final IOManager ioManager;
+    private final Stage stage;
+    private final Skin skin;
+    
+    public TutorialScene(SceneManager sceneManager) {
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        
+        // Create main root table for all content
+        Table rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+        
+        // Create the title
+        Label titleLabel = new Label("Tutorial", skin, "subtitle");
+        titleLabel.setAlignment(Align.center);
+        
+        // Create back button
+        backBtn = new TextButton("Back", skin);
+        backBtn.getLabel().setFontScale(0.5f);
+        backBtn.getLabel().setColor(Color.SKY);
+        backBtn.setColor(Color.ROYAL);
+        
+        // Set up the click listener for back button
+        backBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
+            }
+        });
+        
+        // Load all textures once
+        Texture healthyFoodTexture = new Texture(Gdx.files.internal("entities_images/healthyfood.png"));
+        Texture unhealthyFoodTexture = new Texture(Gdx.files.internal("entities_images/unhealthyfood.png"));
+        Texture demonTexture = new Texture(Gdx.files.internal("entities_images/demon.png"));
+        
+        // Create tutorial content table
+        Table tutorialContentTable = new Table();
+        tutorialContentTable.defaults().pad(15).align(Align.left);
+        //tutorialContentTable.setDebug(true); // Uncomment to see table borders for debugging
+        
+        // Row 1: Healthy Food
+        Image healthyFoodImage = new Image(healthyFoodTexture);
+        healthyFoodImage.setScale(1f);
+        
+        Label healthyFoodLabel = new Label("Collect healthy food items to gain\nhealth, speed and points", skin);
+        healthyFoodLabel.setWrap(true);
+        healthyFoodLabel.setAlignment(Align.left);
+        
+        tutorialContentTable.add(healthyFoodImage).size(80).padRight(30);
+        tutorialContentTable.add(healthyFoodLabel).width(300).row();
+        
+        // Row 2: Unhealthy Food
+        Image unhealthyFoodImage = new Image(unhealthyFoodTexture);
+        unhealthyFoodImage.setScale(1f);
+        
+        Label unhealthyFoodLabel = new Label("Collecting unhealthy food items\ndecreases health, speed and points", skin);
+        unhealthyFoodLabel.setWrap(true);
+        unhealthyFoodLabel.setAlignment(Align.left);
+        
+        tutorialContentTable.add(unhealthyFoodImage).size(80).padRight(30);
+        tutorialContentTable.add(unhealthyFoodLabel).width(300).row();
+        
+        // Row 3: Demon
+        Image demonImage = new Image(demonTexture);
+        demonImage.setScale(1f);
+        
+        Label demonLabel = new Label("Do not run into angry chef!\nInstant GAME OVER!", skin);
+        demonLabel.setWrap(true);
+        demonLabel.setAlignment(Align.left);
+        
+        tutorialContentTable.add(demonImage).size(80).padRight(30);
+        tutorialContentTable.add(demonLabel).width(300).row();
+        
+        // Add title to the root table
+        rootTable.add(titleLabel).padTop(30).padBottom(40).row();
+        
+        // Add tutorial content to the root table
+        rootTable.add(tutorialContentTable).expand().row();
+        
+        // Add back button to the root table
+        rootTable.add(backBtn).size(backBtn.getWidth() * 0.7f, backBtn.getHeight() * 0.7f)
+                .padBottom(30).align(Align.center);
+        
+        // Set the keybinds required for Tutorial
+        ioManager = new IOManager();
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, 
+                () -> sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL), true);
+    }
 
-		backBtn = new TextButton("Back", skin);
+    @Override
+    public void render(SpriteBatch batch) {
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.draw();
+        ioManager.handleInput();
+    }
 
-		backBtn.getLabel().setFontScale(0.5f);
-
-
-		// INITIALIZE MAIN TABLE FOR THE TITLE
-		Table titleTable = new Table();
-		titleTable.setFillParent(true);
-		titleTable.top(); // Align content to the top
-		stage.addActor(titleTable);
-
-		Label label = new Label("Tutorial", skin, "subtitle");
-		//label.setColor(Color.YELLOW);
-		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
-		
-		// entity tables
-		Table healthyTable = new Table();
-		healthyTable.setFillParent(true);
-		stage.addActor(healthyTable);
-		//entityTable.center();
-		
-		Image entity = new Image(new Texture(Gdx.files.internal("entities_images/healthyfood.png")));
-		entity.setScale(0.5f);
-		//entity.pack();
-		healthyTable.setPosition(-150, 240);
-		healthyTable.add(entity);
-
-		Table unhealthyTable = new Table();
-		unhealthyTable.setFillParent(true);
-		stage.addActor(unhealthyTable);
-		
-		entity = new Image(new Texture(Gdx.files.internal("entities_images/unhealthyfood.png")));
-		entity.setScale(0.3f);
-		unhealthyTable.setPosition(-30, 180);
-		unhealthyTable.add(entity);
-		
-		Table enemyTable = new Table();
-		enemyTable.setFillParent(true);
-		stage.addActor(enemyTable);
-		
-		entity = new Image(new Texture(Gdx.files.internal("entities_images/demon.png")));
-		entity.setScale(4f);
-		enemyTable.setPosition(-240, -200);
-		enemyTable.add(entity);
-
-		// content for entity description
-		Table contentTable = new Table();
-		contentTable.setFillParent(true);
-		stage.addActor(contentTable);
-		contentTable.top().right();
-		
-		Label content = new Label("Collect these food items to gain", skin);
-		contentTable.add(content).padRight(80).padTop(150);
-		contentTable.row();
-		
-		content = new Label("speed, strength and points", skin);
-		contentTable.add(content).padRight(80);
-		contentTable.row();
-		
-		content = new Label("Do not collect these food items", skin);
-		contentTable.add(content).padRight(80).padTop(100);
-		contentTable.row();
-		
-		content = new Label("Health will be decreased when picked up", skin);
-		contentTable.add(content).padRight(40);
-		contentTable.row();
-		
-		content = new Label("Do not run into monsters", skin);
-		contentTable.add(content).padRight(80).padTop(150);
-		contentTable.row();
-
-		Table buttonTable = new Table();
-		buttonTable.setFillParent(true);
-		stage.addActor(buttonTable);
-
-		backBtn.getLabel().setColor(Color.SKY);
-		backBtn.setColor(Color.ROYAL);
-
-
-		buttonTable.bottom();
-		buttonTable.padTop(170);
-		buttonTable.row();
-		buttonTable.add(backBtn).padBottom(10).size(backBtn.getWidth() * 0.6f, backBtn.getHeight() * 0.6f);
-	
-
-
-		backBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
-			}
-		});
-
-		// Set the keybinds required for Tutorial
-		ioManager = new IOManager();
-
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL), true);
-	}
-
-	@Override
-	public void render(SpriteBatch batch) {
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.draw();
-
-		ioManager.handleInput();
-	}
-
-	@Override
-	public void dispose() {
-		stage.dispose();
-		skin.dispose();		
-	}
+    @Override
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();        
+    }
 }

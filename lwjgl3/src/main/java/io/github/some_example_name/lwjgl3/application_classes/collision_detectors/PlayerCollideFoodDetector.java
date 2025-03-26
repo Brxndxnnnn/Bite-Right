@@ -1,5 +1,7 @@
 package io.github.some_example_name.lwjgl3.application_classes.collision_detectors;
 
+import com.badlogic.gdx.math.MathUtils;
+
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollisionDetector;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.Removable;
@@ -33,52 +35,52 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
 
     @Override
     public void resolveCollision() {
-        if (food.shouldBeRemoved()) return;
+        if (food.shouldBeRemoved()) return; // Check if food should be removed, if true then stop here
         // Check collision
-            // Handle based on food type
-            if (food instanceof HealthyFood) {
-                HealthyFood healthyFood = (HealthyFood) food;
-                System.out.println("Player consumed healthy food: +" + healthyFood.getHealthPoints() + " HP, +"
-                                  + healthyFood.getStrengthBoost() + " strength");
+        // Handle based on food type
+        if (food instanceof HealthyFood) {
+            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+            HealthyFood healthyFood = (HealthyFood) food;
+            System.out.println("Player consumed healthy food: +" + healthyFood.getHealthPoints() + " HP, +"
+                                + healthyFood.getStrengthBoost() + " strength");
 
-                // Add health to player
-                player.adjustHealth(healthyFood.getHealthPoints());
+            // Add health to player
+            player.adjustHealth(healthyFood.getHealthPoints());
 
-                // Boost player strength
-                player.adjustStrength(healthyFood.getStrengthBoost());
+            // Boost player strength
+            player.adjustStrength(healthyFood.getStrengthBoost());
 
-                // Add points to player
-                player.adjustPoints(20);
+            // Add points to player
+            player.adjustPoints(20);
+        }
+        else if (food instanceof UnhealthyFood) {
+            AudioPlayer.getInstance().playSFX("SFX/bad.mp3");
+            UnhealthyFood unhealthyFood = (UnhealthyFood) food;
+            System.out.println("Player consumed unhealthy food: -" + unhealthyFood.getDamage() + " HP");
+
+            // Reduce player health
+            player.adjustHealth(-unhealthyFood.getDamage());
+            
+            // Reduce player points
+            player.adjustPoints(-10);
+
+            // Check if player died
+            if (player.getHealth() <= 0) {
+                System.out.println("Player died from unhealthy food!");
+                // Potentially trigger game over here
             }
-            else if (food instanceof UnhealthyFood) {
-                UnhealthyFood unhealthyFood = (UnhealthyFood) food;
-                System.out.println("Player consumed unhealthy food: -" + unhealthyFood.getDamage() + " HP");
+        }
 
-                // Reduce player health
-                player.adjustHealth(-unhealthyFood.getDamage());
-                
-                // Reduce player points
-                player.adjustPoints(-10);
+        // Mark food as consumed
+        food.setToBeRemoved();
 
-                // Check if player died
-                if (player.getHealth() <= 0) {
-                    System.out.println("Player died from unhealthy food!");
-                    // Potentially trigger game over here
-                }
-            }
-
-            // Mark food as consumed
-            food.setToBeRemoved();
-
-            // Mark this collision detector to be removed
-            setToBeRemoved();
-           
+        // Mark this collision detector to be removed
+        setToBeRemoved();
         
-        
-        // Dialog pop up
-        dialogPopUpManager.showPopUp("Did you know?", food.getFunFact());
-        
-        AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+        // Show popup with 20% probability - single line check
+        if (MathUtils.random() < 0.25f) {
+            dialogPopUpManager.showPopUp("Did you know?", food.getFunFact(), food.getTexture());
+        }
     }
 
     @Override
