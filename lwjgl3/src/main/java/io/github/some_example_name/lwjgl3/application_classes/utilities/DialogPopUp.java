@@ -28,11 +28,7 @@ public class DialogPopUp{
 		this.shapeRenderer = new ShapeRenderer();
 		this.contentTable = new Table();
 		contentTable.setFillParent(true); // contentTable covers the whole screen
-//		contentTable.center();
 		uiStage.addActor(contentTable);
-		
-		
-		
 	}
 	
 	public void show(String title, String content) {
@@ -76,7 +72,6 @@ public class DialogPopUp{
 		visible = true;
 		
 		uiStage.addActor(contentTable);
-	
 	}
 	
     public void hide() {
@@ -97,6 +92,7 @@ public class DialogPopUp{
 
 	    batch.end(); // Stop batch before using ShapeRenderer
 
+		Gdx.input.setInputProcessor(uiStage);
 	    // Draw semi-transparent black overlay
 	    Gdx.gl.glEnable(GL20.GL_BLEND);
 	    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);

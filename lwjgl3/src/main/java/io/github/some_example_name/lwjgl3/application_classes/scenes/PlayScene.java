@@ -39,6 +39,7 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Food;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Nutritionist;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
+import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogEventListener;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.FoodGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
@@ -46,7 +47,7 @@ import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDiff
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.NutritionistGenerator;
 
-public class PlayScene implements Scene {
+public class PlayScene implements Scene, DialogEventListener {
     private final EntityManager entityManager;
     private final CollisionManager collisionManager;
     private final IOManager ioManager;
@@ -59,6 +60,7 @@ public class PlayScene implements Scene {
     private Label healthLabel;
     private Label foodCountLabel;
     private Stage stage;
+    private Stage overlayStage;
     private Skin skin;
     private Label pointsLabel;
     private static int finalPoints;
@@ -76,6 +78,7 @@ public class PlayScene implements Scene {
     public PlayScene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
         stage = new Stage();
+        overlayStage = new Stage();
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 
@@ -112,7 +115,9 @@ public class PlayScene implements Scene {
         mazeGenerator = new MazeGenerator(cellSize);
         foodGenerator = new FoodGenerator(cellSize, mazeGenerator);
         nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator);
-        dialogPopUpManager = new DialogPopUpManager(stage, skin);
+        dialogPopUpManager = new DialogPopUpManager(overlayStage, skin);
+        dialogPopUpManager.setDialogEventListener(this); // Register PlayScene as a listener
+
         batch = new SpriteBatch();
 
 
@@ -438,58 +443,19 @@ public class PlayScene implements Scene {
 
     @Override
     public void render(SpriteBatch batch) {
-        // Update food and nutritionist
-        spawnFood();
-        updateNutritionist();
-
-        // Update collision detectors
-        // (needed since new food items might have been spawned)
-        setupCollisionDetectors();
-
-        // Clear the screen
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Update health and food count displays
-        healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
-
-        // Update food count label
-        int currentFoodCount = foodGenerator.getFoodListSize();
-        foodCountLabel.setText("Food: " + currentFoodCount + "/7");
-
-        // Update points label
-        pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
-
-        // Draw UI
-        stage.draw();
-
-        // Draw Entities on Screen
-        entityManager.drawEntites(batch);
-
-        // Update entity movement
-        entityManager.moveEntities();
-        entityManager.checkForEntitiesToBeRemoved();
-
-        // Check collisions
-        collisionManager.checkAllCollisions();
-        collisionManager.checkForDetectorsToBeRemoved();
-
-        // Handle user input
-        ioManager.handleInput();
-
-        // Check for game over condition
-        if (player.getHealth() <= 0) {
-            // Game over logic
-            finalPoints = player.getPoints();
-            gameWon = false;
-            System.out.println("Game Over! Player died.");
-            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
-        } else if (player.getPoints() >= targetPoint) {
-            // Game win logic
-            finalPoints = player.getPoints();
-            gameWon = true;
-            System.out.println("Game Win! Player reached " + targetPoint + " points.");
-            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        // Update game state if not paused
+        if (!showPopup) {
+            updateGameState();
         }
+        
+        // Draw everything
+        drawGame(batch);
+        
+        // Check for game over condition
+        checkGameEndCondition();
+        
+        // Render dialog popups at the end, on top of everything else
+        dialogPopUpManager.render(batch);
     }
 
     public static int getfinalPoints() {
@@ -507,5 +473,75 @@ public class PlayScene implements Scene {
         playBackground.dispose();
         nutritionistTexture.dispose(); // Make sure to dispose the nutritionist texture
         floorTexture.dispose(); // Make sure to dispose the floor texture
+    }
+
+
+    @Override
+    public void onDialogOpened() {
+        showPopup = true;
+    }
+
+
+    @Override
+    public void onDialogClosed() {
+        showPopup = false;
+    }
+
+    // Update the game state
+private void updateGameState() {
+    // Spawn new entities
+    spawnFood();
+    updateNutritionist();
+    
+    // Update collision detectors for new entities
+    setupCollisionDetectors();
+    
+    // Update entity movement
+    entityManager.moveEntities();
+    entityManager.checkForEntitiesToBeRemoved();
+    
+    // Check for collisions
+    collisionManager.checkAllCollisions();
+    collisionManager.checkForDetectorsToBeRemoved();
+    
+    // Handle user input
+    ioManager.handleInput();
+}
+
+// Draw the game elements
+private void drawGame(SpriteBatch batch) {
+    // Clear the screen
+    Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    
+    // Update UI displays
+    healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
+    int currentFoodCount = foodGenerator.getFoodListSize();
+    foodCountLabel.setText("Food: " + currentFoodCount + "/7");
+    pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
+    
+    // Draw UI
+    stage.draw();
+    
+    // Draw entities
+    entityManager.drawEntites(batch);
+}
+
+// Check if the game has ended (win or lose)
+    private void checkGameEndCondition() {
+        if (showPopup) return;
+        
+        if (player.getHealth() <= 0) {
+            // Game over logic
+            finalPoints = player.getPoints();
+            gameWon = false;
+            System.out.println("Game Over! Player died.");
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        } else if (player.getPoints() >= targetPoint) {
+            // Game win logic
+            finalPoints = player.getPoints();
+            gameWon = true;
+            System.out.println("Game Win! Player reached " + targetPoint + " points.");
+            sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
+        }
     }
 }
