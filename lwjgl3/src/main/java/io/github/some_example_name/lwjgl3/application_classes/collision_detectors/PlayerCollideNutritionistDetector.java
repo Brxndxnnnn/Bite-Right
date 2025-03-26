@@ -10,7 +10,6 @@ import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPo
 public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<Player, Nutritionist> implements Removable{
     private final Player player;
     private final Nutritionist nutritionist;
-    private boolean collisionDetected;
     private DialogPopUpManager dialogPopUpManager;
     private boolean toBeRemoved = false;
 
@@ -18,7 +17,6 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         super(player, nutritionist);
         this.player = player;
         this.nutritionist = nutritionist;
-        this.collisionDetected = false;
         this.dialogPopUpManager = dialogPopUpManager;
     }
 
@@ -36,32 +34,27 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
     public void resolveCollision() {
         if (nutritionist.shouldBeRemoved()) return;
         // Check collision
-            System.out.println("Player collided with Nutritionist!");
-            
-            // Play a sound effect for the collision
-            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
-            
-            // Set collision detected flag to start cooldown
-            collisionDetected = true;
-            
-            // TODO: Add popup logic or other nutritionist-specific behavior here
-            // For now, just apply a small health bonus
-            player.adjustHealth(5);
-            
-            // Force the nutritionist to change direction
-            nutritionist.forceDirectionChange();
-            
-            // Ensure the nutritionist enters collision state for smooth movement
-            nutritionist.setCollisionState(true);
+        System.out.println("Player collided with Nutritionist!");
+        
+        // Play a sound effect for the collision
+        AudioPlayer.getInstance().playSFX("SFX/nutritionist.mp3");
+        
+        // TODO: Add popup logic or other nutritionist-specific behavior here
+        // For now, just apply a small health bonus
+        player.adjustHealth(5);
+        
+        // Force the nutritionist to change direction
+        nutritionist.forceDirectionChange();
+        
+        // Ensure the nutritionist enters collision state for smooth movement
+        nutritionist.setCollisionState(true);
 
 
-            nutritionist.setToBeRemoved();
+        nutritionist.setToBeRemoved();
 
-            setToBeRemoved();
+        setToBeRemoved();
 
         dialogPopUpManager.showPopUp("Did you know?", nutritionist.getFunFact());
-
-
     }
 
     @Override
