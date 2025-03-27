@@ -2,9 +2,9 @@ package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,122 +20,159 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
-public class HomeScene implements Scene{
-	private final TextButton startBtn;
-	private final TextButton tutBtn;
-	private final TextButton quitBtn;
-	private final IOManager ioManager;
-	private Stage stage;
-	private Skin skin;
-    private Texture homeBackground;
-    private SpriteBatch batch;
-    private float alpha = 0f;
-    private float fadeSpeed = 0.01f;
-    private boolean fadingIn = true;
-    private Image backgroundImage;
+/**
+ * Home scene of the game, serving as the main menu.
+ */
+public class HomeScene implements Scene {
+    // UI components
+    private final TextButton startBtn;
+    private final TextButton tutBtn;
+    private final TextButton quitBtn;
+    
+    // Scene management
+    private final Stage stage;
+    private final Skin skin;
+    private final Texture homeBackground;
+    private final IOManager ioManager;
 
-
-	public HomeScene(GameSceneManager sceneManager) {
-//		super(sceneManager);
-
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+    /**
+     * Constructs the home scene.
+     * 
+     * @param sceneManager Manager responsible for scene transitions
+     */
+    public HomeScene(GameSceneManager sceneManager) {
+        // Initialize stage and input
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        
+        // Load visual resources
         homeBackground = new Texture(Gdx.files.internal("background_images/homebackground.jpg"));
-		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        
+        // Set background music
+        AudioPlayer.getInstance().setSceneBGM("background_music/home.mp3");
 
-        Image backgroundImage = new Image(homeBackground);
+        // Create and style buttons
+        startBtn = createStyledButton("Start");
+        tutBtn = createStyledButton("Tutorial");
+        quitBtn = createStyledButton("Quit");
+
+        // Create and populate scene layout
+        createSceneLayout(sceneManager);
+
+        // Initialize input manager
+        ioManager = new IOManager();
+    }
+
+    /**
+     * Creates a styled button with consistent appearance.
+     * 
+     * @param text Button text
+     * @return Styled TextButton
+     */
+    private TextButton createStyledButton(String text) {
+        TextButton button = new TextButton(text, skin);
+        button.getLabel().setFontScale(0.5f);
+        button.getLabel().setColor(Color.SKY);
+        button.setColor(Color.ROYAL);
+        return button;
+    }
+
+    /**
+     * Sets up the scene layout and button interactions.
+     * 
+     * @param sceneManager Manager for scene transitions
+     */
+    private void createSceneLayout(GameSceneManager sceneManager) {
+        // Create background
+        Image backgroundImage = new Image(new TextureRegion(homeBackground));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Add the background image to the stage (this will make it part of the UI)
         stage.addActor(backgroundImage);
 
-		AudioPlayer.getInstance().setSceneBGM("background_music/home.mp3");
+        // Create title table
+        Table titleTable = createTitleTable();
+        stage.addActor(titleTable);
 
-        startBtn = new TextButton("Start", skin);
-		tutBtn = new TextButton("Tutorial", skin);
-		quitBtn = new TextButton("Quit", skin);
+        // Create button table
+        Table buttonTable = createButtonTable(sceneManager);
+        stage.addActor(buttonTable);
+    }
 
-		startBtn.getLabel().setFontScale(0.5f);
-		tutBtn.getLabel().setFontScale(0.5f);
-		quitBtn.getLabel().setFontScale(0.5f);
+    /**
+     * Creates the title table with game name.
+     * 
+     * @return Configured title Table
+     */
+    private Table createTitleTable() {
+        Table titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.top();
 
-		// INITIALIZE MAIN TABLE FOR THE TITLE
-		Table titleTable = new Table();
-		titleTable.setFillParent(true);
-		titleTable.top(); // Align content to the top
-		stage.addActor(titleTable);
+        Label label = new Label("Hungry Dash", skin, "title");
+        label.setColor(Color.YELLOW);
+        titleTable.add(label).center().padTop(20);
 
-		Label label = new Label("Hungry Dash", skin, "title");
-		label.setColor(Color.YELLOW);
-		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
+        return titleTable;
+    }
 
-		Table buttonTable = new Table();
-		buttonTable.setFillParent(true);
-		stage.addActor(buttonTable);
+    /**
+     * Creates the button table with navigation options.
+     * 
+     * @param sceneManager Manager for scene transitions
+     * @return Configured button Table
+     */
+    private Table createButtonTable(GameSceneManager sceneManager) {
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+        buttonTable.center().padTop(170);
 
-		startBtn.getLabel().setColor(Color.SKY);
-		startBtn.setColor(Color.ROYAL);
+        // Add buttons with consistent sizing
+        float buttonWidth = startBtn.getWidth() * 0.6f;
+        float buttonHeight = startBtn.getHeight() * 0.6f;
 
-		quitBtn.getLabel().setColor(Color.SKY);
-		quitBtn.setColor(Color.ROYAL);
+        buttonTable.add(startBtn).size(buttonWidth, buttonHeight).row();
+        buttonTable.add(tutBtn).padTop(10).size(buttonWidth, buttonHeight).row();
+        buttonTable.add(quitBtn).padTop(10).size(buttonWidth, buttonHeight);
 
-		tutBtn.getLabel().setColor(Color.SKY);
-		tutBtn.setColor(Color.ROYAL);
+        // Set button listeners
+        startBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.DIFFICULTY, SceneTransitionType.NORMAL);
+            }
+        });
+        
+        tutBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.TUTORIAL, SceneTransitionType.NORMAL);
+            }
+        });
 
-		buttonTable.center();
-		buttonTable.padTop(170);
-		buttonTable.add(startBtn).size(startBtn.getWidth() * 0.6f, startBtn.getHeight() * 0.6f);
-		buttonTable.row();		
-		buttonTable.add(tutBtn).padTop(10).size(tutBtn.getWidth() * 0.6f, tutBtn.getHeight() * 0.6f);
-		buttonTable.row();
-		buttonTable.add(quitBtn).padTop(10).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f);
+        quitBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
 
+        return buttonTable;
+    }
 
-		startBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.DIFFICULTY, SceneTransitionType.NORMAL);
-			}
-		});
-		
-		tutBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.TUTORIAL, SceneTransitionType.NORMAL);
-			}
-		});
-
-		quitBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.exit();
-			}
-		});
-
-
-		// Set the keybinds required for this HomeScene
-		ioManager = new IOManager();
-
-		// ioManager.addIOBind(ioManager.getKeyboard(), Keys.DOWN, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() - 5), true);
-		// ioManager.addIOBind(ioManager.getKeyboard(), Keys.UP, () -> sceneManager.getAudioPlayer().setVolume(sceneManager.getAudioPlayer().getVolume() + 5), true);
-	}
-
-
-
-	@Override
-	public void render(SpriteBatch batch) {
-
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
+    @Override
+    public void render(SpriteBatch batch) {
+        // Render the stage
         stage.draw();
-		ioManager.handleInput();
+        
+        // Handle any input
+        ioManager.handleInput();
+    }
 
-	}
-
-	@Override
-	public void dispose() {
-		stage.dispose();
-		skin.dispose();
-	}
+    @Override
+    public void dispose() {
+        // Clean up resources
+        stage.dispose();
+        skin.dispose();
+        homeBackground.dispose();
+    }
 }

@@ -7,7 +7,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
  * Factory class for creating game-specific scenes
  */
 public class SceneFactory {
-    private GameSceneManager sceneManager;
+    private final GameSceneManager sceneManager;
     
     /**
      * Constructor

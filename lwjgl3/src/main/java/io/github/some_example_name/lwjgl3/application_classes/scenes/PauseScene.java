@@ -3,7 +3,6 @@ package io.github.some_example_name.lwjgl3.application_classes.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,95 +18,167 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
-public class PauseScene implements Scene{
-	private final TextButton resumeBtn;
-	private final TextButton restartBtn;
-	private final TextButton quitBtn;
-	private final IOManager ioManager;
-	private Stage stage;
-	private Skin skin;
-	
-	public PauseScene(GameSceneManager sceneManager) {
-//		super(sceneManager);
-		
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
-		
-		AudioPlayer.getInstance().setSceneBGM("background_music/pause.mp3");
+/**
+ * Pause scene for the game, providing options to resume, restart, or quit.
+ */
+public class PauseScene implements Scene {
+    // UI components
+    private final TextButton resumeBtn;
+    private final TextButton restartBtn;
+    private final TextButton quitBtn;
+    
+    // Scene management
+    private final Stage stage;
+    private final Skin skin;
+    private final IOManager ioManager;
 
-		resumeBtn = new TextButton("Resume", skin);
-		restartBtn = new TextButton("Restart", skin);
-		quitBtn = new TextButton("Quit", skin);
+    /**
+     * Constructs the pause scene.
+     * 
+     * @param sceneManager Manager responsible for scene transitions
+     */
+    public PauseScene(GameSceneManager sceneManager) {
+        // Initialize stage and input
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+        
+        // Load visual resources
+        skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        
+        // Set pause scene music
+        AudioPlayer.getInstance().setSceneBGM("background_music/pause.mp3");
 
-		resumeBtn.getLabel().setFontScale(0.5f);
-		restartBtn.getLabel().setFontScale(0.5f);
-		quitBtn.getLabel().setFontScale(0.5f);
+        // Create and style buttons
+        resumeBtn = createStyledButton("Resume");
+        restartBtn = createStyledButton("Restart");
+        quitBtn = createStyledButton("Quit");
 
-		resumeBtn.getLabel().setColor(Color.SKY);
-		resumeBtn.setColor(Color.ROYAL);
-		restartBtn.getLabel().setColor(Color.SKY);
-		restartBtn.setColor(Color.ROYAL);
-		quitBtn.getLabel().setColor(Color.SKY);
-		quitBtn.setColor(Color.ROYAL);
+        // Create scene layout
+        createSceneLayout(sceneManager);
 
-		// INITIALIZE MAIN TABLE FOR THE TITLE
-		Table titleTable = new Table();
-		titleTable.setFillParent(true);
-		titleTable.top(); // Align content to the top
-		stage.addActor(titleTable);
+        // Initialize input manager and keybindings
+        ioManager = new IOManager();
+        setupInputBindings(sceneManager);
+    }
 
-		Label label = new Label("Pause", skin, "subtitle");
-		titleTable.add(label).center().padTop(20); // Center the title at the top with padding
+    /**
+     * Creates a styled button with consistent appearance.
+     * 
+     * @param text Button text
+     * @return Styled TextButton
+     */
+    private TextButton createStyledButton(String text) {
+        TextButton button = new TextButton(text, skin);
+        button.getLabel().setFontScale(0.5f);
+        button.getLabel().setColor(Color.SKY);
+        button.setColor(Color.ROYAL);
+        return button;
+    }
 
-		Table buttonTable = new Table();
-		buttonTable.setFillParent(true);
-		stage.addActor(buttonTable);
+    /**
+     * Sets up the scene layout with title and buttons.
+     * 
+     * @param sceneManager Manager for scene transitions
+     */
+    private void createSceneLayout(GameSceneManager sceneManager) {
+        // Create title table
+        Table titleTable = createTitleTable();
+        stage.addActor(titleTable);
 
-		buttonTable.add(resumeBtn).spaceTop(30).size(resumeBtn.getWidth() * 0.6f, resumeBtn.getHeight() * 0.6f);
-		buttonTable.row();
-		buttonTable.add(restartBtn).spaceTop(10).size(restartBtn.getWidth() * 0.6f, restartBtn.getHeight() * 0.6f);
-		buttonTable.row();
-		buttonTable.add(quitBtn).spaceTop(10).size(quitBtn.getWidth() * 0.6f, quitBtn.getHeight() * 0.6f);
+        // Create button table
+        Table buttonTable = createButtonTable(sceneManager);
+        stage.addActor(buttonTable);
+    }
 
-		resumeBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME); // need go back to the old play scene
-			}
-		});
+    /**
+     * Creates the title table with "Pause" label.
+     * 
+     * @return Configured title Table
+     */
+    private Table createTitleTable() {
+        Table titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.top();
 
-		restartBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESTART); // need go back to the old play scene
-			}
-		});
+        Label label = new Label("Pause", skin, "subtitle");
+        titleTable.add(label).center().padTop(20);
 
-		quitBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
-			}
-		});
+        return titleTable;
+    }
 
-		// Set the keybinds required for this PlayScene
-		ioManager = new IOManager();
+    /**
+     * Creates the button table with navigation options.
+     * 
+     * @param sceneManager Manager for scene transitions
+     * @return Configured button Table
+     */
+    private Table createButtonTable(GameSceneManager sceneManager) {
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+        buttonTable.center();
 
-		ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME), true);
-	}
+        // Set consistent button sizing
+        float buttonWidth = resumeBtn.getWidth() * 0.6f;
+        float buttonHeight = resumeBtn.getHeight() * 0.6f;
+
+        // Add buttons with spacing
+        buttonTable.add(resumeBtn).spaceTop(30).size(buttonWidth, buttonHeight).expandX().center().row();
+        buttonTable.add(restartBtn).spaceTop(10).size(buttonWidth, buttonHeight).expandX().center().row();
+        buttonTable.add(quitBtn).spaceTop(10).size(buttonWidth, buttonHeight).expandX().center();
+
+        // Set button listeners
+        resumeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME);
+            }
+        });
+
+        restartBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESTART);
+            }
+        });
+
+        quitBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.changeScene(SceneType.HOME, SceneTransitionType.NORMAL);
+            }
+        });
+
+        return buttonTable;
+    }
+
+    /**
+     * Sets up input bindings for the pause scene.
+     * 
+     * @param sceneManager Manager for scene transitions
+     */
+    private void setupInputBindings(GameSceneManager sceneManager) {
+        ioManager.addIOBind(
+            ioManager.getKeyboard(), 
+            Keys.ESCAPE, 
+            () -> sceneManager.changeScene(SceneType.PLAY, SceneTransitionType.RESUME), 
+            true
+        );
+    }
 
     @Override
-	public void render(SpriteBatch batch) {
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.draw();
+    public void render(SpriteBatch batch) {
+        // Clear screen and draw stage
+        Gdx.gl20.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
+        stage.draw();
 
-		ioManager.handleInput();
-	}
+        // Handle input
+        ioManager.handleInput();
+    }
     
     @Override
-	public void dispose() {
-		stage.dispose();
-		skin.dispose();		
-	}
+    public void dispose() {
+        // Clean up resources
+        stage.dispose();
+        skin.dispose();
+    }
 }
