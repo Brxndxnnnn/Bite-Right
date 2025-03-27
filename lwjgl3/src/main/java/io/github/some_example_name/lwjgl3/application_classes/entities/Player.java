@@ -49,13 +49,23 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         this.points = DEFAULT_STARTING_POINTS;
     }
 
+    /**
+     * Get the bounding box of Entity
+     * 
+     * @return Rectangle Bounding Box
+     */
     @Override
     public Rectangle getBoundingBox() {
         float boxWidth = getWidth() > 0 ? getWidth() : getTexture().getWidth();
         float boxHeight = getHeight() > 0 ? getHeight() : getTexture().getHeight();
         return new Rectangle(getPosition().x, getPosition().y, boxWidth, boxHeight);
     }
-    
+
+    /**
+     * Move the Player Entity
+     * 
+     * @param Direction to move Entity
+     */
     @Override
     public void move(Direction direction) {
         float deltaTime = Gdx.graphics.getDeltaTime();

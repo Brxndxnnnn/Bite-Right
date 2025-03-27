@@ -39,11 +39,21 @@ public class Wall extends NonMovableEntity implements Collidable {
         this.height = height;
     }
     
+    /**
+     * Get the bounding box of Entity
+     * 
+     * @return Rectangle Bounding Box
+     */
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, width, height);
     }
     
+    /**
+     * Draws Wall entity
+     *
+     * @param batch SpriteBatch to use for drawing
+     */
     @Override
     public void draw(SpriteBatch batch) {
         batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);

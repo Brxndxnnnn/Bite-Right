@@ -307,6 +307,11 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
         }
     }
     
+    /**
+     * Get the bounding box of Entity
+     * 
+     * @return Rectangle Bounding Box
+     */
     @Override
     public Rectangle getBoundingBox() {
         // Use the custom width and height if set, otherwise use texture dimensions

@@ -48,7 +48,7 @@ public class NutritionistCollideWallDetector extends EntityCollisionDetector<Nut
             }
             
             // Adjust vertical movement
-            nutritionist.setVelocity(new Vector2(0, chooseVerticalDirection(nutritionistVelocity) * Nutritionist.getBaseSpeed()));
+            nutritionist.setVelocity(new Vector2(0, chooseVerticalDirection(nutritionistVelocity) * nutritionist.getBaseSpeed())); // Use base speed directly
         } else {
             // Vertical collision
             if (nutritionistPosition.y < wallBounds.y) {
@@ -60,11 +60,8 @@ public class NutritionistCollideWallDetector extends EntityCollisionDetector<Nut
             }
             
             // Adjust horizontal movement
-            nutritionist.setVelocity(new Vector2(chooseHorizontalDirection(nutritionistVelocity) * Nutritionist.getBaseSpeed(), 0));
+            nutritionist.setVelocity(new Vector2(chooseHorizontalDirection(nutritionistVelocity) * nutritionist.getBaseSpeed(), 0)); // Use base speed directly
         }
-        
-        // Put the nutritionist in collision state
-        nutritionist.setCollisionState(true);
     }
 
     /**

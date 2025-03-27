@@ -58,12 +58,6 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         
         // Give player health bonus
         player.adjustHealth(5);
-        
-        // Force the nutritionist to change direction
-        nutritionist.forceDirectionChange();
-        
-        // Ensure the nutritionist enters collision state for smooth movement
-        nutritionist.setCollisionState(true);
 
         // Mark nutritionist for removal
         nutritionist.setToBeRemoved();

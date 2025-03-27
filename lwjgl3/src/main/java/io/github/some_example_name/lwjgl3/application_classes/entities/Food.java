@@ -129,6 +129,12 @@ public abstract class Food extends NonMovableEntity implements Collidable, Remov
         return Math.max(0, 1 - (elapsedTime / lifespanInSeconds));
     }
     
+
+    /**
+     * Get the bounding box of Entity
+     * 
+     * @return Rectangle Bounding Box
+     */
     @Override
     public Rectangle getBoundingBox() {
         return new Rectangle(getPosition().x, getPosition().y, width, height);
@@ -143,13 +149,21 @@ public abstract class Food extends NonMovableEntity implements Collidable, Remov
         return funFact;
     }
     
+    /**
+     * Draws food entity
+     *
+     * @param batch SpriteBatch to use for drawing
+     */
     @Override
     public void draw(SpriteBatch batch) {
         if (!toBeRemoved && !expired) {
             batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);
         }
     }
-    
+
+    /**
+     * Marks this Food to be removed.
+     */
     @Override
     public void setToBeRemoved() {
         toBeRemoved = true;

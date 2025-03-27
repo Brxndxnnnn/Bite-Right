@@ -37,6 +37,11 @@ public class Floor extends NonMovableEntity {
         this.height = height;
     }
     
+    /**
+     * Draws floor entity
+     *
+     * @param batch SpriteBatch to use for drawing
+     */
     @Override
     public void draw(SpriteBatch batch) {
         batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);
