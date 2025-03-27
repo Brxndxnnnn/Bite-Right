@@ -77,7 +77,7 @@ public class PlayScene implements Scene, DialogEventListener {
     private boolean showPopup;
 
 
-    public PlayScene(SceneManager sceneManager) {
+    public PlayScene(GameSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         stage = new Stage();
         overlayStage = new Stage();

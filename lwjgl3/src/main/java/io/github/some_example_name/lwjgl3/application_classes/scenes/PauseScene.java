@@ -16,10 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 
 public class PauseScene implements Scene{
 	private final TextButton resumeBtn;
@@ -29,7 +27,7 @@ public class PauseScene implements Scene{
 	private Stage stage;
 	private Skin skin;
 	
-	public PauseScene(SceneManager sceneManager) {
+	public PauseScene(GameSceneManager sceneManager) {
 //		super(sceneManager);
 		
 		stage = new Stage();

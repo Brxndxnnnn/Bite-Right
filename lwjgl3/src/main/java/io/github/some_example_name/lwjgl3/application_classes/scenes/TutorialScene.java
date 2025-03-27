@@ -18,7 +18,6 @@ import com.badlogic.gdx.utils.Align;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
@@ -28,7 +27,7 @@ public class TutorialScene implements Scene {
     private final Stage stage;
     private final Skin skin;
     
-    public TutorialScene(SceneManager sceneManager) {
+    public TutorialScene(GameSceneManager sceneManager) {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
