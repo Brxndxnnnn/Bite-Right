@@ -192,7 +192,7 @@ public class PlayScene implements Scene, DialogEventListener {
         // Add generated floor tiles to the entity manager
         for (int i = 0; i < mazeGenerator.getFloorListSize(); i++) {
             // Add floor tiles first so they're rendered behind other entities
-            entityManager.addEntities(mazeGenerator.getFloor(i));
+            entityManager.addEntity(mazeGenerator.getFloor(i));
         }
     }
 
@@ -206,7 +206,7 @@ public class PlayScene implements Scene, DialogEventListener {
 
         // Add generated walls to the entity manager
         for (int i = 0; i < mazeGenerator.getWallListSize(); i++) {
-            entityManager.addEntities(mazeGenerator.getWall(i));
+            entityManager.addEntity(mazeGenerator.getWall(i));
         }
     }
 
@@ -217,7 +217,7 @@ public class PlayScene implements Scene, DialogEventListener {
     
         // Add food items to entity manager
         for (Food food : initialFood) {
-            entityManager.addEntities(food);
+            entityManager.addEntity(food);
         }
     }
 
@@ -239,7 +239,7 @@ public class PlayScene implements Scene, DialogEventListener {
             playerStartPos.y + offset
         ));
 
-        entityManager.addEntities(player);
+        entityManager.addEntity(player);
     }
 
     private void createAndAddEnemies(Texture enemyTexture) {
@@ -268,7 +268,7 @@ public class PlayScene implements Scene, DialogEventListener {
         if (playerEntity != null) {
             ghost1.setTargetEntity(playerEntity);
         }
-        entityManager.addEntities(ghost1);
+        entityManager.addEntity(ghost1);
 
         // Ghost 2 - top left corner (pink ghost)
         Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
@@ -281,7 +281,7 @@ public class PlayScene implements Scene, DialogEventListener {
         if (playerEntity != null) {
             ghost2.setTargetEntity(playerEntity);
         }
-        entityManager.addEntities(ghost2);
+        entityManager.addEntity(ghost2);
 
         // Ghost 3 - bottom right corner (cyan ghost)
         Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
@@ -294,7 +294,7 @@ public class PlayScene implements Scene, DialogEventListener {
         if (playerEntity != null) {
             ghost3.setTargetEntity(playerEntity);
         }
-        entityManager.addEntities(ghost3);
+        entityManager.addEntity(ghost3);
     }
 
     private void setupCollisionDetectors() {
@@ -420,7 +420,7 @@ public class PlayScene implements Scene, DialogEventListener {
             // Generate a new nutritionist with 80% of enemy speed
             Nutritionist newNutritionist = nutritionistGenerator.generateNutritionist(nutritionistTexture, speed * 0.8f);
             if (newNutritionist != null) {
-                entityManager.addEntities(newNutritionist);
+                entityManager.addEntity(newNutritionist);
                 activeNutritionist = newNutritionist;
                 System.out.println("Nutritionist spawned");
             }
@@ -439,7 +439,7 @@ public class PlayScene implements Scene, DialogEventListener {
         // Update food generator and add any new food items
         List<Food> newFood = foodGenerator.update(deltaTime);
         for (Food food : newFood) {
-            entityManager.addEntities(food);
+            entityManager.addEntity(food);
         }
     }
 

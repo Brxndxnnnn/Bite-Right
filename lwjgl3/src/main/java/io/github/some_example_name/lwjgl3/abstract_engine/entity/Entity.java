@@ -4,67 +4,117 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class Entity{
+/**
+ * Base class for all game entities.
+ * Provides core functionality for position, rendering, and identification.
+ */
+public abstract class Entity {
     private String name;
     private Vector2 position;
     private Texture texture;
 
-    // Default Constructor
-    public Entity(){
+    /**
+     * Creates an entity with default properties.
+     * Primarily used for subclasses that need to set properties later.
+     */
+    public Entity() {
         this.name = "Empty name";
         this.position = new Vector2(0, 0);
         this.texture = null;
     }
 
-    // Constructor 1 (Overloading)
-    public Entity(String name, Vector2 position, Texture texture){
+    /**
+     * Creates an entity with the specified properties.
+     *
+     * @param name Entity name for identification
+     * @param position Initial position in the game world
+     * @param texture Visual representation of the entity
+     */
+    public Entity(String name, Vector2 position, Texture texture) {
         this.name = name;
         this.position = position;
         this.texture = texture;
     }
 
-    // Getter for Name
-    public String getName(){
+    /**
+     * Gets the entity's name.
+     *
+     * @return The entity name
+     */
+    public String getName() {
         return name;
     }
 
-    // Setter for Name
-    public void setName(String name){
+    /**
+     * Sets the entity's name.
+     *
+     * @param name New entity name
+     */
+    public void setName(String name) {
         this.name = name;
     }
 
-    // Getter for Position
-    public Vector2 getPosition(){
+    /**
+     * Gets the entity's position.
+     *
+     * @return The position vector
+     */
+    public Vector2 getPosition() {
         return position;
     }
 
-    // Setter for Position
-    public void setPosition(Vector2 position){
+    /**
+     * Sets the entity's position.
+     *
+     * @param position New position vector
+     */
+    public void setPosition(Vector2 position) {
         this.position = position;
     }
 
-    // Setter for Position X
-    public void setPositionX(float x){
+    /**
+     * Sets the entity's X position.
+     *
+     * @param x New X coordinate
+     */
+    public void setPositionX(float x) {
         position.x = x;
     }
 
-    // Setter for Position Y
-    public void setPositionY(float y){
+    /**
+     * Sets the entity's Y position.
+     *
+     * @param y New Y coordinate
+     */
+    public void setPositionY(float y) {
         position.y = y;
     }
 
-    // Getter for Texture
-    public Texture getTexture(){
+    /**
+     * Gets the entity's texture.
+     *
+     * @return The texture used for rendering
+     */
+    public Texture getTexture() {
         return texture;
     }
 
-    // Setter for Texture
-    public void setTexture(Texture texture){
+    /**
+     * Sets the entity's texture.
+     *
+     * @param texture New texture for rendering
+     */
+    public void setTexture(Texture texture) {
         this.texture = texture;
     }
 
-    // This function draw the Entity
-    public void draw(SpriteBatch batch){
+    /**
+     * Draws the entity using the provided SpriteBatch.
+     * Can be overridden by subclasses for custom rendering.
+     *
+     * @param batch SpriteBatch to use for drawing
+     */
+    public void draw(SpriteBatch batch) {
         batch.draw(texture, position.x, position.y);
     }
 }

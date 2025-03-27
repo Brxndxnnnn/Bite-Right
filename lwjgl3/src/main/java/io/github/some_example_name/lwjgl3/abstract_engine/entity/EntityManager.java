@@ -9,52 +9,79 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.Removable;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.AIMovable;
 
+/**
+ * Manages a collection of game entities.
+ * Handles entity updates, rendering, and lifecycle management.
+ */
 public class EntityManager {
     private final List<Entity> entities;
 
-    // Constructor
-    public EntityManager(){
+    /**
+     * Creates a new entity manager.
+     */
+    public EntityManager() {
         this.entities = new ArrayList<>();
     }
 
-    // This function add Entity into list
-    public void addEntities(Entity entity){
+    /**
+     * Adds an entity to the manager.
+     *
+     * @param entity The entity to add
+     */
+    public void addEntity(Entity entity) {
         entities.add(entity);
     }
 
-    // This function checks for Entity to remove
-    public void checkForEntitiesToBeRemoved(){
+    /**
+     * Checks for and removes entities that are marked for removal.
+     */
+    public void checkForEntitiesToBeRemoved() {
         // Creates an Iterator for the list of entities - to remove/access safely
         Iterator<Entity> iterator = this.entities.iterator();
         
         // Checks if there are more elements in the collection
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Entity entity = iterator.next();
-            if((entity instanceof Removable) && ((Removable) entity).shouldBeRemoved()) {
+            if ((entity instanceof Removable) && ((Removable) entity).shouldBeRemoved()) {
                 iterator.remove();
             }
         }
     }
     
-    // This function retrieve Entity from list based on index
+    /**
+     * Gets an entity by its index in the collection.
+     *
+     * @param i Index of the entity to retrieve
+     * @return The entity at the specified index
+     */
     public Entity getEntity(int i) {
         return entities.get(i);
     }
 
-    // Getter for EntityList
-    public int getEntitiesSize(){
+    /**
+     * Gets the number of entities in the manager.
+     *
+     * @return The number of entities
+     */
+    public int getEntitiesSize() {
         return entities.size();
     }
 
-    // This function draw all Entity in list
-    public void drawEntites(SpriteBatch batch){
+    /**
+     * Draws all managed entities.
+     *
+     * @param batch SpriteBatch to use for drawing
+     */
+    public void drawEntites(SpriteBatch batch) {
         for (Entity entity : entities) {
             entity.draw(batch);
         }
     }
 
-    // This function move all Entity in list
-    public void moveEntities(){
+    /**
+     * Updates movement for all AI-controlled entities.
+     */
+    public void moveEntities() {
         for (Entity entity : entities) {
             // Move entities that implement AIMovable
             if (entity instanceof AIMovable) {
