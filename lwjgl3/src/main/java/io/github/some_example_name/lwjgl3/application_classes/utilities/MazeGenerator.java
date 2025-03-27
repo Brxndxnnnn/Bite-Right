@@ -9,11 +9,18 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Floor;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
+/**
+ * Generates and manages the maze layout for the game.
+ * Handles wall and floor creation based on a predefined maze pattern.
+ */
 public class MazeGenerator {
+    /** List of wall entities in the maze */
     private final List<Wall> wallList;
+    
+    /** List of floor entities in the maze */
     private final List<Floor> floorList;
 
-    // Maze layout (1 = wall, 0 = path)
+    /** Maze layout where 1 represents a wall and 0 represents a path */
     private static final int[][] MAZE_LAYOUT = {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -32,30 +39,38 @@ public class MazeGenerator {
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
-    // Grid dimensions
+    /** Width of the maze grid */
     private static final int GRID_WIDTH = 15;
+    
+    /** Height of the maze grid */
     private static final int GRID_HEIGHT = 15;
 
+    /** Size of each cell in the maze */
     private final float cellSize;
 
+    /** X-coordinate offset for centering the maze */
     private float startX;
+    
+    /** Y-coordinate offset for centering the maze */
     private float startY;
 
-    // Constructor
+    /**
+     * Creates a new maze generator.
+     * 
+     * @param cellSize Size of each cell in the maze
+     */
     public MazeGenerator(float cellSize) {
         wallList = new ArrayList<>();
         floorList = new ArrayList<>();
-
-        // Calculate cell size based on screen dimensions and maze size
         this.cellSize = cellSize;
     }
 
     /**
-     * Generates the maze walls and adds them to the entity manager
+     * Generates the maze walls and adds them to the entity manager.
      *
-     * @param wallTexture Texture of the wall entity
-     * @param screenWidth Width of the screen
-     * @param screenHeight Height of the screen
+     * @param wallTexture Texture to use for wall entities
+     * @param screenWidth Width of the game screen
+     * @param screenHeight Height of the game screen
      */
     public void generateMaze(Texture wallTexture, int screenWidth, int screenHeight) {
         // Ensure textures are properly sized for the grid
@@ -88,11 +103,11 @@ public class MazeGenerator {
     }
     
     /**
-     * Generates the maze floor tiles and adds them to the floor list
+     * Generates the maze floor tiles.
      *
-     * @param floorTexture Texture of the floor entity
-     * @param screenWidth Width of the screen
-     * @param screenHeight Height of the screen
+     * @param floorTexture Texture to use for floor entities
+     * @param screenWidth Width of the game screen
+     * @param screenHeight Height of the game screen
      */
     public void generateFloor(Texture floorTexture, int screenWidth, int screenHeight) {
         // Ensure textures are properly sized for the grid
@@ -125,49 +140,49 @@ public class MazeGenerator {
     }
 
     /**
-     * Returns a wall entity by index
+     * Gets a wall entity by its index.
      *
-     * @param index Index position in list
-     * @return Wall entity at index
+     * @param index Index of the wall
+     * @return Wall entity at the specified index
      */
-    public Wall getWall(int index){
+    public Wall getWall(int index) {
         return wallList.get(index);
     }
 
     /**
-     * Returns the size of the wall list
+     * Gets the number of walls in the maze.
      * 
-     * @return Int size of current wall list
+     * @return Number of wall entities
      */
-    public int getWallListSize(){
+    public int getWallListSize() {
         return wallList.size();
     }
     
     /**
-     * Gets a floor entity at the specified index
+     * Gets a floor entity by its index.
      *
-     * @param index Index position in list
-     * @return Floor entity at index
+     * @param index Index of the floor
+     * @return Floor entity at the specified index
      */
     public Floor getFloor(int index) {
         return floorList.get(index);
     }
 
     /**
-     * Gets the size of the floor list
+     * Gets the number of floor tiles in the maze.
      * 
-     * @return Int size of current floor list
+     * @return Number of floor entities
      */
     public int getFloorListSize() {
         return floorList.size();
     }
 
     /**
-     * Returns true if the position contains a wall in the maze layout
+     * Checks if a grid position contains a wall.
      *
-     * @param gridX X position in the grid
-     * @param gridY Y position in the grid
-     * @return True if position contains a wall
+     * @param gridX X coordinate in grid space
+     * @param gridY Y coordinate in grid space
+     * @return true if the position contains a wall, false otherwise
      */
     public static boolean isWall(int gridX, int gridY) {
         // Check bounds
@@ -178,7 +193,7 @@ public class MazeGenerator {
     }
 
     /**
-     * Converts a screen position to a grid position
+     * Converts a screen position to a grid position.
      *
      * @param screenX X position on screen
      * @param screenY Y position on screen
@@ -191,7 +206,7 @@ public class MazeGenerator {
     }
 
     /**
-     * Converts a grid position to a screen position (center of the cell)
+     * Converts a grid position to a screen position (center of the cell).
      *
      * @param gridX X position in grid
      * @param gridY Y position in grid
@@ -204,7 +219,7 @@ public class MazeGenerator {
     }
 
     /**
-     * Converts a grid position to a screen position (top-left corner of the cell)
+     * Converts a grid position to a screen position (top-left corner of the cell).
      *
      * @param gridX X position in grid
      * @param gridY Y position in grid
@@ -217,7 +232,8 @@ public class MazeGenerator {
     }
 
     /**
-     * Gets the cell size used for the maze
+     * Gets the cell size used for the maze.
+     * 
      * @return Cell size in pixels
      */
     public float getCellSize() {
@@ -225,7 +241,8 @@ public class MazeGenerator {
     }
 
     /**
-     * Gets the grid width of the maze
+     * Gets the width of the maze grid.
+     * 
      * @return Grid width
      */
     public static int getGridWidth() {
@@ -233,7 +250,8 @@ public class MazeGenerator {
     }
 
     /**
-     * Gets the grid height of the maze
+     * Gets the height of the maze grid.
+     * 
      * @return Grid height
      */
     public static int getGridHeight() {

@@ -16,31 +16,48 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.HealthyFo
 import io.github.some_example_name.lwjgl3.application_classes.entities.UnhealthyFood;
 
 /**
- * Utility class to generate food items in the maze
+ * Utility class responsible for generating and managing food items in the maze.
+ * Handles spawning, positioning, and lifecycle management of food entities.
  */
 public class FoodGenerator {
+    /** List of all active food items */
     private final List<Food> foodList;
-    private final float cellSize;
-    private final MazeGenerator mazeGenerator;
-    // Food generation parameters
-    private static final float HEALTHY_FOOD_RATIO = 0.7f; // 70% healthy, 30% unhealthy
-    private static final int MAX_FOOD_ATTEMPTS = 100; // Maximum attempts to place food
-
-    // Food spawn timing
-    private float spawnTimer;
-    private final float spawnInterval = 3.0f; // Spawn a new food every 3 seconds if under max
-    private final int maxFoodCount = 7; // Maximum number of food items allowed at once
-    private final float foodLifespan = 10.0f; // Food expires after 10 seconds
-
-    // Texture caches
-    private Map<String, Texture> healthyFoodTextures = new HashMap<>();
-    private Map<String, Texture> unhealthyFoodTextures = new HashMap<>();
     
-    // Reference to the food dictionary
+    /** Size of each cell in the maze grid */
+    private final float cellSize;
+    
+    /** Reference to the maze generator for positioning */
+    private final MazeGenerator mazeGenerator;
+    
+    /** Percentage of generated food that will be healthy (0.0-1.0) */
+    private static final float HEALTHY_FOOD_RATIO = 0.7f; // 70% healthy, 30% unhealthy
+    
+    /** Maximum attempts to find a valid position for new food */
+    private static final int MAX_FOOD_ATTEMPTS = 100;
+
+    /** Timer for food spawning */
+    private float spawnTimer;
+    
+    /** Time between food spawns (seconds) */
+    private final float spawnInterval = 3.0f;
+    
+    /** Maximum number of food items allowed simultaneously */
+    private final int maxFoodCount = 7;
+    
+    /** How long food items last before expiring (seconds) */
+    private final float foodLifespan = 10.0f;
+
+    /** Cache of healthy food textures */
+    private final Map<String, Texture> healthyFoodTextures = new HashMap<>();
+    
+    /** Cache of unhealthy food textures */
+    private final Map<String, Texture> unhealthyFoodTextures = new HashMap<>();
+    
+    /** Reference to the food dictionary for facts */
     private final FoodDictionary foodDictionary;
     
     /**
-     * Constructor for food generator
+     * Creates a new food generator.
      *
      * @param cellSize Size of each cell in the maze
      * @param mazeGenerator Reference to the maze generator
@@ -58,7 +75,8 @@ public class FoodGenerator {
     }
     
     /**
-     * Initialize the texture caches for all food types
+     * Loads and caches textures for all food types.
+     * Prevents repeated loading of the same textures.
      */
     private void initializeTextures() {
         // Load healthy food textures
@@ -75,7 +93,8 @@ public class FoodGenerator {
     }
 
     /**
-     * Disposes all loaded textures
+     * Releases all texture resources.
+     * Should be called when the game is closing.
      */
     public void dispose() {
         // Dispose healthy food textures
@@ -93,8 +112,10 @@ public class FoodGenerator {
     }
 
     /**
-     * Updates all food items and spawns new ones if needed
-     * @param deltaTime Time elapsed since last update
+     * Updates all food items and generates new ones if needed.
+     * Should be called once per frame.
+     * 
+     * @param deltaTime Time elapsed since last frame (seconds)
      * @return List of new food items generated during this update
      */
     public List<Food> update(float deltaTime) {
@@ -120,8 +141,9 @@ public class FoodGenerator {
     }
 
     /**
-     * Updates existing food items and removes expired ones
-     * @param deltaTime Time elapsed since last update
+     * Updates existing food items and removes expired ones.
+     * 
+     * @param deltaTime Time elapsed since last frame (seconds)
      */
     private void updateExistingFood(float deltaTime) {
         List<Food> expiredFood = new ArrayList<>();
@@ -141,7 +163,7 @@ public class FoodGenerator {
     }
 
     /**
-     * Generates a specified number of food items in the maze
+     * Generates a specified number of food items in the maze.
      *
      * @param count Number of food items to generate
      * @return List of generated food items
@@ -161,12 +183,12 @@ public class FoodGenerator {
             attempts++;
         }
 
-        System.out.println("Generated " + foodsGenerated + " food items in " + attempts + " attempts");
         return generatedFood;
     }
 
     /**
-     * Attempts to generate a single food item in the maze
+     * Attempts to generate a single food item in a valid position.
+     * 
      * @return The generated food item, or null if generation failed
      */
     private Food generateSingleFood() {
@@ -236,7 +258,8 @@ public class FoodGenerator {
     }
 
     /**
-     * Gets a specific food item by index
+     * Gets a specific food item by index.
+     * 
      * @param index Index of the food item
      * @return Food item at the specified index
      */
@@ -245,7 +268,8 @@ public class FoodGenerator {
     }
 
     /**
-     * Gets the current number of food items
+     * Gets the number of food items currently in the game.
+     * 
      * @return Number of food items
      */
     public int getFoodListSize() {
@@ -253,7 +277,8 @@ public class FoodGenerator {
     }
 
     /**
-     * Gets all food entities currently managed by this generator
+     * Gets all current food entities.
+     * 
      * @return List of all food entities
      */
     public List<Food> getAllFood() {
@@ -261,7 +286,8 @@ public class FoodGenerator {
     }
 
     /**
-     * Removes a food item from the list (e.g., when consumed)
+     * Removes a food item from the list.
+     * 
      * @param food The food item to remove
      */
     public void removeFood(Food food) {

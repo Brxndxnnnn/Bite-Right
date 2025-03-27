@@ -25,7 +25,6 @@ import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.Direction;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.collision_detectors.EnemyCollideEnemyDetector;
@@ -49,397 +48,431 @@ import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDiff
 import io.github.some_example_name.lwjgl3.application_classes.utilities.MazeGenerator;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.NutritionistGenerator;
 
+/**
+ * Main gameplay scene managing game entities, interactions, and state.
+ */
 public class PlayScene implements Scene, DialogEventListener {
-    private final EntityManager entityManager;
-    private final CollisionManager collisionManager;
-    private final IOManager ioManager;
-    private final MazeGenerator mazeGenerator;
-    private final FoodGenerator foodGenerator;
-    private final NutritionistGenerator nutritionistGenerator;
-    private final SceneManager sceneManager;
-    private final DialogPopUpManager dialogPopUpManager;
-    private final FoodDictionary foodDictionary;
+    // Core game managers
+    private EntityManager entityManager;
+    private CollisionManager collisionManager;
+    private IOManager ioManager;
+    private MazeGenerator mazeGenerator;
+    private FoodGenerator foodGenerator;
+    private NutritionistGenerator nutritionistGenerator;
+    private GameSceneManager sceneManager;
+    private DialogPopUpManager dialogPopUpManager;
+    private FoodDictionary foodDictionary;
+
+    // Game state variables
     private Player player;
+    private float speed;
+    private int targetPoint;
+    private boolean showPopup;
+
+    // UI components
     private Label healthLabel;
     private Label foodCountLabel;
+    private Label pointsLabel;
     private Stage stage;
     private Stage overlayStage;
     private Skin skin;
-    private Label pointsLabel;
-    private static int finalPoints;
-    private static boolean gameWon;
-    private float speed;
-    private int targetPoint;
+
+    // Resources
     private Texture playBackground;
-    private SpriteBatch batch;
-    private Nutritionist activeNutritionist;
     private Texture nutritionistTexture;
     private Texture floorTexture;
-    private boolean showPopup;
+    private SpriteBatch batch;
 
+    // Static game result tracking
+    private static int finalPoints;
+    private static boolean gameWon;
 
+    /**
+     * Constructs the play scene with all necessary game components.
+     * 
+     * @param sceneManager Manager for scene transitions
+     */
     public PlayScene(GameSceneManager sceneManager) {
+        // Initialize core components
+        initializeSceneComponents(sceneManager);
+        
+        // Adjust game elements based on selected difficulty
+        adjustGameElementsByDifficulty();
+        
+        // Setup game world
+        setupGameWorld();
+        
+        // Configure input and audio
+        configureInputAndAudio();
+    }
+
+    /**
+     * Initialize basic scene components.
+     */
+    private void initializeSceneComponents(GameSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         stage = new Stage();
         overlayStage = new Stage();
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
+        batch = new SpriteBatch();
 
-
-        // Get screen width and height
-        int screenWidth = Gdx.graphics.getWidth();
-        int screenHeight = Gdx.graphics.getHeight();
-
-        float cellSize = Math.min(screenWidth / 15f, screenHeight / 15f);
-        float scalefactor = 0.8f;
-        cellSize *= scalefactor;
-
-        // Calculate the total width and height of the maze (based on the number of grid cells)
-        float mazeWidth = 15 * cellSize;
-        float mazeHeight = 15 * cellSize;
-
-        // Calculate the position to center the maze on the screen
-        float startX = (screenWidth - mazeWidth) / 2f; // Offset to center the maze horizontally
-        float startY = (screenHeight - mazeHeight) / 2f; // Offset to center the maze vertically
-
-        // Loading all required Textures
-        Texture wallTexture = new Texture("entities_images/wall.png"); // Load Wall Texture
-        floorTexture = new Texture("entities_images/floor.png"); // Load Floor Texture
-        Texture enemyTexture = new Texture("entities_images/demon.png"); // Load Enemy Texture
-        Texture playerTexture = new Texture("entities_images/player.png"); // Load Player Texture
-        nutritionistTexture = new Texture("entities_images/nutritionist.png"); // Load Nutritionist Texture
-
-
+        // Initialize utility components
         foodDictionary = new FoodDictionary();
-        // INITIALIZE REQUIRED MANAGERS
         ioManager = new IOManager();
         entityManager = new EntityManager();
         collisionManager = new CollisionManager();
-        mazeGenerator = new MazeGenerator(cellSize);
-        foodGenerator = new FoodGenerator(cellSize, mazeGenerator, foodDictionary);
-        nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator, foodDictionary);
         dialogPopUpManager = new DialogPopUpManager(overlayStage, skin);
-        dialogPopUpManager.setDialogEventListener(this); // Register PlayScene as a listener
-
-        batch = new SpriteBatch();
-
-
-        adjustElementsByDifficulty();
-
-        // Create and generate floor first (so it appears behind other entities)
-        createAndAddFloor(floorTexture);
-        
-        // Create and generate maze
-        createAndAddMaze(wallTexture);
-
-        // Create and Add Player
-        createAndAddPlayer(playerTexture);
-
-        // Create and Add Enemies
-        createAndAddEnemies(enemyTexture);
-
-        // Generate and add initial food items
-        createAndAddFood();
-
-        // Initialize collision manager and setup collision detectors
-        setupCollisionDetectors();
-
-        // Set the labels such as Health etc
-        setTitleLabels();
-
-        // Set the keybinds required for this PlayScene
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.move(Direction.UP), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.move(Direction.LEFT), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.move(Direction.DOWN), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.move(Direction.RIGHT), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
-
-        AudioPlayer.getInstance().setSceneBGM("play.mp3");
+        dialogPopUpManager.setDialogEventListener(this);
     }
 
+    /**
+     * Adjust game elements based on selected difficulty.
+     */
+    private void adjustGameElementsByDifficulty() {
+        Difficulty difficulty = GameDifficulty.getInstance().getDifficulty();
+        
+        switch (difficulty) {
+            case EASY:
+                speed = 100f;
+                targetPoint = 200;
+                playBackground = new Texture(Gdx.files.internal("background_images/easyplay.jpg"));
+                break;
+            case NORMAL:
+                speed = 150f;
+                targetPoint = 300;
+                playBackground = new Texture(Gdx.files.internal("background_images/easyplay.jpg"));
+                break;
+            case HARD:
+                speed = 300f;
+                targetPoint = 400;
+                playBackground = new Texture(Gdx.files.internal("background_images/hardPlay.jpg"));
+                break;
+        }
 
-    private void adjustElementsByDifficulty() {
-        if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
-            speed = 100f;
-            targetPoint = 200;
-            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
-        }
-        else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
-            speed = 150f;
-            targetPoint = 300;
-            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
-        }
-        else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
-            speed = 300f;
-            targetPoint = 400;
-            playBackground = new Texture(Gdx.files.internal("assets/hardPlay.jpg")); // Load hard background
-        }
-
+        // Set background image
         Image backgroundImage = new Image(new TextureRegionDrawable(new TextureRegion(playBackground)));
         backgroundImage.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundImage.setPosition(0, 0);
         stage.addActor(backgroundImage);
     }
 
-    private void createAndAddFloor(Texture floorTexture) {
-        // Get the screen width and height
+    /**
+     * Setup the game world with maze, entities, and initial configurations.
+     */
+    private void setupGameWorld() {
+        // Calculate cell size and maze dimensions
+        float cellSize = calculateCellSize();
+        
+        // Initialize generators
+        mazeGenerator = new MazeGenerator(cellSize);
+        foodGenerator = new FoodGenerator(cellSize, mazeGenerator, foodDictionary);
+        nutritionistGenerator = new NutritionistGenerator(cellSize, mazeGenerator, foodDictionary);
+
+        // Load textures
+        Texture wallTexture = new Texture("entities_images/wall.png");
+        floorTexture = new Texture("entities_images/floor.png");
+        Texture enemyTexture = new Texture("entities_images/demon.png");
+        Texture playerTexture = new Texture("entities_images/player.png");
+        nutritionistTexture = new Texture("entities_images/nutritionist.png");
+
+        // Generate game world components
+        generateFloorAndMaze(wallTexture);
+        createPlayer(playerTexture, cellSize);
+        createEnemies(enemyTexture, cellSize);
+        createInitialFood();
+
+        // Setup collision detectors and labels
+        setupCollisionDetectors();
+        setupTitleLabels();
+    }
+
+    /**
+     * Calculate cell size based on screen dimensions.
+     */
+    private float calculateCellSize() {
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
+        float cellSize = Math.min(screenWidth / 15f, screenHeight / 15f);
+        return cellSize * 0.8f;
+    }
+
+    /**
+     * Generate floor and maze components.
+     */
+    private void generateFloorAndMaze(Texture wallTexture) {
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
 
-        // Generate the floor with the calculated cell size and screen dimensions
+        // Generate floor
         mazeGenerator.generateFloor(floorTexture, screenWidth, screenHeight);
-
-        // Add generated floor tiles to the entity manager
         for (int i = 0; i < mazeGenerator.getFloorListSize(); i++) {
-            // Add floor tiles first so they're rendered behind other entities
-            entityManager.addEntities(mazeGenerator.getFloor(i));
+            entityManager.addEntity(mazeGenerator.getFloor(i));
         }
-    }
 
-    private void createAndAddMaze(Texture wallTexture) {
-        // Get the screen width and height
-        int screenWidth = Gdx.graphics.getWidth();
-        int screenHeight = Gdx.graphics.getHeight();
-
-        // Generate the maze with the calculated cell size and screen dimensions
+        // Generate maze
         mazeGenerator.generateMaze(wallTexture, screenWidth, screenHeight);
-
-        // Add generated walls to the entity manager
         for (int i = 0; i < mazeGenerator.getWallListSize(); i++) {
-            entityManager.addEntities(mazeGenerator.getWall(i));
+            entityManager.addEntity(mazeGenerator.getWall(i));
         }
     }
 
-
-    private void createAndAddFood() {
-        // Generate initial 5 food items
-        List<Food> initialFood = foodGenerator.generateFood(5);
-    
-        // Add food items to entity manager
-        for (Food food : initialFood) {
-            entityManager.addEntities(food);
-        }
-    }
-
-    private void createAndAddPlayer(Texture playerTexture) {
-        // Get the cell size
-        float cellSize = mazeGenerator.getCellSize();
-
-        // Create player with appropriate size for the maze
-        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1); // Calculate player starting position (top-left of cell 1,1)
+    /**
+     * Create player entity.
+     */
+    private void createPlayer(Texture playerTexture, float cellSize) {
+        Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1);
         player = new Player("Player", playerStartPos, playerTexture, 2f);
 
-        player.setSize(cellSize * 0.95f, cellSize * 0.95f); // Set player size to fit within a cell (slightly smaller for movement clearance)
-
-        // Center the player within the cell
-        float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
-
+        player.setSize(cellSize * 0.95f, cellSize * 0.95f);
+        float offset = cellSize * 0.05f;
         player.setPosition(new Vector2(
             playerStartPos.x + offset,
             playerStartPos.y + offset
         ));
 
-        entityManager.addEntities(player);
+        entityManager.addEntity(player);
     }
 
-    private void createAndAddEnemies(Texture enemyTexture) {
-        float cellSize = mazeGenerator.getCellSize();
+    /**
+     * Create enemy entities.
+     */
+    private void createEnemies(Texture enemyTexture, float cellSize) {
+        Player playerEntity = findPlayerEntity();
+        float offset = cellSize * 0.05f;
 
-        // Find player entity for the ghosts to target
-        Player playerEntity = null;
+        // Ghost 1 - top right corner
+        Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
+        Enemy ghost1 = createEnemy("Ghost1", ghost1Pos, enemyTexture, cellSize, offset, playerEntity);
+        entityManager.addEntity(ghost1);
+
+        // Ghost 2 - top left corner
+        Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
+        Enemy ghost2 = createEnemy("Ghost2", ghost2Pos, enemyTexture, cellSize, offset, playerEntity);
+        entityManager.addEntity(ghost2);
+
+        // Ghost 3 - bottom right corner
+        Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
+        Enemy ghost3 = createEnemy("Ghost3", ghost3Pos, enemyTexture, cellSize, offset, playerEntity);
+        entityManager.addEntity(ghost3);
+    }
+
+    /**
+     * Create a single enemy entity.
+     */
+    private Enemy createEnemy(String name, Vector2 position, Texture texture, float cellSize, float offset, Player playerEntity) {
+        Enemy enemy = new Enemy(name, position, texture, speed);
+        enemy.setSize(cellSize * 0.8f, cellSize * 0.8f);
+        enemy.setPosition(new Vector2(position.x + offset, position.y + offset));
+        
+        if (playerEntity != null) {
+            enemy.setTargetEntity(playerEntity);
+        }
+        
+        return enemy;
+    }
+
+    /**
+     * Find the player entity in the entity manager.
+     */
+    private Player findPlayerEntity() {
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
             Entity entity = entityManager.getEntity(i);
             if (entity instanceof Player) {
-                playerEntity = (Player) entity;
-                break;
+                return (Player) entity;
             }
         }
-
-        // Add ghosts at specific positions in the maze
-        // Ghost 1 - top right corner (red ghost)
-        Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost1 = new Enemy("Ghost1", ghost1Pos, enemyTexture, speed);
-        // Set ghost size to fit within a cell (slightly smaller for movement clearance)
-        ghost1.setSize(cellSize * 0.8f, cellSize * 0.8f);
-        // Center the ghost within the cell
-        float offset = cellSize * 0.05f; // 5% offset for the 90% sized entity
-        ghost1.setPosition(new Vector2(ghost1Pos.x + offset, ghost1Pos.y + offset));
-        // Set player as target
-        if (playerEntity != null) {
-            ghost1.setTargetEntity(playerEntity);
-        }
-        entityManager.addEntities(ghost1);
-
-        // Ghost 2 - top left corner (pink ghost)
-        Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost2 = new Enemy("Ghost2", ghost2Pos, enemyTexture, speed);
-        // Set ghost size to fit within a cell
-        ghost2.setSize(cellSize * 0.8f, cellSize * 0.8f);
-        // Center the ghost within the cell
-        ghost2.setPosition(new Vector2(ghost2Pos.x + offset, ghost2Pos.y + offset));
-        // Set player as target
-        if (playerEntity != null) {
-            ghost2.setTargetEntity(playerEntity);
-        }
-        entityManager.addEntities(ghost2);
-
-        // Ghost 3 - bottom right corner (cyan ghost)
-        Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
-        Enemy ghost3 = new Enemy("Ghost3", ghost3Pos, enemyTexture, speed);
-        // Set ghost size to fit within a cell
-        ghost3.setSize(cellSize * 0.8f, cellSize * 0.8f);
-        // Center the ghost within the cell
-        ghost3.setPosition(new Vector2(ghost3Pos.x + offset, ghost3Pos.y + offset));
-        // Set player as target
-        if (playerEntity != null) {
-            ghost3.setTargetEntity(playerEntity);
-        }
-        entityManager.addEntities(ghost3);
+        return null;
     }
 
+    /**
+     * Create initial food items.
+     */
+    private void createInitialFood() {
+        List<Food> initialFood = foodGenerator.generateFood(5);
+        for (Food food : initialFood) {
+            entityManager.addEntity(food);
+        }
+    }
+
+    /**
+     * Configure input bindings and audio.
+     */
+    private void configureInputAndAudio() {
+        // Player movement bindings
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.move(Direction.UP), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.move(Direction.LEFT), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.move(Direction.DOWN), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.move(Direction.RIGHT), false);
+        
+        // Pause menu binding
+        ioManager.addIOBind(
+            ioManager.getKeyboard(), 
+            Keys.ESCAPE, 
+            () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), 
+            true
+        );
+
+        // Set background music
+        AudioPlayer.getInstance().setSceneBGM("background_music/play.mp3");
+    }
+
+    /**
+     * Setup collision detectors for game entities.
+     */
     private void setupCollisionDetectors() {
-        // Clear existing collision detectors
         collisionManager.clearDetectors();
 
-        // Iterate through entity list to set up collision detectors
         for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
             Entity entityA = entityManager.getEntity(i);
 
-            // Skip entities that should be removed
-            // if (entityA.shouldBeRemoved()) continue;
-
-            // Handles collision between Player -> (NPC & Wall & Food & Nutritionist)
             if (entityA instanceof Player) {
-                for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
-                    Entity entityB = entityManager.getEntity(x);
-
-                    // Skip entities that should be removed
-                    // if (entityB.shouldBeRemoved()) continue;
-
-                    if (entityB instanceof Enemy) {
-                        // Add player-enemy collision detector
-                        CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Player) entityA, (Enemy) entityB);
-                        collisionManager.addDetectors(playerCollideEnemyDetector);
-                    }
-
-                    if (entityB instanceof Wall){
-                        CollisionDetector playerCollideWallDetector = new PlayerCollideWallDetector((Player) entityA, (Wall) entityB);
-                        collisionManager.addDetectors(playerCollideWallDetector);
-                    }
-
-                    if (entityB instanceof Food) {
-                        CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB, dialogPopUpManager);
-                        collisionManager.addDetectors(playerCollideFoodDetector);
-                    }
-                    
-                    if (entityB instanceof Nutritionist) {
-                        CollisionDetector playerCollideNutritionistDetector = new PlayerCollideNutritionistDetector((Player) entityA, (Nutritionist) entityB, dialogPopUpManager);
-                        collisionManager.addDetectors(playerCollideNutritionistDetector);
-                    }
-                }
-            }
-
-            // Handles collision between NPC -> (NPC & Wall)
-            if (entityA instanceof Enemy) {
-                for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
-                    Entity entityB = entityManager.getEntity(y);
-
-                    // Skip entities that should be removed
-                    // if (entityB.shouldBeRemoved()) continue;
-
-                    if (entityB instanceof Enemy && entityA != entityB) {
-                        // Add enemy-enemy collision detector
-                        CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((Enemy) entityA, (Enemy) entityB);
-                        collisionManager.addDetectors(enemyCollideEnemyDetector);
-                    }
-
-                    if (entityB instanceof Wall) {
-                        CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
-                        collisionManager.addDetectors(enemyCollideWallDetector);
-                    }
-                }
-            }
-            
-            // Handles collision between Nutritionist -> Wall
-            if (entityA instanceof Nutritionist) {
-                for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
-                    Entity entityB = entityManager.getEntity(y);
-                    
-                    // Skip entities that should be removed
-                    // if (entityB.shouldBeRemoved()) continue;
-                    
-                    if (entityB instanceof Wall) {
-                        CollisionDetector nutritionistCollideWallDetector = new NutritionistCollideWallDetector((Nutritionist) entityA, (Wall) entityB);
-                        collisionManager.addDetectors(nutritionistCollideWallDetector);
-                    }
-                }
+                setupPlayerCollisionDetectors((Player) entityA);
+            } else if (entityA instanceof Enemy) {
+                setupEnemyCollisionDetectors((Enemy) entityA);
+            } else if (entityA instanceof Nutritionist) {
+                setupNutritionistCollisionDetectors((Nutritionist) entityA);
             }
         }
     }
 
-    private void setTitleLabels() {
-        // INITIALIZE MAIN TABLE FOR THE TITLE
+    /**
+     * Setup collision detectors for player.
+     */
+    private void setupPlayerCollisionDetectors(Player player) {
+        for (int x = 0; x < entityManager.getEntitiesSize(); x++) {
+            Entity entityB = entityManager.getEntity(x);
+
+            if (entityB instanceof Enemy) {
+                CollisionDetector detector = new PlayerCollideEnemyDetector(player, (Enemy) entityB);
+                collisionManager.addDetector(detector);
+            }
+            if (entityB instanceof Wall) {
+                CollisionDetector detector = new PlayerCollideWallDetector(player, (Wall) entityB);
+                collisionManager.addDetector(detector);
+            }
+            if (entityB instanceof Food) {
+                CollisionDetector detector = new PlayerCollideFoodDetector(player, (Food) entityB, dialogPopUpManager);
+                collisionManager.addDetector(detector);
+            }
+            if (entityB instanceof Nutritionist) {
+                CollisionDetector detector = new PlayerCollideNutritionistDetector(player, (Nutritionist) entityB, dialogPopUpManager);
+                collisionManager.addDetector(detector);
+            }
+        }
+    }
+
+    /**
+     * Setup collision detectors for enemies.
+     */
+    private void setupEnemyCollisionDetectors(Enemy enemy) {
+        for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
+            Entity entityB = entityManager.getEntity(y);
+
+            if (entityB instanceof Enemy && entityB != enemy) {
+                CollisionDetector detector = new EnemyCollideEnemyDetector(enemy, (Enemy) entityB);
+                collisionManager.addDetector(detector);
+            }
+            if (entityB instanceof Wall) {
+                CollisionDetector detector = new EnemyCollideWallDetector(enemy, (Wall) entityB);
+                collisionManager.addDetector(detector);
+            }
+        }
+    }
+
+    /**
+     * Setup collision detectors for nutritionist.
+     */
+    private void setupNutritionistCollisionDetectors(Nutritionist nutritionist) {
+        for (int y = 0; y < entityManager.getEntitiesSize(); y++) {
+            Entity entityB = entityManager.getEntity(y);
+            
+            if (entityB instanceof Wall) {
+                CollisionDetector detector = new NutritionistCollideWallDetector(nutritionist, (Wall) entityB);
+                collisionManager.addDetector(detector);
+            }
+        }
+    }
+
+    /**
+     * Setup title labels for game UI.
+     */
+    private void setupTitleLabels() {
         Table titleTable = new Table();
         titleTable.setFillParent(true);
-        titleTable.bottom(); // Align content to the top right
-        titleTable.padBottom(20);// Add padding for better visibility
+        titleTable.bottom();
+        titleTable.padBottom(20);
         stage.addActor(titleTable);
 
-        // Add health label
+        // Health label
         healthLabel = new Label("Health: " + player.getHealth() + "/" + player.getMaxHealth(), skin);
         healthLabel.setColor(Color.WHITE);
         titleTable.add(healthLabel).left().pad(10);
 
-        // Add points label
+        // Points label
         pointsLabel = new Label("Points: 100/" + targetPoint, skin);
         pointsLabel.setColor(Color.GREEN);
         titleTable.add(pointsLabel).expandX().center().pad(10);
 
-        // Add food count label
+        // Food count label
         foodCountLabel = new Label("Food: 0/7", skin);
         foodCountLabel.setColor(Color.YELLOW);
         titleTable.add(foodCountLabel).right().pad(10);
     }
-    
+
+    /**
+     * Update nutritionist spawning logic.
+     */
     private void updateNutritionist() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         
-        // Check if we have an active nutritionist
-        boolean nutritionistExists = false;
-        for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
-            Entity entity = entityManager.getEntity(i);
-            if (entity instanceof Nutritionist) {
-                nutritionistExists = true;
-                activeNutritionist = (Nutritionist) entity;
-                break;
-            }
-        }
+        // Check if a nutritionist exists
+        boolean nutritionistExists = checkNutritionistExists();
         
-        // If no nutritionist exists, check if we should spawn one
+        // Spawn new nutritionist if needed
         if (!nutritionistExists && nutritionistGenerator.update(deltaTime, nutritionistExists)) {
-            // Generate a new nutritionist with 80% of enemy speed
-            Nutritionist newNutritionist = nutritionistGenerator.generateNutritionist(nutritionistTexture, speed * 0.8f);
-            if (newNutritionist != null) {
-                entityManager.addEntities(newNutritionist);
-                activeNutritionist = newNutritionist;
-                System.out.println("Nutritionist spawned");
-            }
-        }
-        
-        // If nutritionist was removed, update the generator
-        if (activeNutritionist != null && activeNutritionist.shouldBeRemoved()) {
-            nutritionistGenerator.onNutritionistRemoved();
-            activeNutritionist = null;
+            spawnNutritionist();
         }
     }
 
+    /**
+     * Check if a nutritionist currently exists in the game.
+     */
+    private boolean checkNutritionistExists() {
+        for (int i = 0; i < entityManager.getEntitiesSize(); i++) {
+            Entity entity = entityManager.getEntity(i);
+            if (entity instanceof Nutritionist) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Spawn a new nutritionist.
+     */
+    private void spawnNutritionist() {
+        Nutritionist newNutritionist = nutritionistGenerator.generateNutritionist(
+            nutritionistTexture, 
+            speed * 0.8f
+        );
+        
+        if (newNutritionist != null) {
+            entityManager.addEntity(newNutritionist);
+            System.out.println("Nutritionist spawned");
+        }
+    }
+
+    /**
+     * Spawn new food items.
+     */
     private void spawnFood() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        // Update food generator and add any new food items
+        // Update food generator and add new food items
         List<Food> newFood = foodGenerator.update(deltaTime);
         for (Food food : newFood) {
-            entityManager.addEntities(food);
+            entityManager.addEntity(food);
         }
     }
 
@@ -456,80 +489,65 @@ public class PlayScene implements Scene, DialogEventListener {
         // Check for game over condition
         checkGameEndCondition();
         
-        // Render dialog popups at the end, on top of everything else
+        // Render dialog popups
         dialogPopUpManager.render(batch);
     }
 
-    public static int getfinalPoints() {
-        return finalPoints;
+    /**
+     * Update the overall game state.
+     */
+    private void updateGameState() {
+        // Spawn new entities
+        spawnFood();
+        updateNutritionist();
+        
+        // Update collision detectors
+        setupCollisionDetectors();
+        
+        // Update entity movement and removal
+        entityManager.moveEntities();
+        entityManager.checkForEntitiesToBeRemoved();
+        
+        // Check collisions
+        collisionManager.checkAllCollisions();
+        collisionManager.checkForDetectorsToBeRemoved();
+        
+        // Handle user input
+        ioManager.handleInput();
     }
 
-    public static boolean isGameWon() {
-        return gameWon;
+    /**
+     * Draw game elements.
+     */
+    private void drawGame(SpriteBatch batch) {
+        // Clear the screen
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        // Update UI displays
+        updateUILabels();
+        
+        // Draw UI
+        stage.draw();
+        
+        // Draw entities
+        entityManager.drawEntites(batch);
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        playBackground.dispose();
-        nutritionistTexture.dispose(); // Make sure to dispose the nutritionist texture
-        floorTexture.dispose(); // Make sure to dispose the floor texture
-        foodGenerator.dispose();
+    /**
+     * Update UI label texts.
+     */
+    private void updateUILabels() {
+        healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
+        
+        int currentFoodCount = foodGenerator.getFoodListSize();
+        foodCountLabel.setText("Food: " + currentFoodCount + "/7");
+        
+        pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
     }
 
-
-    @Override
-    public void onDialogOpened() {
-        showPopup = true;
-    }
-
-
-    @Override
-    public void onDialogClosed() {
-        showPopup = false;
-    }
-
-    // Update the game state
-private void updateGameState() {
-    // Spawn new entities
-    spawnFood();
-    updateNutritionist();
-    
-    // Update collision detectors for new entities
-    setupCollisionDetectors();
-    
-    // Update entity movement
-    entityManager.moveEntities();
-    entityManager.checkForEntitiesToBeRemoved();
-    
-    // Check for collisions
-    collisionManager.checkAllCollisions();
-    collisionManager.checkForDetectorsToBeRemoved();
-    
-    // Handle user input
-    ioManager.handleInput();
-}
-
-// Draw the game elements
-private void drawGame(SpriteBatch batch) {
-    // Clear the screen
-    Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-    
-    // Update UI displays
-    healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
-    int currentFoodCount = foodGenerator.getFoodListSize();
-    foodCountLabel.setText("Food: " + currentFoodCount + "/7");
-    pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
-    
-    // Draw UI
-    stage.draw();
-    
-    // Draw entities
-    entityManager.drawEntites(batch);
-}
-
-// Check if the game has ended (win or lose)
+    /**
+     * Check if the game has ended.
+     */
     private void checkGameEndCondition() {
         if (showPopup) return;
         
@@ -546,5 +564,41 @@ private void drawGame(SpriteBatch batch) {
             System.out.println("Game Win! Player reached " + targetPoint + " points.");
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
+    }
+
+    /**
+     * Get final points for results screen.
+     */
+    public static int getfinalPoints() {
+        return finalPoints;
+    }
+
+    /**
+     * Check if the game was won.
+     */
+    public static boolean isGameWon() {
+        return gameWon;
+    }
+
+    @Override
+    public void onDialogOpened() {
+        showPopup = true;
+    }
+
+    @Override
+    public void onDialogClosed() {
+        showPopup = false;
+    }
+
+    @Override
+    public void dispose() {
+        // Dispose of resources
+        stage.dispose();
+        skin.dispose();
+        playBackground.dispose();
+        nutritionistTexture.dispose();
+        floorTexture.dispose();
+        foodGenerator.dispose();
+        batch.dispose();
     }
 }

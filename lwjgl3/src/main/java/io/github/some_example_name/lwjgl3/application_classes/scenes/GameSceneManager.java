@@ -6,13 +6,16 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionT
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 /**
- * Game-specific implementation of the SceneManager
+ * Game-specific implementation of the SceneManager.
+ * Manages scene transitions and scene creation for the game.
  */
 public class GameSceneManager extends SceneManager {
-    private SceneFactory sceneFactory;
+    // Scene factory for creating new scenes
+    private final SceneFactory sceneFactory;
     
     /**
-     * Constructor
+     * Constructs the GameSceneManager.
+     * Initializes the scene factory for scene creation.
      */
     public GameSceneManager() {
         super();
@@ -20,7 +23,7 @@ public class GameSceneManager extends SceneManager {
     }
     
     /**
-     * Changes the current scene with the specified transition type
+     * Changes the current scene with the specified transition type.
      * 
      * @param sceneType The type of scene to change to
      * @param transitionType How the transition should be handled
@@ -32,7 +35,7 @@ public class GameSceneManager extends SceneManager {
     }
     
     /**
-     * Gets a scene of the specified type using the scene factory
+     * Creates a new scene of the specified type using the scene factory.
      * 
      * @param sceneType The type of scene to create
      * @return A new instance of the requested scene

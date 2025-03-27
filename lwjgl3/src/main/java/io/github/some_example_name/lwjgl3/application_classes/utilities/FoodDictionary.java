@@ -1,23 +1,23 @@
 package io.github.some_example_name.lwjgl3.application_classes.utilities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 /**
- * Utility class to manage dictionaries of food types and nutritionist facts
+ * Manages food-related data including food types, facts, and nutritionist advice.
+ * Provides random selection of food items and their associated information.
  */
 public class FoodDictionary {
-    // Random generator
     private final Random random = new Random();
-    
-    // Dictionaries for food types and facts
     private final Map<String, String> healthyDict = new HashMap<>();
     private final Map<String, String> unhealthyDict = new HashMap<>();
     private final String[] nutritionistFacts;
     
     /**
-     * Constructor that initializes the dictionaries
+     * Creates a new food dictionary with predefined food items and facts.
      */
     public FoodDictionary() {
         // Initialize healthy food dictionary
@@ -43,28 +43,31 @@ public class FoodDictionary {
     }
     
     /**
-     * Gets a random healthy food texture name and its fact
+     * Gets a random healthy food and its fact.
+     * 
      * @return Array with [textureName, fact]
      */
     public String[] getRandomHealthyFood() {
-        String[] keys = healthyDict.keySet().toArray(new String[0]);
-        String key = keys[random.nextInt(keys.length)];
+        List<String> keys = new ArrayList<>(healthyDict.keySet());
+        String key = keys.get(random.nextInt(keys.size()));
         return new String[] { key, healthyDict.get(key) };
     }
     
     /**
-     * Gets a random unhealthy food texture name and its fact
+     * Gets a random unhealthy food and its fact.
+     * 
      * @return Array with [textureName, fact]
      */
     public String[] getRandomUnhealthyFood() {
-        String[] keys = unhealthyDict.keySet().toArray(new String[0]);
-        String key = keys[random.nextInt(keys.length)];
+        List<String> keys = new ArrayList<>(unhealthyDict.keySet());
+        String key = keys.get(random.nextInt(keys.size()));
         return new String[] { key, unhealthyDict.get(key) };
     }
     
     /**
-     * Gets a random nutritionist fact
-     * @return A random nutritionist fact
+     * Gets a random nutritionist fact.
+     * 
+     * @return A random fact from the nutritionist
      */
     public String getRandomNutritionistFact() {
         return nutritionistFacts[random.nextInt(nutritionistFacts.length)];

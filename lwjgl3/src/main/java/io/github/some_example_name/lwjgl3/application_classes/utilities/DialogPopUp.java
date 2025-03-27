@@ -14,14 +14,36 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**
+ * Handles the display and interaction of dialog popups in the game.
+ * Creates modal dialog windows with title, content text, optional images,
+ * and a close button to continue gameplay.
+ */
 public class DialogPopUp {
+    /** Stage for rendering the dialog UI elements */
     private final Stage uiStage;
+    
+    /** Skin for styling UI components */
     private final Skin skin;
+    
+    /** Table that contains all the dialog content */
     private final Table contentTable;
+    
+    /** Whether the dialog is currently visible */
     private boolean visible = false;
+    
+    /** Function to call when the dialog is closed */
     private Runnable closeCallback;
+    
+    /** Shape renderer for drawing the semi-transparent background */
     private final ShapeRenderer shapeRenderer;
     
+    /**
+     * Creates a new dialog popup.
+     * 
+     * @param stage The stage to render the dialog on
+     * @param skin The skin to use for UI components
+     */
     public DialogPopUp(Stage stage, Skin skin) {
         this.uiStage = stage;
         this.skin = skin;
@@ -31,10 +53,23 @@ public class DialogPopUp {
         uiStage.addActor(contentTable);
     }
     
+    /**
+     * Shows a dialog with the specified title and content.
+     * 
+     * @param title The dialog title
+     * @param content The dialog content text
+     */
     public void show(String title, String content) {
         show(title, content, null);
     }
     
+    /**
+     * Shows a dialog with the specified title, content, and optional image.
+     * 
+     * @param title The dialog title
+     * @param content The dialog content text
+     * @param imageTexture Optional texture to display in the dialog (can be null)
+     */
     public void show(String title, String content, Texture imageTexture) {
         contentTable.clear();
         
@@ -91,19 +126,38 @@ public class DialogPopUp {
         uiStage.addActor(contentTable);
     }
     
+    /**
+     * Hides the dialog if it's currently visible.
+     */
     public void hide() {
         visible = false;
         contentTable.clear(); // Clears the dialog table
     }
     
+    /**
+     * Checks if the dialog is currently visible.
+     * 
+     * @return true if the dialog is visible, false otherwise
+     */
     public boolean isVisible() {
         return visible;
     }
     
+    /**
+     * Sets a callback function to be called when the dialog is closed.
+     * 
+     * @param callback The callback to run when the dialog closes
+     */
     public void setCloseCallback(Runnable callback) {
         this.closeCallback = callback;
     }
     
+    /**
+     * Renders the dialog if it's visible.
+     * Draws a semi-transparent overlay and the dialog UI.
+     * 
+     * @param batch The sprite batch for rendering (will be paused during dialog rendering)
+     */
     public void render(SpriteBatch batch) {
         if (!visible) return;
 

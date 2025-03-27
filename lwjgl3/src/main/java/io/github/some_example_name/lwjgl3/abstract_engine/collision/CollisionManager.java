@@ -3,42 +3,58 @@ package io.github.some_example_name.lwjgl3.abstract_engine.collision;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Manages collision detection and resolution between game objects.
+ * Coordinates multiple collision detectors and processes them each frame.
+ */
 public class CollisionManager {
     private final ArrayList<CollisionDetector> detectors;
     
-    // Default Constructor
-    public CollisionManager(){
+    /**
+     * Creates a new collision manager.
+     */
+    public CollisionManager() {
         detectors = new ArrayList<>();
     }
     
-    // This function add CollisionDetector to list
-    public void addDetectors(CollisionDetector detector){
+    /**
+     * Adds a collision detector to the manager.
+     * 
+     * @param detector The collision detector to add
+     */
+    public void addDetector(CollisionDetector detector) {
         detectors.add(detector);
     }
     
-    // This function clears all collision detectors
+    /**
+     * Removes all collision detectors.
+     * Useful when rebuilding collision detection for a new scene.
+     */
     public void clearDetectors() {
         detectors.clear();
     }
     
-    // This function checks for each detector in list
-    public void checkAllCollisions(){
-        // for each detector in the detector list
-        for(CollisionDetector detector : detectors) {
-            if(detector.checkCollision() == true) {
+    /**
+     * Checks and resolves all collisions.
+     * Should be called once per frame.
+     */
+    public void checkAllCollisions() {
+        for (CollisionDetector detector : detectors) {
+            if (detector.checkCollision()) {
                 detector.resolveCollision();
             }
         }
     }
     
-    // This function checks for detectors to be removed in the list
+    /**
+     * Removes detectors that are marked for removal.
+     * Should be called after processing collisions.
+     */
     public void checkForDetectorsToBeRemoved() {
-        // Creates an Iterator for the list of entities - to remove/access safely
         Iterator<CollisionDetector> iterator = detectors.iterator();
-        // Checks if there are more elements in the collection
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             CollisionDetector detector = iterator.next();
-            if((detector instanceof Removable) && ((Removable) detector).shouldBeRemoved()) {
+            if ((detector instanceof Removable) && ((Removable) detector).shouldBeRemoved()) {
                 iterator.remove();
             }
         }

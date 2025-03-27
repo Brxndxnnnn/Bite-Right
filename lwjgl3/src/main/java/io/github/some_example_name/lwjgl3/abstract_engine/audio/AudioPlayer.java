@@ -3,28 +3,42 @@ package io.github.some_example_name.lwjgl3.abstract_engine.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 
-// Audioplayer manages basic audio features such as Playing Audio, Pausing, Setting volume, etc
-
-public class AudioPlayer {
+/**
+ * Manages audio playback for the game including background music and sound effects.
+ * Implements the singleton pattern to ensure only one audio manager exists.
+ * Also implements Disposable to properly clean up resources when the game exits.
+ */
+public class AudioPlayer implements Disposable {
+    // Singleton instance
     private static AudioPlayer instance = null;
-    private float volume;
+    
+    // Audio properties
+    private float masterVolume;
     private Music bgm;
-    private Music sfx;
-    private Music sound;
     private String currentTrack;
-    private boolean isSFXPlaying = false;
-    private Array<Music> activeSFX;;
+    private final ObjectMap<String, Music> cachedSFX;
+    private final Array<Music> activeSFX;
 
-    // Default Constructor
+    /**
+     * Private constructor to enforce singleton pattern.
+     * Initializes the audio system with default settings.
+     */
     private AudioPlayer() {
+        masterVolume = 1.0f; // Default volume (0.0 to 1.0 scale)
         bgm = null;
-        sound = null;
-        volume = 100;
-        activeSFX = new Array<>();
         currentTrack = null;
+        cachedSFX = new ObjectMap<>();
+        activeSFX = new Array<>();
     }
 
+    /**
+     * Gets the singleton instance, creating it if necessary.
+     * 
+     * @return The AudioPlayer singleton instance
+     */
     public static synchronized AudioPlayer getInstance() {
         if (instance == null) {
             instance = new AudioPlayer();
@@ -32,133 +46,155 @@ public class AudioPlayer {
         return instance;
     }
 
+    /**
+     * Sets and plays background music, replacing any currently playing track.
+     * Only loads a new file if the requested track is different from the current one.
+     * 
+     * @param fileName Path to the music file relative to the assets folder
+     */
     public void setSceneBGM(String fileName) {
+        // Skip if trying to play the same track that's already playing
         if (fileName.equals(currentTrack)) {
             return;
         }
-        stopBGM(); // Stop previous audio
+        
+        // Stop current BGM if there is one
+        stopBGM();
+        
+        // Load and play new BGM
         bgm = Gdx.audio.newMusic(Gdx.files.internal(fileName));
         bgm.setLooping(true);
-        bgm.setVolume(volume / 100.0f);
+        bgm.setVolume(masterVolume);
         bgm.play();
         currentTrack = fileName;
     }
 
-
+    /**
+     * Plays a one-shot sound effect.
+     * Sound effects are automatically disposed after they finish playing.
+     * 
+     * @param fileName Path to the sound file relative to the assets folder
+     */
     public void playSFX(String fileName) {
-        if(sfx != null) {
-            sfx.stop();
-            sfx.dispose();
+        // Load or retrieve the SFX from cache
+        Music sfx;
+        
+        if (cachedSFX.containsKey(fileName)) {
+            sfx = cachedSFX.get(fileName);
+            // Reset to beginning if it was already played
+            sfx.setPosition(0);
+        } else {
+            sfx = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+            cachedSFX.put(fileName, sfx);
         }
-
-        sfx = Gdx.audio.newMusic(Gdx.files.internal(fileName));
+        
+        // Configure and play the SFX
         sfx.setLooping(false);
-        sfx.setVolume(volume / 100.0f);
+        sfx.setVolume(masterVolume);
         sfx.play();
 
-        activeSFX.add(sfx); // Add to active SFX list
+        // Add to active SFX list
+        activeSFX.add(sfx);
 
-        // Dispose the SFX after it finishes playing
+        // Set up callback to handle completion
         sfx.setOnCompletionListener(music -> {
             activeSFX.removeValue(music, true);
-            music.dispose();
         });
     }
 
-//	// Constructor 1 (Overloading)
-//	public void playAudio(String fileName) {
-//		sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-//		volume = 100;
-//		sound.setVolume(volume / 100.0f);
-//		sound.play();
-//	}
-//
-//
-//    public void playSFX(String fileName, Boolean loopAudio) {
-//        sound = Gdx.audio.newMusic(Gdx.files.internal(fileName));
-//        volume = 100;
-//        sound.setVolume(volume / 100.0f);
-//        sound.play();
-//        System.out.println("Play Audio" + fileName);
-//    }
-
-    // This function pauses the Audio
-    public void pauseAudio() {
-        if (sound != null && sound.isPlaying()) {
-            sound.pause();
-            System.out.println("Pause Audio");
-        }
-    }
-
-    // This function resumes the Audio
-    public void resumeAudio() {
-        if (sound != null && !sound.isPlaying()) {
-            sound.play();
-            System.out.println("Resume Audio");
-        }
-    }
-
-    // This function stops and dispose the Audio
-    public void stopAudio() {
-        if (sound != null) {
-            sound.stop();
-            disposeAudio();
-            System.out.println("Stop and Dispose Audio");
-        }
-    }
-
+    /**
+     * Stops the current background music and releases its resources.
+     */
     public void stopBGM() {
         if (bgm != null) {
             bgm.stop();
             bgm.dispose();
             bgm = null;
             currentTrack = null;
-            System.out.println("Stop and Dispose BGM");
         }
     }
 
+    /**
+     * Stops all audio playback including BGM and SFX, and releases resources.
+     */
     public void stopAllAudio() {
+        // Stop BGM
         stopBGM();
-        if (sfx != null) {
+        
+        // Stop all active SFX
+        for (Music sfx : activeSFX) {
             sfx.stop();
-            sfx.dispose();
-            sfx = null;
         }
-        isSFXPlaying = false;
+        activeSFX.clear();
     }
 
-    // Getter for Volume
+    /**
+     * Gets the current master volume level.
+     * 
+     * @return Volume level as a value between 0.0 and 1.0
+     */
     public float getVolume() {
-        return volume;
+        return masterVolume;
     }
 
-    // Setter for Volume
+    /**
+     * Sets the master volume level for all audio.
+     * 
+     * @param volume Volume level between 0.0 (silent) and 1.0 (maximum)
+     */
     public void setVolume(float volume) {
-        if (volume < 0) {
-            volume = 0;
-        } else if (volume > 100) {
-            volume = 100;
+        // Clamp volume to valid range
+        this.masterVolume = Math.max(0.0f, Math.min(1.0f, volume));
+        
+        // Update volume for active BGM
+        if (bgm != null) {
+            bgm.setVolume(masterVolume);
         }
-
-        this.volume = volume;
-
-        if (sound != null) {
-            sound.setVolume(volume / 100.0f);
-
+        
+        // Update volume for all active SFX
+        for (Music sfx : activeSFX) {
+            sfx.setVolume(masterVolume);
         }
-
-        System.out.printf("volume %f\n", volume);
     }
 
-    // This function loops the current Audio
-    public void loopAudio(boolean loop) {
-        sound.setLooping(loop);
-        System.out.printf("loop %s\n", loop);
+    /**
+     * Pauses the current background music if it's playing.
+     */
+    public void pauseBGM() {
+        if (bgm != null && bgm.isPlaying()) {
+            bgm.pause();
+        }
     }
 
-    // This function disposes the current audio;
-    public void disposeAudio() {
-        sound.dispose();
+    /**
+     * Resumes the current background music if it's paused.
+     */
+    public void resumeBGM() {
+        if (bgm != null && !bgm.isPlaying()) {
+            bgm.play();
+        }
+    }
+
+    /**
+     * Disposes all audio resources managed by this AudioPlayer.
+     * Should be called when the game is closing to prevent memory leaks.
+     */
+    @Override
+    public void dispose() {
+        // Dispose background music
+        if (bgm != null) {
+            bgm.dispose();
+            bgm = null;
+        }
+        
+        // Dispose all cached SFX
+        for (Music sfx : cachedSFX.values()) {
+            sfx.dispose();
+        }
+        cachedSFX.clear();
+        activeSFX.clear();
+        
+        // Clear the singleton instance
+        instance = null;
     }
 }
-

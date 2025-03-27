@@ -10,34 +10,61 @@ import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.Direction;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.UserMovable;
 
+/**
+ * Represents the player character in the game.
+ * Manages player movement, health, and points.
+ */
 public class Player extends MovableEntity implements Collidable, UserMovable {
-    private final float friction; // Friction for smooth deceleration
-    private Vector2 lastDirection; // Track last movement direction for animation
-    
-    // Character stats
-    private int maxHealth = 100;
-    private int health = 100;
-    private float strength = 1.0f; // Multiplier for character abilities
-    private int points = 100;
+    private static final float FRICTION = 0.85f;
+    private static final int DEFAULT_MAX_HEALTH = 100;
+    private static final int DEFAULT_STARTING_POINTS = 100;
 
+    private int maxHealth;
+    private int health;
+    private int points;
+
+    private Vector2 lastDirection;
+
+    /**
+     * Constructs a new Player.
+     * 
+     * @param name Player's name
+     * @param position Initial position
+     * @param texture Player's texture
+     * @param speed Player's movement speed
+     */
     public Player(String name, Vector2 position, Texture texture, float speed) {
         super(name, position, texture, speed);
-        this.velocity = new Vector2(0, 0);
-        this.friction = 0.85f;
-        this.lastDirection = new Vector2(0, 0); // No initial direction
+        initializePlayerStats();
     }
 
+    /**
+     * Initialize player's default stats.
+     */
+    private void initializePlayerStats() {
+        this.velocity = new Vector2(0, 0);
+        this.lastDirection = new Vector2(0, 0);
+        this.maxHealth = DEFAULT_MAX_HEALTH;
+        this.health = DEFAULT_MAX_HEALTH;
+        this.points = DEFAULT_STARTING_POINTS;
+    }
+
+    /**
+     * Get the bounding box of Entity
+     * 
+     * @return Rectangle Bounding Box
+     */
     @Override
     public Rectangle getBoundingBox() {
-        // Use the custom width and height if set, otherwise use texture dimensions
         float boxWidth = getWidth() > 0 ? getWidth() : getTexture().getWidth();
         float boxHeight = getHeight() > 0 ? getHeight() : getTexture().getHeight();
         return new Rectangle(getPosition().x, getPosition().y, boxWidth, boxHeight);
     }
-    
+
     /**
-     * Moves the player in the specified direction
-     * @param direction The direction to move
+     * Move the Player Entity
+     * 
+     * @param Direction to move Entity
      */
     @Override
     public void move(Direction direction) {
@@ -46,18 +73,19 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         // Set velocity based on direction
         velocity.x = direction.getX() * speed * 200;
         velocity.y = direction.getY() * speed * 200;
-        lastDirection.set(direction.getX(), direction.getY()); // Update last direction
+        lastDirection.set(direction.getX(), direction.getY());
         
         // Move the character
         Vector2 position = getPosition();
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
         
         // Apply friction to gradually slow down
-        velocity.scl(friction);
+        velocity.scl(FRICTION);
     }
     
     /**
-     * Gets the last movement direction vector
+     * Gets the last movement direction vector.
+     * 
      * @return Direction vector
      */
     public Vector2 getLastDirection() {
@@ -65,7 +93,8 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Gets the current health of the character
+     * Gets the current health of the player.
+     * 
      * @return Current health
      */
     public int getHealth() {
@@ -73,7 +102,8 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Gets the maximum health of the character
+     * Gets the maximum health of the player.
+     * 
      * @return Maximum health
      */
     public int getMaxHealth() {
@@ -81,34 +111,21 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Gets the current strength of the character
-     * @return Current strength multiplier
-     */
-    public float getStrength() {
-        return strength;
-    }
-    
-    /**
-     * Sets the player's health to a specific value
+     * Sets the player's health to a specific value.
+     * 
      * @param newHealth The new health value
      */
     public void setHealth(int newHealth) {
-        health = newHealth;
-        if (health < 0) {
-            health = 0;
-        } else if (health > maxHealth) {
-            health = maxHealth;
-        }
+        health = Math.max(0, Math.min(newHealth, maxHealth));
         
-        // Check for death
         if (health <= 0) {
-            System.out.println("Player has died!");
-            // You could trigger additional death effects here
+            onPlayerDeath();
         }
     }
     
     /**
-     * Adjusts the character's health by the specified amount
+     * Adjusts the player's health by the specified amount.
+     * 
      * @param amount Amount to adjust health by (positive heals, negative damages)
      */
     public void adjustHealth(int amount) {
@@ -116,33 +133,27 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
     
     /**
-     * Adjusts the character's strength by the specified amount
-     * @param amount Amount to adjust strength by
+     * Handles player death logic.
      */
-    public void adjustStrength(float amount) {
-        strength += amount;
-        System.out.println("Character strength: " + strength);
+    private void onPlayerDeath() {
+        // Potential future expansion for death effects
+        System.out.println("Player has died!");
     }
-    
+
     /**
-     * Increases the character's maximum health
-     * @param amount Amount to increase max health by
+     * Adjusts the player's points.
+     * 
+     * @param amount Amount to adjust points by
      */
-    public void increaseMaxHealth(int amount) {
-        maxHealth += amount;
-        health += amount; // Also increase current health
-        System.out.println("Max health increased to: " + maxHealth);
-    }
-
-    // adjust points
     public void adjustPoints(int amount) {
-        points += amount;
-        if (this.points < 0) {
-            this.points = 0;
-        }
+        points = Math.max(0, points + amount);
     }
 
-    // get points
+    /**
+     * Gets the current player points.
+     * 
+     * @return Current points
+     */
     public int getPoints() {
         return points;
     }

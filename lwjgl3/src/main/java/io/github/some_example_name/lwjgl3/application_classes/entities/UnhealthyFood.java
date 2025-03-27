@@ -4,30 +4,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Unhealthy food that harms the player
+ * Represents an unhealthy food item in the game.
  */
 public class UnhealthyFood extends Food {
-    private int damage;
+    private final int damage;
     
     /**
-     * Constructor for unhealthy food
-     * 
-     * @param name Food name
-     * @param position Position in the maze
-     * @param texture Food texture
-     * @param damage Amount of damage caused
-     * @param lifespanInSeconds How long until the food expires
+     * Constructor for unhealthy food.
      */
-    public UnhealthyFood(String name, Vector2 position, Texture texture, int damage, float lifespanInSeconds, String funFact) {
+    public UnhealthyFood(String name, Vector2 position, Texture texture, 
+                         int damage, float lifespanInSeconds, String funFact) {
         super(name, position, texture, FoodType.UNHEALTHY, lifespanInSeconds, funFact);
         this.damage = damage;
     }
     
     /**
-     * Alternate constructor with default values and 10 second lifespan
-     * 
-     * @param position Position in the maze
-     * @param texture Food texture
+     * Alternate constructor with default values.
      */
     public UnhealthyFood(Vector2 position, Texture texture, String funFact) {
         super("UnhealthyFood", position, texture, FoodType.UNHEALTHY, 10f, funFact);
@@ -35,7 +27,8 @@ public class UnhealthyFood extends Food {
     }
     
     /**
-     * Get damage caused by this food
+     * Get damage caused by this food.
+     * 
      * @return Damage value
      */
     public int getDamage() {
@@ -45,15 +38,5 @@ public class UnhealthyFood extends Food {
     @Override
     public int getEffectValue() {
         return -damage; // Negative to indicate damage
-    }
-
-    @Override
-    public void setToBeRemoved() {
-        toBeRemoved = true;
-    }
-
-    @Override
-    public boolean shouldBeRemoved() {
-        return toBeRemoved;
     }
 }
