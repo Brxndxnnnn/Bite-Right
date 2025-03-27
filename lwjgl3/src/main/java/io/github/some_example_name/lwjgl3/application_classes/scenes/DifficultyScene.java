@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.GameDifficulty;
@@ -27,7 +26,7 @@ public class DifficultyScene implements Scene {
 	private Stage stage;
 	private Skin skin;
 	
-	public DifficultyScene(SceneManager sceneManager) {
+	public DifficultyScene(GameSceneManager sceneManager) {
 		
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);

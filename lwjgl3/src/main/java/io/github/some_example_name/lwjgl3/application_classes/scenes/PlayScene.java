@@ -23,6 +23,7 @@ import io.github.some_example_name.lwjgl3.abstract_engine.collision.CollisionMan
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.Entity;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.EntityManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.io.IOManager;
+import io.github.some_example_name.lwjgl3.abstract_engine.movement.Direction;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
@@ -77,7 +78,7 @@ public class PlayScene implements Scene, DialogEventListener {
     private boolean showPopup;
 
 
-    public PlayScene(SceneManager sceneManager) {
+    public PlayScene(GameSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         stage = new Stage();
         overlayStage = new Stage();
@@ -147,10 +148,10 @@ public class PlayScene implements Scene, DialogEventListener {
         setTitleLabels();
 
         // Set the keybinds required for this PlayScene
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.moveUserUp(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.moveUserLeft(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.moveUserDown(), false);
-        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.moveUserRight(), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.W, () -> player.move(Direction.UP), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.A, () -> player.move(Direction.LEFT), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.S, () -> player.move(Direction.DOWN), false);
+        ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.move(Direction.RIGHT), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
 
         AudioPlayer.getInstance().setSceneBGM("play.mp3");

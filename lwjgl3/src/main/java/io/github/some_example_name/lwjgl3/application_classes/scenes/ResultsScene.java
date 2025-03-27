@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.Scene;
-import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneManager;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneTransitionType;
 import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
@@ -22,7 +21,7 @@ public class ResultsScene implements Scene {
 	private Stage stage;
 	private Skin skin;
 	
-	public ResultsScene(SceneManager sceneManager) {
+	public ResultsScene(GameSceneManager sceneManager) {
 //		super(sceneManager);
 		
 		stage = new Stage();
