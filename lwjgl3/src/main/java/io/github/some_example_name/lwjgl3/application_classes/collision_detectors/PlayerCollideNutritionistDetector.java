@@ -7,12 +7,23 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Nutrition
 import io.github.some_example_name.lwjgl3.application_classes.entities.Player;
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 
-public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<Player, Nutritionist> implements Removable{
+/**
+ * Detects and resolves collisions between the player and nutritionist entities.
+ * When a collision occurs, the player receives health and a nutritional tip is displayed.
+ */
+public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<Player, Nutritionist> implements Removable {
     private final Player player;
     private final Nutritionist nutritionist;
-    private DialogPopUpManager dialogPopUpManager;
+    private final DialogPopUpManager dialogPopUpManager;
     private boolean toBeRemoved = false;
 
+    /**
+     * Creates a new detector for player-nutritionist collisions.
+     *
+     * @param player The player entity
+     * @param nutritionist The nutritionist entity
+     * @param dialogPopUpManager The dialog popup manager for displaying tips
+     */
     public PlayerCollideNutritionistDetector(Player player, Nutritionist nutritionist, DialogPopUpManager dialogPopUpManager) {
         super(player, nutritionist);
         this.player = player;
@@ -20,26 +31,32 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         this.dialogPopUpManager = dialogPopUpManager;
     }
 
+    /**
+     * Checks if a collision should be processed.
+     * Prevents collision processing if the nutritionist is already removed.
+     *
+     * @return true if collision should be processed, false otherwise
+     */
     @Override
     public boolean checkCollision() {
-        // Check if we're still in cooldown
-        if(nutritionist.shouldBeRemoved()){
+        if (nutritionist.shouldBeRemoved()) {
             return false;
         }
         return super.checkCollision();
-        
     }
 
+    /**
+     * Resolves player-nutritionist collisions by giving the player health
+     * and showing a nutritional tip popup.
+     */
     @Override
     public void resolveCollision() {
         if (nutritionist.shouldBeRemoved()) return;
-        // Check collision
-        System.out.println("Player collided with Nutritionist!");
         
-        // Play a sound effect for the collision
-        AudioPlayer.getInstance().playSFX("sfx/nutritionist.mp3");
+        // Play sound effect
+        AudioPlayer.getInstance().playSFX("SFX/nutritionist.mp3");
         
-        // For now, just apply a small health bonus
+        // Give player health bonus
         player.adjustHealth(5);
         
         // Force the nutritionist to change direction
@@ -48,19 +65,29 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         // Ensure the nutritionist enters collision state for smooth movement
         nutritionist.setCollisionState(true);
 
+        // Mark nutritionist for removal
         nutritionist.setToBeRemoved();
 
+        // Mark this detector for removal
         setToBeRemoved();
 
-        // Show dialog popup with nutritionist texture
+        // Show dialog popup with nutritionist tip
         dialogPopUpManager.showPopUp("Nutrition Tip!", nutritionist.getFunFact(), nutritionist.getTexture());
     }
 
+    /**
+     * Marks this detector to be removed.
+     */
     @Override
     public void setToBeRemoved() {
         toBeRemoved = true;
     }
 
+    /**
+     * Checks if this detector should be removed.
+     * 
+     * @return true if it should be removed, false otherwise
+     */
     @Override
     public boolean shouldBeRemoved() {
         return toBeRemoved;

@@ -7,6 +7,10 @@ import io.github.some_example_name.lwjgl3.abstract_engine.collision.EntityCollis
 import io.github.some_example_name.lwjgl3.application_classes.entities.Nutritionist;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Wall;
 
+/**
+ * Handles collision detection and resolution between a nutritionist 
+ * and a wall in the game maze.
+ */
 public class NutritionistCollideWallDetector extends EntityCollisionDetector<Nutritionist, Wall> {
     private final Nutritionist nutritionist;
     private final Wall wall;
@@ -17,88 +21,77 @@ public class NutritionistCollideWallDetector extends EntityCollisionDetector<Nut
         this.wall = wall;
     }
 
-    // This collision event is resolved by ensuring Nutritionist can't pass through walls
     @Override
     public void resolveCollision() {
-        // Get bounding boxes
         Rectangle nutritionistBounds = nutritionist.getBoundingBox();
         Rectangle wallBounds = wall.getBoundingBox();
 
-        // Check collision
-            System.out.println("Nutritionist collided with Wall");
+        // Calculate collision overlap
+        float overlapX = Math.min(nutritionistBounds.x + nutritionistBounds.width, wallBounds.x + wallBounds.width) - 
+                         Math.max(nutritionistBounds.x, wallBounds.x);
+        float overlapY = Math.min(nutritionistBounds.y + nutritionistBounds.height, wallBounds.y + wallBounds.height) - 
+                         Math.max(nutritionistBounds.y, wallBounds.y);
 
-            // Get nutritionist position and velocity
-            Vector2 nutritionistVelocity = nutritionist.getVelocity();
-            Vector2 nutritionistPosition = nutritionist.getPosition();
+        // Get current position and velocity
+        Vector2 nutritionistPosition = nutritionist.getPosition();
+        Vector2 nutritionistVelocity = nutritionist.getVelocity();
 
-            // Calculate overlap
-            float overlapX = Math.min(nutritionistBounds.x + nutritionistBounds.width, wallBounds.x + wallBounds.width) - 
-                             Math.max(nutritionistBounds.x, wallBounds.x);
-            float overlapY = Math.min(nutritionistBounds.y + nutritionistBounds.height, wallBounds.y + wallBounds.height) - 
-                             Math.max(nutritionistBounds.y, wallBounds.y);
-
-            // Calculate new position and velocity based on the direction of collision
-            if (overlapX < overlapY) {
-                // Horizontal collision
-                if (nutritionistPosition.x < wallBounds.x) {
-                    // Left side collision - slight adjustment to prevent sticking
-                    nutritionist.setPosition(new Vector2(wallBounds.x - nutritionistBounds.width - 1, nutritionistPosition.y));
-                    
-                    // Set new velocity - move vertically
-                    if (Math.abs(nutritionistVelocity.y) < 0.1f) {
-                        // If not already moving vertically, choose a vertical direction
-                        float yDir = Math.random() > 0.5f ? 1f : -1f;
-                        nutritionist.setVelocity(new Vector2(0, yDir * Nutritionist.getBaseSpeed()));
-                    } else {
-                        // Continue with current vertical movement
-                        nutritionist.setVelocity(new Vector2(0, nutritionistVelocity.y));
-                    }
-                } else {
-                    // Right side collision
-                    nutritionist.setPosition(new Vector2(wallBounds.x + wallBounds.width + 1, nutritionistPosition.y));
-                    
-                    // Set new velocity - move vertically
-                    if (Math.abs(nutritionistVelocity.y) < 0.1f) {
-                        // If not already moving vertically, choose a vertical direction
-                        float yDir = Math.random() > 0.5f ? 1f : -1f;
-                        nutritionist.setVelocity(new Vector2(0, yDir * Nutritionist.getBaseSpeed()));
-                    } else {
-                        // Continue with current vertical movement
-                        nutritionist.setVelocity(new Vector2(0, nutritionistVelocity.y));
-                    }
-                }
+        // Resolve collision based on smaller overlap axis
+        if (overlapX < overlapY) {
+            // Horizontal collision
+            if (nutritionistPosition.x < wallBounds.x) {
+                // Left side collision
+                nutritionist.setPosition(new Vector2(wallBounds.x - nutritionistBounds.width - 1, nutritionistPosition.y));
             } else {
-                // Vertical collision
-                if (nutritionistPosition.y < wallBounds.y) {
-                    // Bottom side collision
-                    nutritionist.setPosition(new Vector2(nutritionistPosition.x, wallBounds.y - nutritionistBounds.height - 1));
-                    
-                    // Set new velocity - move horizontally
-                    if (Math.abs(nutritionistVelocity.x) < 0.1f) {
-                        // If not already moving horizontally, choose a horizontal direction
-                        float xDir = Math.random() > 0.5f ? 1f : -1f;
-                        nutritionist.setVelocity(new Vector2(xDir * Nutritionist.getBaseSpeed(), 0));
-                    } else {
-                        // Continue with current horizontal movement
-                        nutritionist.setVelocity(new Vector2(nutritionistVelocity.x, 0));
-                    }
-                } else {
-                    // Top side collision
-                    nutritionist.setPosition(new Vector2(nutritionistPosition.x, wallBounds.y + wallBounds.height + 1));
-                    
-                    // Set new velocity - move horizontally
-                    if (Math.abs(nutritionistVelocity.x) < 0.1f) {
-                        // If not already moving horizontally, choose a horizontal direction
-                        float xDir = Math.random() > 0.5f ? 1f : -1f;
-                        nutritionist.setVelocity(new Vector2(xDir * Nutritionist.getBaseSpeed(), 0));
-                    } else {
-                        // Continue with current horizontal movement
-                        nutritionist.setVelocity(new Vector2(nutritionistVelocity.x, 0));
-                    }
-                }
+                // Right side collision
+                nutritionist.setPosition(new Vector2(wallBounds.x + wallBounds.width + 1, nutritionistPosition.y));
             }
             
-            // Put the nutritionist in collision state to ensure smooth transition
-            nutritionist.setCollisionState(true);
+            // Adjust vertical movement
+            nutritionist.setVelocity(new Vector2(0, chooseVerticalDirection(nutritionistVelocity) * Nutritionist.getBaseSpeed()));
+        } else {
+            // Vertical collision
+            if (nutritionistPosition.y < wallBounds.y) {
+                // Bottom side collision
+                nutritionist.setPosition(new Vector2(nutritionistPosition.x, wallBounds.y - nutritionistBounds.height - 1));
+            } else {
+                // Top side collision
+                nutritionist.setPosition(new Vector2(nutritionistPosition.x, wallBounds.y + wallBounds.height + 1));
+            }
+            
+            // Adjust horizontal movement
+            nutritionist.setVelocity(new Vector2(chooseHorizontalDirection(nutritionistVelocity) * Nutritionist.getBaseSpeed(), 0));
+        }
+        
+        // Put the nutritionist in collision state
+        nutritionist.setCollisionState(true);
+    }
+
+    /**
+     * Chooses a vertical direction based on current velocity
+     * @param currentVelocity Current velocity vector
+     * @return -1 or 1 for vertical direction
+     */
+    private float chooseVerticalDirection(Vector2 currentVelocity) {
+        // If not moving vertically, choose a random direction
+        if (Math.abs(currentVelocity.y) < 0.1f) {
+            return Math.random() > 0.5f ? 1f : -1f;
+        }
+        // Continue with current vertical movement
+        return Math.signum(currentVelocity.y);
+    }
+
+    /**
+     * Chooses a horizontal direction based on current velocity
+     * @param currentVelocity Current velocity vector
+     * @return -1 or 1 for horizontal direction
+     */
+    private float chooseHorizontalDirection(Vector2 currentVelocity) {
+        // If not moving horizontally, choose a random direction
+        if (Math.abs(currentVelocity.x) < 0.1f) {
+            return Math.random() > 0.5f ? 1f : -1f;
+        }
+        // Continue with current horizontal movement
+        return Math.signum(currentVelocity.x);
     }
 }

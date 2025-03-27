@@ -183,7 +183,6 @@ public class FoodGenerator {
             attempts++;
         }
 
-        System.out.println("Generated " + foodsGenerated + " food items in " + attempts + " attempts");
         return generatedFood;
     }
 

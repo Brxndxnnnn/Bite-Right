@@ -12,18 +12,21 @@ import io.github.some_example_name.lwjgl3.application_classes.entities.Unhealthy
 import io.github.some_example_name.lwjgl3.application_classes.utilities.DialogPopUpManager;
 
 /**
- * Handles collisions between the player and food entities
+ * Detects and resolves collisions between the player and food items.
+ * When a collision occurs, the player consumes the food and gains or loses health/points.
  */
 public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, Food> implements Removable {
     private final Player player;
     private final Food food;
-    private DialogPopUpManager dialogPopUpManager;
+    private final DialogPopUpManager dialogPopUpManager;
     private boolean toBeRemoved;
+    
     /**
-     * Constructor for food collision detector
+     * Creates a new detector for player-food collisions.
      *
-     * @param player The player Player
+     * @param player The player entity
      * @param food The food entity
+     * @param dialogManager The dialog popup manager for displaying food facts
      */
     public PlayerCollideFoodDetector(Player player, Food food, DialogPopUpManager dialogManager) {
         super(player, food);
@@ -33,42 +36,34 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
         this.toBeRemoved = false;
     }
 
+    /**
+     * Resolves player-food collisions by applying the food's effects to the player
+     * and showing an informational popup.
+     */
     @Override
     public void resolveCollision() {
-        if (food.shouldBeRemoved()) return; // Check if food should be removed, if true then stop here
-        // Check collision
-        // Handle based on food type
+        if (food.shouldBeRemoved()) return; // Skip if food is already consumed
+
+        // Apply effects based on food type
         if (food instanceof HealthyFood) {
-            AudioPlayer.getInstance().playSFX("sfx/crunch.mp3");
+            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
             HealthyFood healthyFood = (HealthyFood) food;
-            System.out.println("Player consumed healthy food: +" + healthyFood.getHealthPoints() + " HP, +"
-                                + healthyFood.getStrengthBoost() + " strength");
 
             // Add health to player
             player.adjustHealth(healthyFood.getHealthPoints());
-
-            // Boost player strength
-            player.adjustStrength(healthyFood.getStrengthBoost());
 
             // Add points to player
             player.adjustPoints(20);
         }
         else if (food instanceof UnhealthyFood) {
-            AudioPlayer.getInstance().playSFX("sfx/bad.mp3");
+            AudioPlayer.getInstance().playSFX("SFX/bad.mp3");
             UnhealthyFood unhealthyFood = (UnhealthyFood) food;
-            System.out.println("Player consumed unhealthy food: -" + unhealthyFood.getDamage() + " HP");
 
             // Reduce player health
             player.adjustHealth(-unhealthyFood.getDamage());
             
             // Reduce player points
             player.adjustPoints(-10);
-
-            // Check if player died
-            if (player.getHealth() <= 0) {
-                System.out.println("Player died from unhealthy food!");
-                // Potentially trigger game over here
-            }
         }
 
         // Mark food as consumed
@@ -77,17 +72,25 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
         // Mark this collision detector to be removed
         setToBeRemoved();
         
-        // Show popup with 20% probability - single line check
+        // Show popup with 25% probability
         if (MathUtils.random() < 0.25f) {
             dialogPopUpManager.showPopUp("Did you know?", food.getFunFact(), food.getTexture());
         }
     }
 
+    /**
+     * Marks this detector to be removed.
+     */
     @Override
     public void setToBeRemoved() {
         toBeRemoved = true;
     }
 
+    /**
+     * Checks if this detector should be removed.
+     * 
+     * @return true if it should be removed, false otherwise
+     */
     @Override
     public boolean shouldBeRemoved() {
         return toBeRemoved;
