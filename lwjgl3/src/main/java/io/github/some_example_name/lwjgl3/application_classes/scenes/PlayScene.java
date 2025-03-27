@@ -319,22 +319,22 @@ public class PlayScene implements Scene, DialogEventListener {
                     if (entityB instanceof Enemy) {
                         // Add player-enemy collision detector
                         CollisionDetector playerCollideEnemyDetector = new PlayerCollideEnemyDetector((Player) entityA, (Enemy) entityB);
-                        collisionManager.addDetectors(playerCollideEnemyDetector);
+                        collisionManager.addDetector(playerCollideEnemyDetector);
                     }
 
                     if (entityB instanceof Wall){
                         CollisionDetector playerCollideWallDetector = new PlayerCollideWallDetector((Player) entityA, (Wall) entityB);
-                        collisionManager.addDetectors(playerCollideWallDetector);
+                        collisionManager.addDetector(playerCollideWallDetector);
                     }
 
                     if (entityB instanceof Food) {
                         CollisionDetector playerCollideFoodDetector = new PlayerCollideFoodDetector((Player) entityA, (Food) entityB, dialogPopUpManager);
-                        collisionManager.addDetectors(playerCollideFoodDetector);
+                        collisionManager.addDetector(playerCollideFoodDetector);
                     }
                     
                     if (entityB instanceof Nutritionist) {
                         CollisionDetector playerCollideNutritionistDetector = new PlayerCollideNutritionistDetector((Player) entityA, (Nutritionist) entityB, dialogPopUpManager);
-                        collisionManager.addDetectors(playerCollideNutritionistDetector);
+                        collisionManager.addDetector(playerCollideNutritionistDetector);
                     }
                 }
             }
@@ -350,12 +350,12 @@ public class PlayScene implements Scene, DialogEventListener {
                     if (entityB instanceof Enemy && entityA != entityB) {
                         // Add enemy-enemy collision detector
                         CollisionDetector enemyCollideEnemyDetector = new EnemyCollideEnemyDetector((Enemy) entityA, (Enemy) entityB);
-                        collisionManager.addDetectors(enemyCollideEnemyDetector);
+                        collisionManager.addDetector(enemyCollideEnemyDetector);
                     }
 
                     if (entityB instanceof Wall) {
                         CollisionDetector enemyCollideWallDetector = new EnemyCollideWallDetector((Enemy) entityA, (Wall) entityB);
-                        collisionManager.addDetectors(enemyCollideWallDetector);
+                        collisionManager.addDetector(enemyCollideWallDetector);
                     }
                 }
             }
@@ -370,7 +370,7 @@ public class PlayScene implements Scene, DialogEventListener {
                     
                     if (entityB instanceof Wall) {
                         CollisionDetector nutritionistCollideWallDetector = new NutritionistCollideWallDetector((Nutritionist) entityA, (Wall) entityB);
-                        collisionManager.addDetectors(nutritionistCollideWallDetector);
+                        collisionManager.addDetector(nutritionistCollideWallDetector);
                     }
                 }
             }

@@ -50,7 +50,8 @@ public class Mouse implements InputDevice {
      * @return The X coordinate in screen coordinates
      */
     public float getX() {
-        return Gdx.input.getX();
+        this.x = Gdx.input.getX();
+        return x;
     }
     
     /**
