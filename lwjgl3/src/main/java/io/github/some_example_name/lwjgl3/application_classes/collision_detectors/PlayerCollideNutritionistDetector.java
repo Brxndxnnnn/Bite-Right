@@ -37,7 +37,7 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         System.out.println("Player collided with Nutritionist!");
         
         // Play a sound effect for the collision
-        AudioPlayer.getInstance().playSFX("SFX/nutritionist.mp3");
+        AudioPlayer.getInstance().playSFX("sfx/nutritionist.mp3");
         
         // For now, just apply a small health bonus
         player.adjustHealth(5);

@@ -40,7 +40,7 @@ public class HomeScene implements Scene{
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-        homeBackground = new Texture(Gdx.files.internal("assets/homebackground.jpg"));
+        homeBackground = new Texture(Gdx.files.internal("background_images/homebackground.jpg"));
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 
         Image backgroundImage = new Image(homeBackground);
@@ -49,7 +49,7 @@ public class HomeScene implements Scene{
         // Add the background image to the stage (this will make it part of the UI)
         stage.addActor(backgroundImage);
 
-		AudioPlayer.getInstance().setSceneBGM("home.mp3");
+		AudioPlayer.getInstance().setSceneBGM("background_music/home.mp3");
 
         startBtn = new TextButton("Start", skin);
 		tutBtn = new TextButton("Tutorial", skin);

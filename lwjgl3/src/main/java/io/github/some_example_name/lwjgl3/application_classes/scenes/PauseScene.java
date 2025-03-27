@@ -34,7 +34,7 @@ public class PauseScene implements Scene{
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("pixthulhu/skin/pixthulhu-ui.json"));
 		
-		AudioPlayer.getInstance().setSceneBGM("pause.mp3");
+		AudioPlayer.getInstance().setSceneBGM("background_music/pause.mp3");
 
 		resumeBtn = new TextButton("Resume", skin);
 		restartBtn = new TextButton("Restart", skin);

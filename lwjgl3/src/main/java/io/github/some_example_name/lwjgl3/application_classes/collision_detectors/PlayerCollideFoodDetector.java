@@ -39,7 +39,7 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
         // Check collision
         // Handle based on food type
         if (food instanceof HealthyFood) {
-            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
+            AudioPlayer.getInstance().playSFX("sfx/crunch.mp3");
             HealthyFood healthyFood = (HealthyFood) food;
             System.out.println("Player consumed healthy food: +" + healthyFood.getHealthPoints() + " HP, +"
                                 + healthyFood.getStrengthBoost() + " strength");
@@ -54,7 +54,7 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
             player.adjustPoints(20);
         }
         else if (food instanceof UnhealthyFood) {
-            AudioPlayer.getInstance().playSFX("SFX/bad.mp3");
+            AudioPlayer.getInstance().playSFX("sfx/bad.mp3");
             UnhealthyFood unhealthyFood = (UnhealthyFood) food;
             System.out.println("Player consumed unhealthy food: -" + unhealthyFood.getDamage() + " HP");
 

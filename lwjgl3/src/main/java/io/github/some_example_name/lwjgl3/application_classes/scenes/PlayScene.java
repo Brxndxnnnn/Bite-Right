@@ -154,7 +154,7 @@ public class PlayScene implements Scene, DialogEventListener {
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.D, () -> player.move(Direction.RIGHT), false);
         ioManager.addIOBind(ioManager.getKeyboard(), Keys.ESCAPE, () -> sceneManager.changeScene(SceneType.PAUSE, SceneTransitionType.PAUSE), true);
 
-        AudioPlayer.getInstance().setSceneBGM("play.mp3");
+        AudioPlayer.getInstance().setSceneBGM("background_music/play.mp3");
     }
 
 
@@ -162,17 +162,17 @@ public class PlayScene implements Scene, DialogEventListener {
         if (GameDifficulty.getInstance().getDifficulty() == Difficulty.EASY) {
             speed = 100f;
             targetPoint = 200;
-            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
+            playBackground = new Texture(Gdx.files.internal("background_images/easyplay.jpg")); // Load easy background
         }
         else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.NORMAL) {
             speed = 150f;
             targetPoint = 300;
-            playBackground = new Texture(Gdx.files.internal("assets/easyplay.jpg")); // Load easy background
+            playBackground = new Texture(Gdx.files.internal("background_images/easyplay.jpg")); // Load easy background
         }
         else if (GameDifficulty.getInstance().getDifficulty() == Difficulty.HARD) {
             speed = 300f;
             targetPoint = 400;
-            playBackground = new Texture(Gdx.files.internal("assets/hardPlay.jpg")); // Load hard background
+            playBackground = new Texture(Gdx.files.internal("background_images/hardPlay.jpg")); // Load hard background
         }
 
         Image backgroundImage = new Image(new TextureRegionDrawable(new TextureRegion(playBackground)));
