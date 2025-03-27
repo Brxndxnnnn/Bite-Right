@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.Collidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.MovableEntity;
+import io.github.some_example_name.lwjgl3.abstract_engine.movement.Direction;
 import io.github.some_example_name.lwjgl3.abstract_engine.movement.UserMovable;
 
 public class Player extends MovableEntity implements Collidable, UserMovable {
@@ -33,62 +34,19 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
         float boxHeight = getHeight() > 0 ? getHeight() : getTexture().getHeight();
         return new Rectangle(getPosition().x, getPosition().y, boxWidth, boxHeight);
     }
-
+    
+    /**
+     * Moves the player in the specified direction
+     * @param direction The direction to move
+     */
     @Override
-    public void moveUserUp() {
+    public void move(Direction direction) {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        // Set velocity for upward movement
-        velocity.y = speed * 200; // Increased speed for grid-based movement
-        velocity.x = 0;          // Ensure no diagonal movement for grid-based games
-        lastDirection.set(0, 1); // Update last direction
         
-        // Move the character
-        Vector2 position = getPosition();
-        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-        
-        // Apply friction to gradually slow down
-        velocity.scl(friction);
-    }
-
-    @Override
-    public void moveUserDown() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        // Set velocity for downward movement
-        velocity.y = -speed * 200;
-        velocity.x = 0;           // Ensure no diagonal movement for grid-based games
-        lastDirection.set(0, -1); // Update last direction
-        
-        // Move the character
-        Vector2 position = getPosition();
-        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-        
-        // Apply friction to gradually slow down
-        velocity.scl(friction);
-    }
-
-    @Override
-    public void moveUserLeft() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        // Set velocity for leftward movement
-        velocity.x = -speed * 200;
-        velocity.y = 0;           // Ensure no diagonal movement for grid-based games
-        lastDirection.set(-1, 0); // Update last direction
-        
-        // Move the character
-        Vector2 position = getPosition();
-        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-        
-        // Apply friction to gradually slow down
-        velocity.scl(friction);
-    }
-
-    @Override
-    public void moveUserRight() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        // Set velocity for rightward movement
-        velocity.x = speed * 200;
-        velocity.y = 0;          // Ensure no diagonal movement for grid-based games
-        lastDirection.set(1, 0); // Update last direction
+        // Set velocity based on direction
+        velocity.x = direction.getX() * speed * 200;
+        velocity.y = direction.getY() * speed * 200;
+        lastDirection.set(direction.getX(), direction.getY()); // Update last direction
         
         // Move the character
         Vector2 position = getPosition();
