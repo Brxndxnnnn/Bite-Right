@@ -8,23 +8,29 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.some_example_name.lwjgl3.abstract_engine.collision.Collidable;
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.NonMovableEntity;
 
+/**
+ * Represents a wall tile in the game maze.
+ */
 public class Wall extends NonMovableEntity implements Collidable {
     private float width;
     private float height;
 
+    /**
+     * Constructor for wall tile.
+     * 
+     * @param name Wall name
+     * @param position Position in the maze
+     * @param texture Wall texture
+     */
     public Wall(String name, Vector2 position, Texture texture) {
         super(name, position, texture);
         this.width = texture.getWidth();
         this.height = texture.getHeight();
     }
 
-    @Override
-    public Rectangle getBoundingBox() {
-        return new Rectangle(getPosition().x, getPosition().y, width, height);
-    }
-    
     /**
-     * Sets the size of the wall
+     * Sets the size of the wall tile.
+     * 
      * @param width The width of the wall
      * @param height The height of the wall
      */
@@ -33,9 +39,11 @@ public class Wall extends NonMovableEntity implements Collidable {
         this.height = height;
     }
     
-    /**
-     * Overrides the default draw method to scale the texture to the desired size
-     */
+    @Override
+    public Rectangle getBoundingBox() {
+        return new Rectangle(getPosition().x, getPosition().y, width, height);
+    }
+    
     @Override
     public void draw(SpriteBatch batch) {
         batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);

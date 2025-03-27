@@ -6,10 +6,20 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.entity.NonMovableEntity;
 
+/**
+ * Represents a floor tile in the game maze.
+ */
 public class Floor extends NonMovableEntity {
     private float width;
     private float height;
 
+    /**
+     * Constructor for floor tile.
+     * 
+     * @param name Floor name
+     * @param position Position in the maze
+     * @param texture Floor texture
+     */
     public Floor(String name, Vector2 position, Texture texture) {
         super(name, position, texture);
         this.width = texture.getWidth();
@@ -17,7 +27,8 @@ public class Floor extends NonMovableEntity {
     }
 
     /**
-     * Sets the size of the floor
+     * Sets the size of the floor tile.
+     * 
      * @param width The width of the floor
      * @param height The height of the floor
      */
@@ -26,9 +37,6 @@ public class Floor extends NonMovableEntity {
         this.height = height;
     }
     
-    /**
-     * Overrides the default draw method to scale the texture to the desired size
-     */
     @Override
     public void draw(SpriteBatch batch) {
         batch.draw(getTexture(), getPosition().x, getPosition().y, width, height);
