@@ -427,10 +427,10 @@ public class PlayScene implements Scene, DialogEventListener {
         }
         
         // If nutritionist was removed, update the generator
-        if (activeNutritionist != null && activeNutritionist.shouldBeRemoved()) {
-            nutritionistGenerator.onNutritionistRemoved();
-            activeNutritionist = null;
-        }
+        // if (activeNutritionist != null && activeNutritionist.shouldBeRemoved()) {
+        //     nutritionistGenerator.onNutritionistRemoved();
+        //     activeNutritionist = null;
+        // }
     }
 
     private void spawnFood() {

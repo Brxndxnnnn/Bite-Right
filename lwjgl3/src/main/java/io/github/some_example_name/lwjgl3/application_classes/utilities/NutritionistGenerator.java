@@ -7,18 +7,27 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.some_example_name.lwjgl3.application_classes.entities.Nutritionist;
 
 /**
- * Utility class to generate nutritionist entities in the maze
+ * Manages the generation and spawning of nutritionist entities in the maze.
+ * Periodically spawns nutritionists at random valid locations.
  */
 public class NutritionistGenerator {
-    private MazeGenerator mazeGenerator;
-    private float cellSize;
+    /** Reference to the maze generator for positioning */
+    private final MazeGenerator mazeGenerator;
+    
+    /** Size of each cell in the maze */
+    private final float cellSize;
+    
+    /** Timer for nutritionist spawning */
     private float spawnTimer;
-    private final float spawnInterval = 5.0f; // Spawn a new nutritionist every 5 seconds if none exists
-    private boolean nutritionistActive = false; // Flag to track if a nutritionist is already active
+    
+    /** Time between nutritionist spawns (seconds) */
+    private final float spawnInterval = 5.0f;
+    
+    /** Reference to the food dictionary for facts */
     private final FoodDictionary foodDictionary;
     
     /**
-     * Constructor for nutritionist generator
+     * Creates a new nutritionist generator.
      *
      * @param cellSize Size of each cell in the maze
      * @param mazeGenerator Reference to the maze generator
@@ -32,10 +41,11 @@ public class NutritionistGenerator {
     }
     
     /**
-     * Updates the spawn timer and determines when to spawn a nutritionist
-     * @param deltaTime Time elapsed since last update
+     * Updates the spawn timer and determines if a new nutritionist should spawn.
+     * 
+     * @param deltaTime Time elapsed since last frame (seconds)
      * @param nutritionistExists Whether a nutritionist currently exists in the game
-     * @return True if a new nutritionist should be spawned, false otherwise
+     * @return true if a new nutritionist should be spawned, false otherwise
      */
     public boolean update(float deltaTime, boolean nutritionistExists) {
         // Update spawn timer
@@ -44,7 +54,6 @@ public class NutritionistGenerator {
         // Check if we need to spawn a nutritionist
         if (spawnTimer >= spawnInterval && !nutritionistExists) {
             spawnTimer = 0; // Reset timer
-            nutritionistActive = true;
             return true;
         }
         
@@ -52,10 +61,11 @@ public class NutritionistGenerator {
     }
     
     /**
-     * Creates a nutritionist at a random valid position in the maze
+     * Creates a nutritionist at a random valid position in the maze.
+     * 
      * @param texture Texture for the nutritionist
      * @param speed Movement speed for the nutritionist
-     * @return A new Nutritionist entity
+     * @return A new Nutritionist entity, or null if creation failed
      */
     public Nutritionist generateNutritionist(Texture texture, float speed) {
         // Try to find a valid position
@@ -95,12 +105,5 @@ public class NutritionistGenerator {
         // If we couldn't find a valid position, return null
         System.err.println("Could not find a valid position for the nutritionist after " + maxAttempts + " attempts");
         return null;
-    }
-    
-    /**
-     * Resets the nutritionist spawning state when a nutritionist is removed
-     */
-    public void onNutritionistRemoved() {
-        nutritionistActive = false;
     }
 }
