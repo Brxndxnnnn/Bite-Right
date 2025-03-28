@@ -39,4 +39,10 @@ public class UnhealthyFood extends Food {
     public int getEffectValue() {
         return -damage; // Negative to indicate damage
     }
+
+    @Override
+    public void applyEffect(Player player) {
+        player.adjustHealth(-damage);
+        player.adjustPoints(-10);
+    }
 }

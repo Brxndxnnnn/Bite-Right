@@ -148,6 +148,13 @@ public abstract class Food extends NonMovableEntity implements Collidable, Remov
     public String getFunFact() {
         return funFact;
     }
+
+    /**
+     * Apply food effect to Player Entity
+     * 
+     * @param Player Player entity to apply effect to
+     */
+    public abstract void applyEffect(Player player);
     
     /**
      * Draws food entity
