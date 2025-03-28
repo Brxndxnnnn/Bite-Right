@@ -46,25 +46,13 @@ public class PlayerCollideFoodDetector extends EntityCollisionDetector<Player, F
 
         // Apply effects based on food type
         if (food instanceof HealthyFood) {
-            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");
-            HealthyFood healthyFood = (HealthyFood) food;
-
-            // Add health to player
-            player.adjustHealth(healthyFood.getHealthPoints());
-
-            // Add points to player
-            player.adjustPoints(20);
+            AudioPlayer.getInstance().playSFX("SFX/crunch.mp3");        
         }
         else if (food instanceof UnhealthyFood) {
             AudioPlayer.getInstance().playSFX("SFX/bad.mp3");
-            UnhealthyFood unhealthyFood = (UnhealthyFood) food;
-
-            // Reduce player health
-            player.adjustHealth(-unhealthyFood.getDamage());
-            
-            // Reduce player points
-            player.adjustPoints(-10);
         }
+
+        food.applyEffect(player);
 
         // Mark food as consumed
         food.setToBeRemoved();

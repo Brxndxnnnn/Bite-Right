@@ -83,10 +83,6 @@ public class PlayScene implements Scene, DialogEventListener {
     private Texture floorTexture;
     private SpriteBatch batch;
 
-    // Static game result tracking
-    private static int finalPoints;
-    private static boolean gameWon;
-
     /**
      * Constructs the play scene with all necessary game components.
      * 
@@ -552,32 +548,13 @@ public class PlayScene implements Scene, DialogEventListener {
         if (showPopup) return;
         
         if (player.getHealth() <= 0) {
-            // Game over logic
-            finalPoints = player.getPoints();
-            gameWon = false;
-            System.out.println("Game Over! Player died.");
+            // Store results in the scene manager instead of static fields
+            sceneManager.setGameResults(player.getPoints(), false);
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         } else if (player.getPoints() >= targetPoint) {
-            // Game win logic
-            finalPoints = player.getPoints();
-            gameWon = true;
-            System.out.println("Game Win! Player reached " + targetPoint + " points.");
+            sceneManager.setGameResults(player.getPoints(), true);
             sceneManager.changeScene(SceneType.RESULTS, SceneTransitionType.NORMAL);
         }
-    }
-
-    /**
-     * Get final points for results screen.
-     */
-    public static int getfinalPoints() {
-        return finalPoints;
-    }
-
-    /**
-     * Check if the game was won.
-     */
-    public static boolean isGameWon() {
-        return gameWon;
     }
 
     @Override

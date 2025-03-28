@@ -40,4 +40,10 @@ public class HealthyFood extends Food {
     public int getEffectValue() {
         return healthPoints;
     }
+
+    @Override
+    public void applyEffect(Player player){
+        player.adjustHealth(healthPoints);
+        player.adjustPoints(20);
+    }
 }
