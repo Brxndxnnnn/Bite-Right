@@ -70,7 +70,7 @@ public class ResultsScene implements Scene {
         stage.addActor(titleTable);
 
         // Create results table
-        Table resultTable = createResultTable();
+        Table resultTable = createResultTable(sceneManager);
         stage.addActor(resultTable);
 
         // Create button table
@@ -99,18 +99,18 @@ public class ResultsScene implements Scene {
      * 
      * @return Configured results Table
      */
-    private Table createResultTable() {
+    // In ResultsScene.java, modify the createResultTable() method:
+    private Table createResultTable(GameSceneManager sceneManager) {
         Table resultTable = new Table();
         resultTable.setFillParent(true);
         resultTable.center();
 
-        // Determine game outcome
-        String outcome = PlayScene.isGameWon() ? "You Win!" : "You Lose! Health is 0.";
+        // Use the scene manager to get results instead of static PlayScene methods
+        String outcome = sceneManager.isGameWon() ? "You Win!" : "You Lose! Health is 0.";
         Label outcomeLabel = new Label(outcome, skin, "subtitle");
         resultTable.add(outcomeLabel).center().padTop(20).row();
 
-        // Display final points
-        int points = PlayScene.getfinalPoints();
+        int points = sceneManager.getFinalPoints();
         String pointsText = "Points = " + points;
         Label pointsLabel = new Label(pointsText, skin, "subtitle"); 
         resultTable.add(pointsLabel).center().padTop(20);

@@ -12,6 +12,9 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 public class GameSceneManager extends SceneManager {
     // Scene factory for creating new scenes
     private final SceneFactory sceneFactory;
+
+    private int finalPoints;
+    private boolean gameWon;
     
     /**
      * Constructs the GameSceneManager.
@@ -20,6 +23,19 @@ public class GameSceneManager extends SceneManager {
     public GameSceneManager() {
         super();
         this.sceneFactory = new SceneFactory(this);
+    }
+
+    public void setGameResults(int points, boolean won) {
+        this.finalPoints = points;
+        this.gameWon = won;
+    }
+    
+    public int getFinalPoints() {
+        return finalPoints;
+    }
+    
+    public boolean isGameWon() {
+        return gameWon;
     }
     
     /**
