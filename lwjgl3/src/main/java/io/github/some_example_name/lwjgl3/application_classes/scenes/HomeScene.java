@@ -1,3 +1,6 @@
+// This code shows the changes needed to implement the audio slider in HomeScene.java
+// You would integrate these changes into your existing HomeScene class
+
 package io.github.some_example_name.lwjgl3.application_classes.scenes;
 
 import com.badlogic.gdx.Gdx;
@@ -5,13 +8,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import io.github.some_example_name.lwjgl3.abstract_engine.audio.AudioPlayer;
@@ -22,12 +28,15 @@ import io.github.some_example_name.lwjgl3.abstract_engine.scene.SceneType;
 
 /**
  * Home scene of the game, serving as the main menu.
+ * Now includes an audio volume slider.
  */
 public class HomeScene implements Scene {
     // UI components
     private final TextButton startBtn;
     private final TextButton tutBtn;
     private final TextButton quitBtn;
+    private final Slider volumeSlider;
+    private final Label volumeLabel;
     
     // Scene management
     private final Stage stage;
@@ -56,6 +65,11 @@ public class HomeScene implements Scene {
         startBtn = createStyledButton("Start");
         tutBtn = createStyledButton("Tutorial");
         quitBtn = createStyledButton("Quit");
+        
+        // Create volume slider
+        volumeSlider = createVolumeSlider();
+        volumeLabel = new Label("Volume:", skin);
+        volumeLabel.setColor(Color.YELLOW);
 
         // Create and populate scene layout
         createSceneLayout(sceneManager);
@@ -77,6 +91,31 @@ public class HomeScene implements Scene {
         button.setColor(Color.ROYAL);
         return button;
     }
+    
+    /**
+     * Creates and configures the volume slider.
+     * 
+     * @return Configured volume slider
+     */
+    private Slider createVolumeSlider() {
+        // Create slider with range 0-1
+        Slider slider = new Slider(0f, 1f, 0.05f, false, skin);
+        
+        // Set initial value from AudioPlayer's current volume
+        float currentVolume = AudioPlayer.getInstance().getVolume();
+        slider.setValue(currentVolume);
+        
+        // Add listener to update volume when slider is moved
+        slider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                float volume = slider.getValue();
+                AudioPlayer.getInstance().setVolume(volume);
+            }
+        });
+        
+        return slider;
+    }
 
     /**
      * Sets up the scene layout and button interactions.
@@ -96,6 +135,10 @@ public class HomeScene implements Scene {
         // Create button table
         Table buttonTable = createButtonTable(sceneManager);
         stage.addActor(buttonTable);
+        
+        // Create volume controls table
+        Table volumeTable = createVolumeTable();
+        stage.addActor(volumeTable);
     }
 
     /**
@@ -157,6 +200,23 @@ public class HomeScene implements Scene {
         });
 
         return buttonTable;
+    }
+    
+    /**
+     * Creates the volume control table with slider and label.
+     * 
+     * @return Configured volume Table
+     */
+    private Table createVolumeTable() {
+        Table volumeTable = new Table();
+        volumeTable.setFillParent(true);
+        volumeTable.bottom().right();
+        
+        // Add volume label and slider to table
+        volumeTable.add(volumeLabel).padBottom(20).padRight(10);
+        volumeTable.add(volumeSlider).width(200).padBottom(20).padRight(40);
+        
+        return volumeTable;
     }
 
     @Override
