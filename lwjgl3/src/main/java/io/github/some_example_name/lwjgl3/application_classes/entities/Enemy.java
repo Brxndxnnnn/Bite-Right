@@ -23,7 +23,7 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
     private static final float BEHAVIOR_CHANGE_INTERVAL = 5.0f;
 
     // Configurable speed
-    private static float GHOST_SPEED = 150f;
+    private static float CHEF_SPEED = 150f;
 
     // Movement tracking
     private float directionChangeTimer = 0;
@@ -38,12 +38,12 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
     // Behavior management
     private Entity targetEntity;
     private final float chaseChance = 0.9f;
-    private GhostBehavior currentBehavior = GhostBehavior.RANDOM;
+    private ChefBehavior currentBehavior = ChefBehavior.RANDOM;
 
     /**
      * Defines different movement strategies for the enemy.
      */
-    public enum GhostBehavior {
+    public enum ChefBehavior {
         RANDOM,   // Unpredictable movement
         CHASE,    // Pursue the player
         SCATTER   // Move to a predefined area
@@ -70,7 +70,7 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
      * Initialize enemy movement with a random direction.
      */
     private void initializeMovement() {
-        this.velocity = getRandomCardinalDirection().scl(GHOST_SPEED);
+        this.velocity = getRandomCardinalDirection().scl(CHEF_SPEED);
         this.previousDirection = new Vector2(velocity).nor();
     }
 
@@ -91,14 +91,14 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
      * Get the current base speed for enemies.
      */
     public static float getBaseSpeed() {
-        return GHOST_SPEED;
+        return CHEF_SPEED;
     }
 
     /**
      * Set the base speed for enemies.
      */
     public static void setBaseSpeed(float speed) {
-        GHOST_SPEED = speed;
+        CHEF_SPEED = speed;
     }
 
     /**
@@ -173,11 +173,11 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
         float roll = MathUtils.random();
         
         if (targetEntity != null && roll < chaseChance) {
-            currentBehavior = GhostBehavior.CHASE;
+            currentBehavior = ChefBehavior.CHASE;
         } else if (roll < 0.85f) {
-            currentBehavior = GhostBehavior.SCATTER;
+            currentBehavior = ChefBehavior.SCATTER;
         } else {
-            currentBehavior = GhostBehavior.RANDOM;
+            currentBehavior = ChefBehavior.RANDOM;
         }
     }
 
@@ -214,7 +214,7 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
                 );
             }
             
-            velocity.set(direction.nor().scl(GHOST_SPEED));
+            velocity.set(direction.nor().scl(CHEF_SPEED));
             directionChangeTimer = 0;
         }
         
@@ -261,7 +261,7 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
         if (validDirections.size > 0) {
             int randomIndex = MathUtils.random(validDirections.size - 1);
             Vector2 newDirection = validDirections.get(randomIndex);
-            velocity.set(newDirection.x * GHOST_SPEED, newDirection.y * GHOST_SPEED);
+            velocity.set(newDirection.x * CHEF_SPEED, newDirection.y * CHEF_SPEED);
         }
     }
 
@@ -299,7 +299,7 @@ public class Enemy extends MovableEntity implements Collidable, AIMovable {
             int randomIndex = MathUtils.random(perpendicularDirs.size - 1);
             Vector2 newDirection = perpendicularDirs.get(randomIndex);
             
-            velocity.set(newDirection.x * GHOST_SPEED, newDirection.y * GHOST_SPEED);
+            velocity.set(newDirection.x * CHEF_SPEED, newDirection.y * CHEF_SPEED);
             previousDirection.set(newDirection);
             directionChangeTimer = 0;
         }

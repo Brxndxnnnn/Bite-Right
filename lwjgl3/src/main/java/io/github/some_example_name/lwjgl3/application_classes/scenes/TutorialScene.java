@@ -111,7 +111,7 @@ public class TutorialScene implements Scene {
         // Load tutorial images
         Texture healthyFoodTexture = new Texture(Gdx.files.internal("entities_images/banana.png"));
         Texture unhealthyFoodTexture = new Texture(Gdx.files.internal("entities_images/fries.png"));
-        Texture demonTexture = new Texture(Gdx.files.internal("entities_images/demon.png"));
+        Texture demonTexture = new Texture(Gdx.files.internal("entities_images/angry_chef.png"));
         
         // Create tutorial content table
         Table tutorialContentTable = new Table();

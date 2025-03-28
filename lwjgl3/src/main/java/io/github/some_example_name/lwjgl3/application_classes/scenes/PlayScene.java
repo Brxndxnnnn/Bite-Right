@@ -131,17 +131,17 @@ public class PlayScene implements Scene, DialogEventListener {
         switch (difficulty) {
             case EASY:
                 speed = 100f;
-                targetPoint = 200;
+                targetPoint = 300;
                 playBackground = new Texture(Gdx.files.internal("background_images/easyplay.jpg"));
                 break;
             case NORMAL:
                 speed = 150f;
-                targetPoint = 300;
+                targetPoint = 400;
                 playBackground = new Texture(Gdx.files.internal("background_images/easyplay.jpg"));
                 break;
             case HARD:
                 speed = 300f;
-                targetPoint = 400;
+                targetPoint = 500;
                 playBackground = new Texture(Gdx.files.internal("background_images/hardPlay.jpg"));
                 break;
         }
@@ -168,7 +168,7 @@ public class PlayScene implements Scene, DialogEventListener {
         // Load textures
         Texture wallTexture = new Texture("entities_images/wall.png");
         floorTexture = new Texture("entities_images/floor.png");
-        Texture enemyTexture = new Texture("entities_images/demon.png");
+        Texture enemyTexture = new Texture("entities_images/angry_chef.png");
         Texture playerTexture = new Texture("entities_images/player.png");
         nutritionistTexture = new Texture("entities_images/nutritionist.png");
 
@@ -237,20 +237,20 @@ public class PlayScene implements Scene, DialogEventListener {
         Player playerEntity = findPlayerEntity();
         float offset = cellSize * 0.05f;
 
-        // Ghost 1 - top right corner
-        Vector2 ghost1Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost1 = createEnemy("Ghost1", ghost1Pos, enemyTexture, cellSize, offset, playerEntity);
-        entityManager.addEntity(ghost1);
+        // CHEF 1 - top right corner
+        Vector2 chef1pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, MazeGenerator.getGridHeight() - 2);
+        Enemy chef1 = createEnemy("Chef1", chef1pos, enemyTexture, cellSize, offset, playerEntity);
+        entityManager.addEntity(chef1);
 
-        // Ghost 2 - top left corner
-        Vector2 ghost2Pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
-        Enemy ghost2 = createEnemy("Ghost2", ghost2Pos, enemyTexture, cellSize, offset, playerEntity);
-        entityManager.addEntity(ghost2);
+        // CHEF 2 - top left corner
+        Vector2 chef2pos = mazeGenerator.gridToScreenTopLeft(1, MazeGenerator.getGridHeight() - 2);
+        Enemy chef2 = createEnemy("Chef2", chef2pos, enemyTexture, cellSize, offset, playerEntity);
+        entityManager.addEntity(chef2);
 
-        // Ghost 3 - bottom right corner
-        Vector2 ghost3Pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
-        Enemy ghost3 = createEnemy("Ghost3", ghost3Pos, enemyTexture, cellSize, offset, playerEntity);
-        entityManager.addEntity(ghost3);
+        // CHEF 3 - bottom right corner
+        Vector2 chef3pos = mazeGenerator.gridToScreenTopLeft(MazeGenerator.getGridWidth() - 2, 1);
+        Enemy chef3 = createEnemy("Chef3", chef3pos, enemyTexture, cellSize, offset, playerEntity);
+        entityManager.addEntity(chef3);
     }
 
     /**
