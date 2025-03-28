@@ -13,8 +13,7 @@ public class HealthyFood extends Food {
      * Constructor for healthy food.
      */
     public HealthyFood(String name, Vector2 position, Texture texture, 
-                       int healthPoints, float strengthBoost, 
-                       float lifespanInSeconds, String funFact) {
+                       int healthPoints, float lifespanInSeconds, String funFact) {
         super(name, position, texture, FoodType.HEALTHY, lifespanInSeconds, funFact);
         this.healthPoints = healthPoints;
     }

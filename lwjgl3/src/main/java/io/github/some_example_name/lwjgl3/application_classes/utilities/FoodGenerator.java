@@ -42,10 +42,10 @@ public class FoodGenerator {
     private final float spawnInterval = 3.0f;
     
     /** Maximum number of food items allowed simultaneously */
-    private final int maxFoodCount = 7;
+    private final int maxFoodCount = 10;
     
     /** How long food items last before expiring (seconds) */
-    private final float foodLifespan = 10.0f;
+    private final float foodLifespan = 15.0f;
 
     /** Cache of healthy food textures */
     private final Map<String, Texture> healthyFoodTextures = new HashMap<>();
@@ -233,9 +233,8 @@ public class FoodGenerator {
             
             // Create healthy food with random health boost (5-15)
             int healthBoost = MathUtils.random(5, 15);
-            float strengthBoost = MathUtils.random(0.05f, 0.15f);
             food = new HealthyFood("HealthyFood_" + System.currentTimeMillis(), position, 
-                                  foodTexture, healthBoost, strengthBoost, foodLifespan, foodFact);
+                                  foodTexture, healthBoost, foodLifespan, foodFact);
         } else {
             // Get random unhealthy food
             String[] unhealthyFood = foodDictionary.getRandomUnhealthyFood();

@@ -411,7 +411,7 @@ public class PlayScene implements Scene, DialogEventListener {
         titleTable.add(pointsLabel).expandX().center().pad(10);
 
         // Food count label
-        foodCountLabel = new Label("Food: 0/7", skin);
+        foodCountLabel = new Label("Food: 0/10", skin);
         foodCountLabel.setColor(Color.YELLOW);
         titleTable.add(foodCountLabel).right().pad(10);
     }
@@ -536,7 +536,7 @@ public class PlayScene implements Scene, DialogEventListener {
         healthLabel.setText("Health: " + player.getHealth() + "/" + player.getMaxHealth());
         
         int currentFoodCount = foodGenerator.getFoodListSize();
-        foodCountLabel.setText("Food: " + currentFoodCount + "/7");
+        foodCountLabel.setText("Food: " + currentFoodCount + "/10");
         
         pointsLabel.setText("Points: " + player.getPoints() + "/" + targetPoint);
     }
