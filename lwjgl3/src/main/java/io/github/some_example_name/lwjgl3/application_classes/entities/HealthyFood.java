@@ -44,5 +44,6 @@ public class HealthyFood extends Food {
     public void applyEffect(Player player){
         player.adjustHealth(healthPoints);
         player.adjustPoints(20);
+        player.adjustSpeed(0.1f);
     }
 }

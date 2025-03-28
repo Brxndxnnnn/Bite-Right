@@ -59,6 +59,9 @@ public class PlayerCollideNutritionistDetector extends EntityCollisionDetector<P
         // Give player health bonus
         player.adjustHealth(5);
 
+        // Give player points
+        player.adjustPoints(20);
+
         // Mark nutritionist for removal
         nutritionist.setToBeRemoved();
 

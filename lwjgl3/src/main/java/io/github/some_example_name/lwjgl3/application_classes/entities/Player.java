@@ -150,6 +150,18 @@ public class Player extends MovableEntity implements Collidable, UserMovable {
     }
 
     /**
+     * Adjusts the player's points.
+     * 
+     * @param amount Amount to adjust speed by
+     */
+    public void adjustSpeed(float amount) {
+        // Adjust speed only if the result will be within acceptable range
+        if (speed + amount >= 0.5f && speed + amount <= 1.5f) {
+            speed += amount;
+        } 
+    }
+
+    /**
      * Gets the current player points.
      * 
      * @return Current points

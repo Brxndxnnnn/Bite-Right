@@ -218,7 +218,7 @@ public class PlayScene implements Scene, DialogEventListener {
      */
     private void createPlayer(Texture playerTexture, float cellSize) {
         Vector2 playerStartPos = mazeGenerator.gridToScreenTopLeft(1, 1);
-        player = new Player("Player", playerStartPos, playerTexture, 2f);
+        player = new Player("Player", playerStartPos, playerTexture, 0.9f);
 
         player.setSize(cellSize * 0.95f, cellSize * 0.95f);
         float offset = cellSize * 0.05f;

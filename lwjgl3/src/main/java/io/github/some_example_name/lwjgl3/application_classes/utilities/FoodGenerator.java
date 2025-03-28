@@ -39,13 +39,13 @@ public class FoodGenerator {
     private float spawnTimer;
     
     /** Time between food spawns (seconds) */
-    private final float spawnInterval = 3.0f;
+    private final float spawnInterval = 2.0f;
     
     /** Maximum number of food items allowed simultaneously */
     private final int maxFoodCount = 10;
     
     /** How long food items last before expiring (seconds) */
-    private final float foodLifespan = 15.0f;
+    private final float foodLifespan = 10.0f;
 
     /** Cache of healthy food textures */
     private final Map<String, Texture> healthyFoodTextures = new HashMap<>();
